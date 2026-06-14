@@ -1,26 +1,127 @@
 @import "tailwindcss";
 
+/* ─── Osmo Scaling System ─────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --size-unit: 16;
+  --size-container-ideal: 1440;
+  --size-container-min: 992px;
+  --size-container-max: 1920px;
+  --size-container: clamp(
+    var(--size-container-min),
+    100vw,
+    var(--size-container-max)
+  );
+  --size-font: calc(
+    var(--size-container) / (var(--size-container-ideal) / var(--size-unit))
+  );
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (max-width: 991px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --size-container-ideal: 834;
+    --size-container-min: 768px;
+    --size-container-max: 991px;
   }
 }
 
+@media (max-width: 767px) {
+  :root {
+    --size-container-ideal: 550;
+    --size-container-min: 480px;
+    --size-container-max: 767px;
+  }
+}
+
+@media (max-width: 479px) {
+  :root {
+    --size-container-ideal: 390;
+    --size-container-min: 320px;
+    --size-container-max: 479px;
+  }
+}
+
+/* ─── Design Tokens ───────────────────────────────────────────────────────── */
+:root {
+  /* Colors */
+  --color-primary: #7a1f1f;
+  --color-primary-dark: #5a1616;
+  --color-primary-light: #9a3030;
+  --color-cream: #f5ede0;
+  --color-cream-dark: #e8d9c4;
+  --color-gold: #c9a96e;
+  --color-gold-light: #dfc090;
+  --color-ink: #1a0a0a;
+  --color-ink-muted: #4a2a2a;
+  --color-white: #ffffff;
+
+  /* Typography */
+  --font-script: var(--font-alex-brush);
+  --font-display: var(--font-cormorant);
+  --font-body: var(--font-dm-sans);
+
+  /* Spacing scale (em-based so it scales with Osmo) */
+  --space-xs: 0.5em;
+  --space-sm: 1em;
+  --space-md: 2em;
+  --space-lg: 4em;
+  --space-xl: 6em;
+  --space-2xl: 10em;
+}
+
+/* ─── Base ────────────────────────────────────────────────────────────────── */
+html {
+  font-size: var(--size-font);
+  scroll-behavior: auto; /* Lenis handles smooth scroll */
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Typography Utilities ────────────────────────────────────────────────── */
+.font-script {
+  font-family: var(--font-script), cursive;
+}
+
+.font-display {
+  font-family: var(--font-display), serif;
+}
+
+.font-body {
+  font-family: var(--font-body), sans-serif;
+}
+
+/* ─── Lenis ───────────────────────────────────────────────────────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
