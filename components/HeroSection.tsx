@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
+
+const CURVE_FLAT = "M0,120 L0,120 C360,120 1080,120 1440,120 L1440,120 Z";
+const CURVE_DEEP = "M0,120 L0,60 C360,0 1080,0 1440,60 L1440,120 Z";
 
 function initButtonCharacterStagger() {
   const offsetIncrement = 0.01;
@@ -22,9 +27,37 @@ function initButtonCharacterStagger() {
 }
 
 export default function HeroSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const curvePathRef = useRef<SVGPathElement>(null);
+
   useEffect(() => {
     initButtonCharacterStagger();
   }, []);
+
+  useGSAP(
+    () => {
+      if (!curvePathRef.current || !sectionRef.current) return;
+
+      gsap.set(curvePathRef.current, { attr: { d: CURVE_FLAT } });
+
+      const tween = gsap.to(curvePathRef.current, {
+        attr: { d: CURVE_DEEP },
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 0.5,
+        },
+      });
+
+      return () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      };
+    },
+    { scope: sectionRef },
+  );
 
   return (
     <>
@@ -49,8 +82,8 @@ export default function HeroSection() {
           border: none;
           background-color: var(--color-gold);
           min-width: 14em;
-          border-radius: 0.4em;
-          padding: 0.9em 1.2em 0.65em 2.8em;
+          border-radius: 999px;
+          padding: 0.9em 1.1em 0.65em 3em;
           justify-content: center;
         }
 
@@ -85,7 +118,7 @@ export default function HeroSection() {
         }
 
         .btn-animate-chars__bg {
-          border-radius: 0.4em;
+          border-radius: 999px;
           background-color: var(--color-gold);
           position: absolute;
           inset: 0;
@@ -101,9 +134,55 @@ export default function HeroSection() {
         .btn-animate-chars:hover {
           color: var(--color-ink);
         }
+
+        .hero-title {
+          color: var(--color-cream);
+          font-family: var(--font-nohemi), sans-serif;
+          font-size: clamp(1.8rem, 4.2vw, 3.6em);
+          font-weight: 400;
+          line-height: 1.1;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          white-space: nowrap;
+          margin-bottom: 0.6em;
+        }
+
+        .hero-title__sub {
+          color: var(--color-cream-dark);
+          font-family: var(--font-nohemi), sans-serif;
+          font-weight: 200;
+          font-style: normal;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+        }
+
+        /* Mobile only — desktop values above are untouched */
+        @media (max-width: 767px) {
+          .hero-title {
+            font-size: clamp(1.6rem, 7vw, 2.4rem);
+            white-space: normal;
+            max-width: 26ch;
+            margin-left: auto;
+            margin-right: auto;
+          }
+
+          .btn-animate-chars {
+            min-width: 0;
+            width: 100%;
+            max-width: 22em;
+            padding: 0.9em 1.5em;
+            font-size: 0.8em;
+          }
+
+          .hero-cta-group {
+            width: 100%;
+            padding: 0 1em;
+          }
+        }
       `}</style>
 
       <section
+        ref={sectionRef}
         aria-label="Hero"
         style={{
           backgroundColor: "var(--color-primary)",
@@ -117,48 +196,10 @@ export default function HeroSection() {
           position: "relative",
         }}
       >
-        {/* Script accent line */}
-        <p
-          className="font-script"
-          style={{
-            color: "var(--color-gold)",
-            fontSize: "2.2em",
-            lineHeight: 1.2,
-            marginBottom: "0.4em",
-            letterSpacing: "0.02em",
-          }}
-        >
-          crafting memories, one celebration at a time
-        </p>
-
         {/* Main title */}
-        <h1
-          className="font-display"
-          style={{
-            color: "var(--color-cream)",
-            fontSize: "clamp(2.8rem, 6vw, 6em)",
-            fontWeight: 300,
-            lineHeight: 1.1,
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-            maxWidth: "18ch",
-            marginBottom: "0.6em",
-          }}
-        >
-          Agnitantra Events
-          <br />
-          <span
-            style={{
-              color: "var(--color-cream-dark)",
-              fontSize: "0.75em",
-              fontWeight: 400,
-              fontStyle: "italic",
-              textTransform: "none",
-              letterSpacing: "0.06em",
-            }}
-          >
-            &amp; Aira Photography
-          </span>
+        <h1 className="hero-title">
+          Agnitantra Events{" "}
+          <span className="hero-title__sub">&amp; Aira Photography</span>
         </h1>
 
         {/* Divider ornament */}
@@ -207,6 +248,7 @@ export default function HeroSection() {
 
         {/* CTA Buttons */}
         <div
+          className="hero-cta-group"
           style={{
             display: "flex",
             flexWrap: "wrap",
@@ -263,52 +305,27 @@ export default function HeroSection() {
           </Link>
         </div>
 
-        {/* Scroll cue */}
-        <div
+        {/* Curved transition into next section */}
+        <svg
           aria-hidden="true"
+          viewBox="0 0 1440 120"
+          preserveAspectRatio="none"
           style={{
             position: "absolute",
-            bottom: "2em",
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "0.4em",
-            opacity: 0.5,
+            bottom: "-1px",
+            left: 0,
+            width: "100%",
+            height: "8vw",
+            minHeight: "60px",
+            maxHeight: "120px",
+            display: "block",
           }}
         >
-          <span
-            className="font-body"
-            style={{
-              color: "var(--color-cream)",
-              fontSize: "0.65em",
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-            }}
-          >
-            Scroll
-          </span>
-          <svg
-            width="16"
-            height="24"
-            viewBox="0 0 16 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-hidden="true"
-          >
-            <rect
-              x="1"
-              y="1"
-              width="14"
-              height="22"
-              rx="7"
-              stroke="#f5ede0"
-              strokeWidth="1"
-            />
-            <circle cx="8" cy="7" r="2" fill="#f5ede0" />
-          </svg>
-        </div>
+          <path
+            ref={curvePathRef}
+            fill="var(--color-cream)"
+          />
+        </svg>
       </section>
     </>
   );

@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# large source assets (optimized versions live in public/images)
+_source-assets
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

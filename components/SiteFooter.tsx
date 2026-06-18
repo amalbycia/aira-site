@@ -1,335 +1,222 @@
 "use client";
 
 import Link from "next/link";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 export default function SiteFooter() {
+  const footerRef = useRef<HTMLElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      if (!footerRef.current || !innerRef.current) return;
+
+      // The footer is fixed at the bottom behind <main>. On reload, before the
+      // browser restores scroll-to-top and <main> paints over it, the footer
+      // can flash into view. It starts `visibility: hidden` (inline style) so
+      // it never paints on first frame; we reveal it here, after mount +
+      // scroll restoration, then the content fades on scroll as before.
+      gsap.set(footerRef.current, { autoAlpha: 1 });
+
+      // Reveal: footer content drifts up + fades in as the footer scrolls
+      // into view. Scrubbed to scroll position, eased smoothly.
+      const tween = gsap.fromTo(
+        innerRef.current,
+        { yPercent: 18, autoAlpha: 0.2 },
+        {
+          yPercent: 0,
+          autoAlpha: 1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: "top bottom",
+            end: "top 30%",
+            scrub: 1,
+          },
+        },
+      );
+
+      return () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+      };
+    },
+    { scope: footerRef },
+  );
+
   return (
     <footer
+      ref={footerRef}
       aria-label="Site footer"
       style={{
-        backgroundColor: "var(--color-primary-dark)",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        width: "100%",
+        height: "100vh",
+        backgroundColor: "var(--color-primary)",
         color: "var(--color-cream)",
-        padding: "var(--space-xl) var(--space-md) var(--space-md)",
+        zIndex: 0,
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "column",
+        visibility: "hidden",
       }}
     >
+      <style>{`
+        .footer-cards-stack {
+          display: flex;
+          flex-direction: column;
+          gap: 1em;
+          margin-top: 1.5em;
+        }
+
+        .footer-cards-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1em;
+        }
+
+        .footer-card {
+          background-color: var(--color-cream);
+          color: var(--color-ink);
+          border-radius: 1.4em;
+          padding: 1.6em 1.8em;
+        }
+
+        .footer-card--contact {
+          min-height: 22em;
+        }
+        .footer-card--location,
+        .footer-card--socials {
+          min-height: 20em;
+        }
+
+        @media (max-width: 767px) {
+          .footer-cards-row {
+            grid-template-columns: 1fr;
+          }
+          .footer-nav-list a {
+            font-size: 1em !important;
+          }
+        }
+      `}</style>
+
       <div
+        ref={innerRef}
         style={{
-          maxWidth: "72em",
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "1.5fr 1fr 1fr",
-          gap: "var(--space-lg)",
-          paddingBottom: "var(--space-md)",
-          borderBottom: "1px solid rgba(245, 237, 224, 0.12)",
-        }}
-      >
-        {/* Column 1 — Brand */}
-        <div>
-          <p
-            className="font-script"
-            style={{
-              fontSize: "2em",
-              color: "var(--color-gold)",
-              lineHeight: 1.1,
-              marginBottom: "0.3em",
-            }}
-          >
-            Agnitantra Events
-          </p>
-          <p
-            className="font-display"
-            style={{
-              fontSize: "0.9em",
-              fontStyle: "italic",
-              color: "var(--color-cream-dark)",
-              marginBottom: "1.2em",
-              lineHeight: 1.4,
-            }}
-          >
-            &amp; Aira Photography
-          </p>
-          <p
-            className="font-body"
-            style={{
-              fontSize: "0.82em",
-              color: "rgba(245, 237, 224, 0.6)",
-              lineHeight: 1.8,
-              maxWidth: "28ch",
-              fontWeight: 300,
-            }}
-          >
-            Crafting weddings and celebrations across Hyderabad with love,
-            care, and a full team behind every detail.
-          </p>
-
-          {/* Location */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "flex-start",
-              gap: "0.6em",
-              marginTop: "1.4em",
-            }}
-          >
-            <svg
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              style={{ marginTop: "0.2em", flexShrink: 0 }}
-            >
-              <path
-                d="M7 1C4.79 1 3 2.79 3 5c0 3.25 4 8 4 8s4-4.75 4-8c0-2.21-1.79-4-4-4Z"
-                stroke="#c9a96e"
-                strokeWidth="1.1"
-                strokeLinejoin="round"
-              />
-              <circle cx="7" cy="5" r="1.2" stroke="#c9a96e" strokeWidth="1.1" />
-            </svg>
-            <span
-              className="font-body"
-              style={{
-                fontSize: "0.8em",
-                color: "rgba(245, 237, 224, 0.6)",
-                lineHeight: 1.6,
-                fontWeight: 300,
-              }}
-            >
-              {/* TODO: Replace with real address */}
-              123 Jubilee Hills, Hyderabad,
-              <br />
-              Telangana — 500033
-            </span>
-          </div>
-        </div>
-
-        {/* Column 2 — Navigation */}
-        <div>
-          <p
-            className="font-body"
-            style={{
-              fontSize: "0.7em",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "var(--color-gold)",
-              marginBottom: "1.4em",
-              fontWeight: 500,
-            }}
-          >
-            Navigate
-          </p>
-          <nav aria-label="Footer navigation">
-            <ul
-              style={{
-                listStyle: "none",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.9em",
-              }}
-            >
-              {[
-                { label: "Home", href: "/" },
-                { label: "Photography", href: "/photography" },
-                { label: "Events & Catering", href: "/events" },
-              ].map(({ label, href }) => (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className="font-body"
-                    style={{
-                      fontSize: "0.88em",
-                      color: "rgba(245, 237, 224, 0.75)",
-                      textDecoration: "none",
-                      fontWeight: 300,
-                      transition: "color 180ms ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLAnchorElement).style.color =
-                        "var(--color-cream)";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLAnchorElement).style.color =
-                        "rgba(245, 237, 224, 0.75)";
-                    }}
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-
-        {/* Column 3 — Contact */}
-        <div>
-          <p
-            className="font-body"
-            style={{
-              fontSize: "0.7em",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "var(--color-gold)",
-              marginBottom: "1.4em",
-              fontWeight: 500,
-            }}
-          >
-            Get in Touch
-          </p>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "1em",
-              marginBottom: "1.8em",
-            }}
-          >
-            {/* TODO: Replace with real phone */}
-            <a
-              href="tel:+919999999999"
-              className="font-body"
-              style={{
-                fontSize: "0.88em",
-                color: "rgba(245, 237, 224, 0.75)",
-                textDecoration: "none",
-                fontWeight: 300,
-                display: "flex",
-                alignItems: "center",
-                gap: "0.6em",
-                transition: "color 180ms ease",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.color =
-                  "var(--color-cream)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.color =
-                  "rgba(245, 237, 224, 0.75)";
-              }}
-            >
-              +91 99999 99999
-            </a>
-
-            {/* TODO: Replace with real email */}
-            <a
-              href="mailto:hello@agnitantra.com"
-              className="font-body"
-              style={{
-                fontSize: "0.88em",
-                color: "rgba(245, 237, 224, 0.75)",
-                textDecoration: "none",
-                fontWeight: 300,
-                transition: "color 180ms ease",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.color =
-                  "var(--color-cream)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.color =
-                  "rgba(245, 237, 224, 0.75)";
-              }}
-            >
-              hello@agnitantra.com
-            </a>
-
-            {/* TODO: Replace with real Instagram */}
-            <a
-              href="https://instagram.com/agnitantraevents"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-body"
-              style={{
-                fontSize: "0.88em",
-                color: "rgba(245, 237, 224, 0.75)",
-                textDecoration: "none",
-                fontWeight: 300,
-                transition: "color 180ms ease",
-              }}
-              onMouseEnter={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.color =
-                  "var(--color-cream)";
-              }}
-              onMouseLeave={(e) => {
-                (e.currentTarget as HTMLAnchorElement).style.color =
-                  "rgba(245, 237, 224, 0.75)";
-              }}
-            >
-              @agnitantraevents
-            </a>
-          </div>
-
-          {/* Contact CTA button */}
-          <a
-            href="mailto:hello@agnitantra.com"
-            className="font-body"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "0.5em",
-              padding: "0.7em 1.6em",
-              border: "1px solid var(--color-gold)",
-              color: "var(--color-gold)",
-              fontSize: "0.75em",
-              fontWeight: 400,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              textDecoration: "none",
-              transition: "background-color 200ms ease, color 200ms ease",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-                "var(--color-gold)";
-              (e.currentTarget as HTMLAnchorElement).style.color =
-                "var(--color-ink)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLAnchorElement).style.backgroundColor =
-                "transparent";
-              (e.currentTarget as HTMLAnchorElement).style.color =
-                "var(--color-gold)";
-            }}
-          >
-            Send us a message
-          </a>
-        </div>
-      </div>
-
-      {/* Bottom bar */}
-      <div
-        style={{
-          maxWidth: "72em",
-          margin: "0 auto",
-          paddingTop: "var(--space-sm)",
+          flex: 1,
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "0.5em",
+          flexDirection: "column",
+          padding: "var(--space-md) var(--space-md) 0",
+          maxWidth: "84em",
+          margin: "0 auto",
+          width: "100%",
+          minHeight: 0,
         }}
       >
-        <p
-          className="font-body"
-          style={{
-            fontSize: "0.72em",
-            color: "rgba(245, 237, 224, 0.35)",
-            fontWeight: 300,
-          }}
+        {/* Top nav row — spread out, bigger */}
+        <nav
+          aria-label="Footer navigation"
+          style={{ paddingBottom: "var(--space-md)" }}
         >
-          © {new Date().getFullYear()} Agnitantra Events &amp; Aira Photography.
-          All rights reserved.
-        </p>
-        <p
-          className="font-script"
-          style={{
-            fontSize: "1.1em",
-            color: "rgba(201, 169, 110, 0.4)",
-          }}
-        >
-          made with love
-        </p>
+          <ul
+            className="footer-nav-list"
+            style={{
+              listStyle: "none",
+              display: "flex",
+              width: "100%",
+              justifyContent: "space-between",
+            }}
+          >
+            {[
+              { label: "Home", href: "/" },
+              { label: "Works", href: "#" },
+              { label: "About", href: "/#about" },
+            ].map(({ label, href }) => (
+              <li key={label}>
+                <Link
+                  href={href}
+                  className="font-nohemi"
+                  style={{
+                    fontSize: "1.3em",
+                    color: "rgba(245, 237, 224, 0.8)",
+                    textDecoration: "none",
+                    fontWeight: 400,
+                    letterSpacing: "0.02em",
+                    transition: "color 180ms ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.color = "var(--color-cream)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLAnchorElement).style.color = "rgba(245, 237, 224, 0.8)";
+                  }}
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        {/* Card stack — Contact (square, full width, top) / Location + Socials (row below) */}
+        <div className="footer-cards-stack">
+          <div className="footer-card footer-card--contact">
+            <p
+              className="font-nohemi"
+              style={{
+                fontSize: "0.65em",
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "var(--color-primary)",
+                fontWeight: 200,
+              }}
+            >
+              Contact
+            </p>
+            {/* TODO: James to supply contact card content */}
+          </div>
+
+          <div className="footer-cards-row">
+            <div className="footer-card footer-card--location">
+              <p
+                className="font-nohemi"
+                style={{
+                  fontSize: "0.65em",
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "var(--color-primary)",
+                  fontWeight: 200,
+                }}
+              >
+                Location
+              </p>
+              {/* TODO: James to supply location card content */}
+            </div>
+
+            <div className="footer-card footer-card--socials">
+              <p
+                className="font-nohemi"
+                style={{
+                  fontSize: "0.65em",
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: "var(--color-primary)",
+                  fontWeight: 200,
+                }}
+              >
+                Socials
+              </p>
+              {/* TODO: James to supply socials card content */}
+            </div>
+          </div>
+        </div>
+
+        {/* Empty band reserved for the big "agnitantra" wordmark — supplied later */}
+        <div style={{ flex: 1, minHeight: "20vh" }} aria-hidden="true" />
       </div>
     </footer>
   );

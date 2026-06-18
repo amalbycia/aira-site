@@ -6,131 +6,140 @@ export default function AboutSection() {
       style={{
         backgroundColor: "var(--color-cream)",
         padding: "var(--space-xl) var(--space-md)",
+        position: "relative",
+        overflow: "hidden",
       }}
     >
-      <div
-        style={{
-          maxWidth: "52em",
-          margin: "0 auto",
-          textAlign: "center",
-        }}
-      >
-        {/* Script label */}
-        <p
-          className="font-script"
-          style={{
-            color: "var(--color-primary)",
-            fontSize: "2em",
-            marginBottom: "0.3em",
-          }}
-        >
-          our story
-        </p>
+      <style>{`
+        .about-layout {
+          position: relative;
+          max-width: 84em;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 1fr minmax(0, 36em) 1fr;
+          align-items: center;
+          gap: var(--space-md);
+          min-height: 40em;
+        }
 
-        {/* Heading */}
-        <h2
-          className="font-display"
-          style={{
-            fontSize: "clamp(2rem, 4vw, 3.2em)",
-            fontWeight: 400,
-            lineHeight: 1.2,
-            color: "var(--color-ink)",
-            marginBottom: "0.8em",
-          }}
-        >
-          We don&apos;t just cover weddings.{" "}
-          <span style={{ fontStyle: "italic", color: "var(--color-primary)" }}>
-            We live them with you.
-          </span>
-        </h2>
+        .about-image {
+          background-color: var(--color-cream-dark);
+          border: 1px solid var(--color-gold-light);
+          border-radius: 1em;
+          position: absolute;
+        }
 
-        {/* Divider */}
-        <div
-          aria-hidden="true"
-          style={{
-            width: "3em",
-            height: "2px",
-            backgroundColor: "var(--color-gold)",
-            margin: "0 auto 1.8em",
-          }}
-        />
+        .about-image--1 {
+          top: 0;
+          left: 8%;
+          width: 13em;
+          height: 13em;
+        }
 
-        {/* Body */}
-        <p
-          className="font-body"
-          style={{
-            fontSize: "1em",
-            lineHeight: 1.9,
-            color: "var(--color-ink-muted)",
-            fontWeight: 300,
-            marginBottom: "1.4em",
-          }}
-        >
-          Over nine years, we&apos;ve been part of hundreds of weddings and
-          celebrations across Hyderabad — photographing real moments, managing
-          every detail, and making sure you actually get to enjoy your own
-          wedding. Agnitantra Events handles the decor, catering, and
-          coordination. Aira Photography makes sure you have something beautiful
-          to hold onto long after the day is over.
-        </p>
+        .about-image--2 {
+          bottom: 0;
+          left: 0;
+          width: 15em;
+          height: 17em;
+        }
 
-        <p
-          className="font-body"
-          style={{
-            fontSize: "1em",
-            lineHeight: 1.9,
-            color: "var(--color-ink-muted)",
-            fontWeight: 300,
-          }}
-        >
-          Two brands, one team — and we take on a limited number of events each
-          season so every family gets our full attention.
-        </p>
+        .about-image--3 {
+          top: 2%;
+          right: 6%;
+          width: 13.5em;
+          height: 19em;
+        }
 
-        {/* Stats row */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "clamp(2em, 6vw, 5em)",
-            marginTop: "3em",
-            paddingTop: "2em",
-            borderTop: "1px solid var(--color-cream-dark)",
-            flexWrap: "wrap",
-          }}
-        >
-          {[
-            { number: "500+", label: "Events" },
-            { number: "9+", label: "Years" },
-            { number: "2", label: "Brands" },
-          ].map(({ number, label }) => (
-            <div key={label} style={{ textAlign: "center" }}>
-              <p
-                className="font-display"
-                style={{
-                  fontSize: "2.8em",
-                  fontWeight: 400,
-                  color: "var(--color-primary)",
-                  lineHeight: 1,
-                }}
-              >
-                {number}
-              </p>
-              <p
-                className="font-body"
-                style={{
-                  fontSize: "0.72em",
-                  color: "var(--color-ink-muted)",
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  marginTop: "0.4em",
-                  fontWeight: 400,
-                }}
-              >
-                {label}
-              </p>
-            </div>
-          ))}
+        .about-image--4 {
+          bottom: 4%;
+          right: 0;
+          width: 13em;
+          height: 9em;
+        }
+
+        .about-text {
+          grid-column: 2;
+          text-align: center;
+          position: relative;
+          z-index: 1;
+        }
+
+        @media (max-width: 1100px) {
+          .about-image { display: none; }
+          .about-layout {
+            grid-template-columns: 1fr;
+            min-height: 0;
+          }
+          .about-text {
+            grid-column: 1;
+          }
+        }
+      `}</style>
+
+      <div className="about-layout">
+        <div className="about-image about-image--1" aria-hidden="true" />
+        <div className="about-image about-image--2" aria-hidden="true" />
+        <div className="about-image about-image--3" aria-hidden="true" />
+        <div className="about-image about-image--4" aria-hidden="true" />
+
+        <div className="about-text">
+          <p
+            className="font-script"
+            style={{
+              color: "var(--color-primary)",
+              fontSize: "3em",
+              marginBottom: "0.4em",
+            }}
+          >
+            about us
+          </p>
+
+          <h2
+            className="font-nohemi"
+            style={{
+              fontSize: "clamp(1.8rem, 3vw, 2.6em)",
+              fontWeight: 400,
+              lineHeight: 1.2,
+              color: "var(--color-ink)",
+              marginBottom: "0.9em",
+            }}
+          >
+            Nine years of weddings, told properly.
+          </h2>
+
+          <p
+            className="font-nohemi"
+            style={{
+              fontSize: "1em",
+              lineHeight: 1.9,
+              color: "var(--color-ink-muted)",
+              fontWeight: 200,
+              marginBottom: "1.6em",
+            }}
+          >
+            Founded in 2018, Aira Photography &amp; Agnitantra Events &amp; Caters
+            brings creative artistry and full-service event management together —
+            photography, videography, decor, catering, and coordination, handled
+            as one team so every family gets our full attention.
+          </p>
+
+          <a
+            href="#contact"
+            className="font-nohemi"
+            style={{
+              display: "inline-block",
+              padding: "0.8em 2.2em",
+              borderRadius: "999px",
+              border: "1px solid var(--color-primary)",
+              color: "var(--color-primary)",
+              fontSize: "0.85em",
+              fontWeight: 400,
+              letterSpacing: "0.04em",
+              textDecoration: "none",
+            }}
+          >
+            Discover
+          </a>
         </div>
       </div>
     </section>

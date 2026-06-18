@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Alex_Brush, Cormorant_Garamond, DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import LenisProvider from "@/components/LenisProvider";
+import SideNav from "@/components/SideNav";
 import "./globals.css";
 
 const alexBrush = Alex_Brush({
@@ -22,6 +24,21 @@ const dmSans = DM_Sans({
   weight: ["300", "400", "500"],
 });
 
+const nohemi = localFont({
+  variable: "--font-nohemi",
+  src: [
+    { path: "../public/fonts/Nohemi/Nohemi-Thin.woff2", weight: "100", style: "normal" },
+    { path: "../public/fonts/Nohemi/Nohemi-ExtraLight.woff2", weight: "200", style: "normal" },
+    { path: "../public/fonts/Nohemi/Nohemi-Light.woff2", weight: "300", style: "normal" },
+    { path: "../public/fonts/Nohemi/Nohemi-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/Nohemi/Nohemi-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/Nohemi/Nohemi-SemiBold.woff2", weight: "600", style: "normal" },
+    { path: "../public/fonts/Nohemi/Nohemi-Bold.woff2", weight: "700", style: "normal" },
+    { path: "../public/fonts/Nohemi/Nohemi-ExtraBold.woff2", weight: "800", style: "normal" },
+    { path: "../public/fonts/Nohemi/Nohemi-Black.woff2", weight: "900", style: "normal" },
+  ],
+});
+
 export const metadata: Metadata = {
   title: "Aira Photography & Agnitantra Events",
   description:
@@ -36,10 +53,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${alexBrush.variable} ${cormorant.variable} ${dmSans.variable}`}
+      className={`${alexBrush.variable} ${cormorant.variable} ${dmSans.variable} ${nohemi.variable}`}
     >
       <body>
-        <LenisProvider>{children}</LenisProvider>
+        <LenisProvider>
+          <SideNav />
+          {children}
+        </LenisProvider>
       </body>
     </html>
   );
