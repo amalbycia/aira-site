@@ -39,6 +39,10 @@ yarn-error.log*
 # large source assets (optimized versions live in public/images)
 _source-assets
 
+# scrape/scratch artifacts and one-off upload manifests
+.firecrawl/
+scripts/.upload-manifest.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

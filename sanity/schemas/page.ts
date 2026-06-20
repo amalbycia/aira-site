@@ -6,10 +6,12 @@ export default defineType({
   type: "document",
   fields: [
     defineField({
+      // Hidden from the client: which page this is, is already determined by
+      // which menu item they opened (the document's fixed id). We keep the
+      // field only to label the document and for any brand-based filtering.
       name: "brand",
       title: "Which page is this?",
       type: "string",
-      description: 'Choose "Aira Photography" or "Agnitantra Events & Catering".',
       options: {
         list: [
           { title: "Aira Photography", value: "photography" },
@@ -17,7 +19,8 @@ export default defineType({
         ],
         layout: "radio",
       },
-      validation: (Rule) => Rule.required(),
+      hidden: true,
+      readOnly: true,
     }),
     defineField({
       name: "description",

@@ -97,6 +97,14 @@ sanity/
 - Use `getBunnyCdnUrl()` from `lib/bunny.ts` for all Bunny Storage assets
 - Always provide `alt` text
 
+**Phone optimization (check at every step) — STRICT, see [MOBILE-RULES.md](./MOBILE-RULES.md)**
+- Every component or style change must be checked against mobile viewport widths, not just desktop
+- Follow [MOBILE-RULES.md](./MOBILE-RULES.md) exactly — touch target sizes, font minimums, breakpoint logic, overflow handling
+- Use fluid units (`clamp()`, `em`, the Osmo scaling system) so text and spacing scale down correctly — never assume desktop sizing reads fine on phone
+- Buttons, nav, and text must never overflow, wrap awkwardly, or get clipped on small screens
+- Test at 320px, 375px, and 768px widths minimum before calling any UI change done
+- Treat "looks right on phone" as part of done, not a follow-up pass
+
 ---
 
 ## Boundaries — Do Not Touch
@@ -118,7 +126,7 @@ sanity/
 ## Component Rules
 
 **Buttons**
-- All buttons site-wide must have rounded corners (`border-radius: 0.4em` minimum)
+- All buttons site-wide must be pill-shaped (`border-radius: 999px`) — elongated, fully rounded ends, not boxy
 - No sharp-cornered buttons anywhere on the site
 
 ---

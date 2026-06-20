@@ -8,11 +8,6 @@ export default function Home() {
       <main style={{ position: "relative", zIndex: 1 }}>
         <HeroPreloader />
         <AboutSection />
-        <div
-          id="footer-reveal-spacer"
-          style={{ height: "100vh" }}
-          aria-hidden="true"
-        />
       </main>
       <SiteFooter />
     </>

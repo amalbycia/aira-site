@@ -82,6 +82,16 @@ export default function SideNav() {
     toggleEls.forEach((el) => el.addEventListener("click", handleToggle));
     document.addEventListener("keydown", handleKeydown);
 
+    // Clicking a nav link should close the menu (in addition to navigating), so
+    // it doesn't linger over the page the user just opened. Same-page anchor
+    // links (e.g. /#about) don't unmount this component, so without this the
+    // menu would stay open.
+    const handleLinkClick = () => {
+      if (navWrap.getAttribute("data-nav-state") === "open") closeNav();
+    };
+    const linkEls = menuLinksRef.current.filter(Boolean) as HTMLAnchorElement[];
+    linkEls.forEach((el) => el.addEventListener("click", handleLinkClick));
+
     // Hide the menu button once the footer has scrolled into view. The footer
     // is `position: fixed` so it can't be used as a ScrollTrigger target
     // directly — its bounding rect never moves with scroll. Track the spacer
@@ -119,6 +129,7 @@ export default function SideNav() {
 
     return () => {
       toggleEls.forEach((el) => el.removeEventListener("click", handleToggle));
+      linkEls.forEach((el) => el.removeEventListener("click", handleLinkClick));
       document.removeEventListener("keydown", handleKeydown);
       window.removeEventListener("load", refresh);
       window.removeEventListener("resize", refresh);

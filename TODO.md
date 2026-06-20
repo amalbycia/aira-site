@@ -61,13 +61,20 @@ Items marked `[DESIGN]` require a design from James before implementation.
 
 ## Home Page (`/`)
 
-### Hero Section
-- [ ] `[DESIGN]` Desktop hero (`components/desktop/Hero.tsx`)
-- [ ] `[DESIGN]` Mobile hero (`components/mobile/Hero.tsx`)
-- [ ] "Aira Photography" CTA button with arrow → links to `/photography`
-- [ ] "Aira Events & Catering" CTA button with arrow → links to `/events`
-- [ ] GSAP entrance animation — desktop (`createMatchMedia` → `isDesktop`)
-- [ ] GSAP entrance animation — mobile (`createMatchMedia` → `isMobile`)
+### Hero Section — built as merged Preloader + Hero (`components/HeroPreloader.tsx`)
+> See **[docs/HERO-PRELOADER.md](docs/HERO-PRELOADER.md)** before modifying — explains
+> safe image swaps, editable text/buttons, and the structural pieces that must not be renamed.
+- [x] Osmo "crisp loading" preloader carousel → center image expands into the hero bg
+- [x] Hero title word-rise entrance (SplitText), then divider + buttons rise in
+- [x] "Our Photography" CTA → `/photography`, "Events & Catering" CTA → `/events`
+- [x] `prefers-reduced-motion` guard (skips morph, shows hero instantly)
+- [x] Mobile sizing via Osmo `--size-font` scaling (no desktop params touched)
+- [x] Hero background optimized (16MB → ~200KB via sharp), in `public/images/hero-bg.jpg`
+- [ ] Swap the 4 placeholder carousel images (`LOADER_IMAGES`) for real photos — keep center = `HERO_BG`
+- [ ] Replace `hero-bg.jpg` with the final chosen hero photo (optimize first, see doc §1)
+- [ ] Verify the title doesn't clip on 320/375px (doc §5) once real copy is locked
+- [ ] Optional: re-add scroll-lock during loading (page can't scroll while preloader plays)
+- [ ] Delete the unused old `components/HeroSection.tsx` once the preloader is signed off
 
 ### About Section
 - [ ] `[DESIGN]` About section component
@@ -82,57 +89,78 @@ Items marked `[DESIGN]` require a design from James before implementation.
 
 ## Photography Page (`/photography`)
 
-### Data
-- [ ] Fetch `page` document where `brand === "photography"` from Sanity
-- [ ] Fetch `siteSettings` for shared business info
+> Built `2026-06-18`. Layout: `app/photography/page.tsx` (assembles sections);
+> placeholder content in `app/photography/clusters.ts`. Aesthetic matches the
+> homepage hero (burgundy band → cream → fixed footer reveal). Build passes clean.
 
-### Gallery Section
-- [ ] `[DESIGN]` Desktop gallery layout (`components/desktop/Gallery.tsx`)
-- [ ] `[DESIGN]` Mobile gallery layout (`components/mobile/Gallery.tsx`)
-- [ ] Render images using `urlFor()` from `lib/imageUrl.ts`
-- [ ] Use Next.js `<Image>` with `alt` text from Sanity
-- [ ] Lightbox or fullscreen view on image click
-- [ ] GSAP ScrollTrigger stagger reveal — desktop
-- [ ] GSAP ScrollTrigger stagger reveal — mobile
+### Hero
+- [x] Shared `PageHero` (`components/PageHero.tsx`) — burgundy band, script eyebrow,
+      SplitText word-rise title, gold sparkle divider, bottom curve morph into cream
+- [x] `prefers-reduced-motion` guard (shows hero in final state, no entrance)
+
+### Gallery Section — asymmetric mixed photo+reel clusters
+- [x] `MediaCluster` (`components/media/MediaCluster.tsx`) — 12-col asymmetric grid
+      that gracefully holds MIXED photo+reel clusters (not separate grids), alternating
+      left/right offset; collapses to single stacked column <768px
+- [x] `GallerySection` wrapper carries shared media CSS + section heading
+- [x] Self-hosted reels via `ReelCard` (`components/media/ReelCard.tsx`) — `<video>`
+      slot, poster now, hover/tap-to-play, NOT Instagram. Drop a Bunny `videoSrc` in to play.
+- [x] GSAP ScrollTrigger scrub reveal, isolated desktop/mobile via `createMatchMedia`
+- [ ] Wire `page` doc (`brand === "photography"`) gallery → cluster `src` via `urlFor()`
+- [ ] Swap reel posters/`videoSrc` for Bunny (`getBunnyCdnUrl` / `getBunnyThumbnailUrl`)
+- [ ] Optional: lightbox/fullscreen on photo click
 
 ### Reels / Video Section
-- [ ] `[DESIGN]` Reel grid / carousel layout
-- [ ] Render Bunny Stream embeds using `getBunnyEmbedUrl()` from `lib/bunny.ts`
-- [ ] Thumbnail cover image before play (from Sanity `reel.thumbnail` or `getBunnyThumbnailUrl()`)
-- [ ] Mobile: single-column layout; Desktop: multi-column or carousel
+- [x] Dedicated horizontal `ReelsStrip` (`components/media/ReelsStrip.tsx`) — portrait
+      rail, native horizontal scroll/snap (no scrolljack), scrub entrance, mobile sizing
+- [ ] Populate from Sanity `reel` docs (`page === "photography" | "both"`) + Bunny URLs
 
 ### Location Section
-- [ ] Display `locationText` from Sanity `page` document (text only, no map)
+- [x] `LocationBlock` (`components/LocationBlock.tsx`) — text only, no map (per scope)
+- [ ] Wire `locationText` from Sanity `page` document
 
 ### Google Reviews Section
-- [ ] If `googleReviewsEmbedCode` is set in Sanity: render it via `dangerouslySetInnerHTML`
-- [ ] If no embed code: render manual `review` documents as cards
-- [ ] `[DESIGN]` Review card component
-- [ ] Show star rating, reviewer name, date, review text
+- [ ] (Photography) embed or manual `review` cards — pattern built on Events page (reuse)
 
 ---
 
 ## Events Page (`/events`)
 
-(Mirror of Photography page — same component list, different Sanity data source)
+> Built `2026-06-18`. Layout: `app/events/page.tsx`; gallery placeholders in
+> `app/events/clusters.ts`. Sections: hero → catering menu → other services →
+> gallery → testimonial marquee → location → footer reveal. Build passes clean.
 
-### Data
-- [ ] Fetch `page` document where `brand === "events"` from Sanity
-- [ ] Fetch `siteSettings` for shared business info
+### Hero
+- [x] Shared `PageHero` — same treatment as Photography (burgundy band + curve)
+
+### Menu Section (catering)
+- [x] `CateringMenu` (`components/events/CateringMenu.tsx`) — tabbed categories
+      (Veg / Non-Veg / Live Counters / Desserts), Kerala-leaning placeholder dishes,
+      animated dish-list on tab change, 44px tab tap targets, accessible tablist/tabpanel
+- [ ] Wire real menu from Sanity (add a `menu` field to the events `page` doc) when supplied
+
+### Other Services Section
+- [x] `ServicesList` (`components/events/ServicesList.tsx`) — asymmetric indexed rows
+      (NOT a bento grid). Real scope from CLIENTRAWDETAILS: stage decoration, stage
+      programs, catering, light & sound, makeup, car rentals, dancers, photography/video
+- [x] Alternating slide-in reveal (scrubbed ScrollTrigger), hover shade shift
 
 ### Gallery Section
-- [ ] `[DESIGN]` Reuse or adapt `Gallery` components — confirm with James before duplicating
-- [ ] Wire Sanity gallery images for Events brand
+- [x] Reuses `GallerySection` / `MediaCluster` (decor, stage, feast clusters — mixed media)
+- [ ] Wire Sanity gallery (`brand === "events"`) + Bunny reels
 
-### Reels / Video Section
-- [ ] Wire Bunny Stream reels for Events brand
-- [ ] Thumbnail and embed logic (same as Photography)
+### Testimonial Marquee (placeholder reviews → Google Reviews later)
+- [x] `TestimonialMarquee` (`components/events/TestimonialMarquee.tsx`) — horizontal
+      infinite GSAP loop, pauses on hover/focus, edge fades; cards shaped to the Sanity
+      `review` schema (reviewerName / rating / reviewText / date). Reduced-motion → static scroll
+- [ ] Replace `REVIEWS[]` with live Google Reviews (or Sanity `review` docs / page embed code)
 
 ### Location Section
-- [ ] Display `locationEvents` from Sanity `siteSettings` (or `locationText` from page doc)
+- [x] `LocationBlock` — text only, no map
+- [ ] Wire `locationText` from Sanity
 
-### Google Reviews Section
-- [ ] Same logic as Photography page — embed or manual cards
+### Reels / Video Section
+- [ ] Wire Bunny Stream reels for Events brand (in-cluster reels already support `videoSrc`)
 
 ---
 

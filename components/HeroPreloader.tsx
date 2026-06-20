@@ -14,19 +14,24 @@ CustomEase.create("slideshow-wipe", "0.625, 0.05, 0, 1");
 const HERO_BG = "/images/hero-bg.jpg";
 
 // Carousel imagery. The CENTER image is the real hero background, so when it
-// expands it lands seamlessly as the hero. Swap the others for real photos.
+// expands it lands seamlessly as the hero. The side tiles are real wedding
+// photos, optimized to 800px square WebP (scripts/optimize-hero-tiles.mjs).
 const LOADER_IMAGES = [
-  "https://picsum.photos/seed/aira-1/800/800",
-  "https://picsum.photos/seed/aira-2/800/800",
+  "/images/hero-tile-1.webp",
+  "/images/hero-tile-2.webp",
   HERO_BG,
-  "https://picsum.photos/seed/aira-4/800/800",
-  "https://picsum.photos/seed/aira-5/800/800",
+  "/images/hero-tile-3.webp",
+  "/images/hero-tile-4.webp",
 ];
 
 const CENTER_INDEX = 2;
 
 const CURVE_FLAT = "M0,120 L0,120 C360,120 1080,120 1440,120 L1440,120 Z";
 const CURVE_DEEP = "M0,120 L0,60 C360,0 1080,0 1440,60 L1440,120 Z";
+
+// Set once the carousel/morph has played; checked on every mount so navigating
+// back to "/" later in the same tab skips straight to the resting state.
+const PLAYED_KEY = "aira-hero-played";
 
 function initButtonCharacterStagger() {
   const offsetIncrement = 0.01;
@@ -110,7 +115,19 @@ export default function HeroPreloader() {
         typeof window !== "undefined" &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      if (prefersReduced) {
+      // ── Already played this session: skip straight to the resting state too,
+      //    so navigating away from "/" and back doesn't replay the carousel. ──
+      let alreadyPlayed = false;
+      if (typeof window !== "undefined") {
+        try {
+          alreadyPlayed = window.sessionStorage.getItem(PLAYED_KEY) === "1";
+        } catch {
+          // sessionStorage unavailable (private mode, etc.) — fall back to playing.
+          alreadyPlayed = false;
+        }
+      }
+
+      if (prefersReduced || alreadyPlayed) {
         container.classList.remove("is--hidden", "is--loading");
         isRadius.forEach((el) => el.classList.remove("is--radius"));
         gsap.set(isScaleUp, { width: "100vw", height: "100dvh" });
@@ -136,6 +153,11 @@ export default function HeroPreloader() {
         defaults: { ease: "expo.inOut" },
         onStart: () => {
           container.classList.remove("is--hidden");
+          try {
+            window.sessionStorage.setItem(PLAYED_KEY, "1");
+          } catch {
+            // sessionStorage unavailable — nothing to persist, just skip silently.
+          }
         },
       });
 
@@ -235,8 +257,12 @@ export default function HeroPreloader() {
     >
       <style>{`
         .crisp-header {
-          background-color: var(--color-primary);
-          color: var(--color-cream);
+          /* Plain cream backdrop — this only shows BEHIND the carousel tiles
+             while the preloader plays. The center tile (the red hero-bg image)
+             expands to 100vw/100dvh and BECOMES the hero background, fully
+             covering this cream by the time the morph ends. */
+          background-color: var(--color-cream);
+          color: var(--color-ink);
           justify-content: center;
           align-items: center;
           display: flex;
@@ -316,8 +342,11 @@ export default function HeroPreloader() {
         }
         .crisp-loader__cover-img.is--scale-down { will-change: transform; }
         .crisp-loader__fade {
+          /* Cream to match the plain preloader backdrop — fades the carousel
+             edges into the cream while the loader plays (gradient is dropped
+             via display:none once is--loading is removed). */
           pointer-events: none;
-          background-image: linear-gradient(90deg, var(--color-primary) 20%, transparent);
+          background-image: linear-gradient(90deg, var(--color-cream) 20%, transparent);
           width: 5em;
           height: calc(100% + 2px);
           position: absolute;

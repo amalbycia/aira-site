@@ -1,5 +1,34 @@
 # Client: Aira Photography & Events — Requirements
 
+## Company Background (client-provided, verbatim)
+
+Founded in 2018 by Amal Sebastian Kalarickal, Aira Photography & Agnitantra Events &
+Caters has established itself as a premier, all-inclusive event management solution.
+The company seamlessly integrates creative artistry with logistical expertise to bring
+diverse celebrations to life. At its core, the firm delivers exceptional visual
+storytelling through high-quality photography, videography, and comprehensive event
+shoot coverage. Beyond capturing memories, they transform venues with striking stage
+decorations and organize flawless stage programs, ensuring that every event has a
+captivating and professional presence.
+
+Driven by a commitment to full-service excellence, the company handles every intricate
+detail of event organization to provide a stress-free experience for its clients. Their
+extensive portfolio features top-tier catering services that elevate the culinary
+experience, alongside premium car rentals for elegant arrivals. To ensure seamless
+execution and high entertainment value, they provide state-of-the-art light and sound
+systems, professional makeup artistry, and talented dancers. By managing everything
+from technical production to live entertainment, Amal Sebastian Kalarickal's venture
+stands as a trusted partner for creating sophisticated, memorable, and meticulously
+coordinated events.
+
+**Key facts to use across copy:**
+- Founded: 2018
+- Founder: Amal Sebastian Kalarickal
+- Full service scope: photography, videography, event shoot coverage, stage decoration,
+  stage programs, catering, car rentals, light & sound systems, makeup artistry, dancers
+
+---
+
 ## Raw Requirements (verbatim)
 
 - Gallery to be added (photos)

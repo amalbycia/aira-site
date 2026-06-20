@@ -1,6 +1,66 @@
+"use client";
+
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import { gsap, ScrollTrigger, createMatchMedia } from "@/lib/gsap";
+
+gsap.registerPlugin(ScrollTrigger);
+
+// Each box gets a real wedding photo (scripts/optimize-about-tiles.mjs) plus a
+// subtle scroll parallax. `depth` is the vertical drift in px across the scroll
+// range — varied per box so they don't move in lockstep.
+const ABOUT_IMAGES = [
+  { src: "/images/about-1.webp", className: "about-image--1", depth: -60 },
+  { src: "/images/about-2.webp", className: "about-image--2", depth: 80 },
+  { src: "/images/about-3.webp", className: "about-image--3", depth: -90 },
+  { src: "/images/about-4.webp", className: "about-image--4", depth: 50 },
+];
+
 export default function AboutSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const section = sectionRef.current;
+      if (!section) return;
+
+      const prefersReduced =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReduced) return; // keep boxes static — accessibility
+
+      const mm = createMatchMedia();
+
+      // Parallax only on desktop — the boxes are hidden below 1100px anyway.
+      mm.add("(min-width: 1101px)", () => {
+        ABOUT_IMAGES.forEach(({ className, depth }) => {
+          const el = section.querySelector<HTMLElement>(`.${className}`);
+          if (!el) return;
+          gsap.fromTo(
+            el,
+            { y: -depth },
+            {
+              y: depth,
+              ease: "none",
+              scrollTrigger: {
+                trigger: section,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: 0.6,
+              },
+            },
+          );
+        });
+      });
+
+      return () => mm.revert();
+    },
+    { scope: sectionRef },
+  );
+
   return (
     <section
+      ref={sectionRef}
       id="about"
       aria-label="About us"
       style={{
@@ -23,10 +83,18 @@ export default function AboutSection() {
         }
 
         .about-image {
-          background-color: var(--color-cream-dark);
           border: 1px solid var(--color-gold-light);
           border-radius: 1em;
           position: absolute;
+          overflow: hidden;
+          will-change: transform;
+        }
+
+        .about-image img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
         }
 
         .about-image--1 {
@@ -77,10 +145,16 @@ export default function AboutSection() {
       `}</style>
 
       <div className="about-layout">
-        <div className="about-image about-image--1" aria-hidden="true" />
-        <div className="about-image about-image--2" aria-hidden="true" />
-        <div className="about-image about-image--3" aria-hidden="true" />
-        <div className="about-image about-image--4" aria-hidden="true" />
+        {ABOUT_IMAGES.map(({ src, className }) => (
+          <div
+            key={className}
+            className={`about-image ${className}`}
+            aria-hidden="true"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={src} alt="" />
+          </div>
+        ))}
 
         <div className="about-text">
           <p
