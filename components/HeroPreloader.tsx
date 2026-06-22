@@ -476,6 +476,13 @@ export default function HeroPreloader() {
             padding: 0.9em 1.5em;
             font-size: 0.8em;
           }
+          /* The trailing arrow sits to the right of the label inside a
+             center-justified flex, which makes the LABEL read left-of-center
+             on the narrow mobile button. Nudge the whole text group right a
+             touch so the label looks centered. */
+          .btn-animate-chars__text {
+            padding-left: 1.3em;
+          }
           .hero-cta-group { width: 100%; padding: 0 1em; }
         }
       `}</style>
