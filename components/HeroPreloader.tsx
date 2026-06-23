@@ -370,24 +370,29 @@ export default function HeroPreloader() {
         .hero-content > * { will-change: transform; }
 
         .hero-title {
-          color: var(--color-cream);
-          font-family: var(--font-nohemi), sans-serif;
-          font-size: clamp(1.8rem, 4.2vw, 3.6em);
+          color: #fdfbf7;
+          font-family: var(--font-sometimes-times), serif;
+          font-size: clamp(2rem, 4.6vw, 4em);
           font-weight: 400;
-          line-height: 1.1;
-          letter-spacing: 0.04em;
-          text-transform: uppercase;
-          white-space: nowrap;
+          line-height: 1.14;
+          letter-spacing: 0.01em;
+          max-width: 18ch;
+          margin-left: auto;
+          margin-right: auto;
           margin-bottom: 0.6em;
-          text-shadow: 0 2px 24px rgba(26, 10, 10, 0.45);
+          /* Faint glow for legibility over busy/bright hero backgrounds — small
+             blur + low opacity so it reads as "lit", not halated; a tight dark
+             shadow underneath anchors the glyph edges. */
+          text-shadow:
+            0 0 6px rgba(255, 250, 240, 0.35),
+            0 1px 2px rgba(15, 6, 6, 0.45);
         }
         .hero-title__sub {
-          color: var(--color-cream-dark);
-          font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200;
+          color: #fdfbf7;
+          font-family: var(--font-sometimes-times), serif;
+          font-weight: 400;
           font-style: normal;
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
+          letter-spacing: 0.01em;
         }
 
         .btn-animate-chars {
@@ -463,9 +468,9 @@ export default function HeroPreloader() {
 
         @media (max-width: 767px) {
           .hero-title {
-            font-size: clamp(1.6rem, 7vw, 2.4rem);
+            font-size: clamp(1.9rem, 8vw, 2.8rem);
             white-space: normal;
-            max-width: 26ch;
+            max-width: 14ch;
             margin-left: auto;
             margin-right: auto;
           }

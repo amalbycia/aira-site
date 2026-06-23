@@ -48,3 +48,10 @@ scripts/.upload-manifest.json
 next-env.d.ts
 
 .vercel
+
+# local screenshot/mockup tooling — dev scratch, not part of the app
+screenshots/
+scripts/.font-test/
+scripts/screenshot-*.mjs
+scripts/verify-page-transition.mjs
+public/images/hero-bg.ORIGINAL.jpg

@@ -3,6 +3,7 @@ import { Alex_Brush, Cormorant_Garamond, DM_Sans } from "next/font/google";
 import localFont from "next/font/local";
 import LenisProvider from "@/components/LenisProvider";
 import SideNav from "@/components/SideNav";
+import PageTransition from "@/components/PageTransition";
 import "./globals.css";
 
 const alexBrush = Alex_Brush({
@@ -22,6 +23,17 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
   weight: ["300", "400", "500"],
+});
+
+const sometimesTimes = localFont({
+  variable: "--font-sometimes-times",
+  src: [
+    {
+      path: "../public/fonts/SometimesTimes/SometimesTimes-Regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+  ],
 });
 
 const nohemi = localFont({
@@ -53,12 +65,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${alexBrush.variable} ${cormorant.variable} ${dmSans.variable} ${nohemi.variable}`}
+      className={`${alexBrush.variable} ${cormorant.variable} ${dmSans.variable} ${nohemi.variable} ${sometimesTimes.variable}`}
     >
       <body>
         <LenisProvider>
           <SideNav />
           {children}
+          <PageTransition />
         </LenisProvider>
       </body>
     </html>
