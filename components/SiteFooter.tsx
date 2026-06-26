@@ -30,6 +30,7 @@ const UNDERLINE_VARIANTS = [
 export default function SiteFooter() {
   const footerRef = useRef<HTMLElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
+  const bgRef = useRef<HTMLImageElement>(null);
 
   useGSAP(
     () => {
@@ -60,13 +61,36 @@ export default function SiteFooter() {
         },
       );
 
-      // ── Draw Random Underline on footer nav links (ported from Osmo) ──────
-      // Skip entirely for reduced-motion: the links keep their static color
-      // hover, no drawing. (Accessibility — see MOBILE-RULES / CLAUDE.md.)
       const prefersReduced =
         typeof window !== "undefined" &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+      // ── Slight parallax on the pink-roses background ──────────────────────
+      // The bg layer is oversized vertically (see CSS: top -12% / height 124%)
+      // so it has slack to drift through. As the footer scrolls into view the
+      // image eases downward a touch, giving depth without the floral racing
+      // the content. Scrubbed to scroll, skipped for reduced motion (static).
+      let bgTween: gsap.core.Tween | null = null;
+      if (!prefersReduced && bgRef.current) {
+        bgTween = gsap.fromTo(
+          bgRef.current,
+          { yPercent: -8 },
+          {
+            yPercent: 8,
+            ease: "none",
+            scrollTrigger: {
+              trigger: footerRef.current,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 1,
+            },
+          },
+        );
+      }
+
+      // ── Draw Random Underline on footer nav links (ported from Osmo) ──────
+      // Skip entirely for reduced-motion: the links keep their static color
+      // hover, no drawing. (Accessibility — see MOBILE-RULES / CLAUDE.md.)
       const cleanups: Array<() => void> = [];
 
       if (!prefersReduced) {
@@ -147,6 +171,8 @@ export default function SiteFooter() {
       return () => {
         tween.scrollTrigger?.kill();
         tween.kill();
+        bgTween?.scrollTrigger?.kill();
+        bgTween?.kill();
         cleanups.forEach((fn) => fn());
       };
     },
@@ -169,6 +195,43 @@ export default function SiteFooter() {
       }}
     >
       <style>{`
+        /* ── Pink-roses parallax background ── */
+        /* Oversized vertically so the parallax tween has slack to drift the
+           image through without ever exposing the footer's base color at the
+           top/bottom edges. will-change keeps the transform on the GPU. */
+        .footer-bg {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          overflow: hidden;
+          pointer-events: none;
+        }
+        .footer-bg__img {
+          position: absolute;
+          top: -12%;
+          left: 0;
+          width: 100%;
+          height: 124%;
+          object-fit: cover;
+          will-change: transform;
+          /* Dim the floral down a touch so it sits back behind the content. */
+          filter: brightness(0.82);
+        }
+        /* Subtle brand-red scrim — just enough to keep the cream nav links +
+           future wordmark legible and tie the photo to the palette. Kept light
+           so the roses stay clearly visible and crisp underneath. */
+        .footer-bg__scrim {
+          position: absolute;
+          inset: 0;
+          background:
+            linear-gradient(
+              to bottom,
+              rgba(90, 22, 22, 0.5) 0%,
+              rgba(122, 31, 31, 0.36) 45%,
+              rgba(90, 22, 22, 0.48) 100%
+            );
+        }
+
         .footer-cards-stack {
           display: flex;
           flex-direction: column;
@@ -212,12 +275,19 @@ export default function SiteFooter() {
           font-weight: 400;
           letter-spacing: 0.02em;
           line-height: 1.1;
-          color: rgba(245, 237, 224, 0.8);
-          transition: color 180ms ease;
+          color: #fdfbf7;
+          /* Soft shadow lifts the cream text off the busy floral behind it. */
+          text-shadow: 0 1px 3px rgba(15, 6, 6, 0.45);
+          transition: color 180ms ease, text-shadow 180ms ease;
         }
 
         .footer-nav-link:hover .footer-nav-link__text {
-          color: var(--color-cream);
+          color: #ffffff;
+          /* Slight bright glow on hover — warm white halo over the dark anchor
+             shadow so the label feels "lit" without losing legibility. */
+          text-shadow:
+            0 0 8px rgba(255, 250, 240, 0.55),
+            0 1px 3px rgba(15, 6, 6, 0.45);
         }
 
         /* The box holds the injected underline SVG; gold to match the brand. */
@@ -252,9 +322,24 @@ export default function SiteFooter() {
         }
       `}</style>
 
+      {/* Pink-roses background with slight parallax (sits behind all content) */}
+      <div className="footer-bg" aria-hidden="true">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          ref={bgRef}
+          src="/images/footer-roses.webp"
+          alt=""
+          className="footer-bg__img"
+          loading="lazy"
+        />
+        <div className="footer-bg__scrim" />
+      </div>
+
       <div
         ref={innerRef}
         style={{
+          position: "relative",
+          zIndex: 1,
           display: "flex",
           flexDirection: "column",
           padding: "var(--space-lg) var(--space-md) var(--space-md)",
