@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap, ScrollTrigger, createMatchMedia } from "@/lib/gsap";
@@ -197,8 +198,8 @@ export default function AboutSection() {
             as one team so every family gets our full attention.
           </p>
 
-          <a
-            href="#contact"
+          <Link
+            href="/about"
             className="font-nohemi"
             style={{
               display: "inline-block",
@@ -213,7 +214,7 @@ export default function AboutSection() {
             }}
           >
             Discover
-          </a>
+          </Link>
         </div>
       </div>
     </section>

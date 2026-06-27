@@ -2,9 +2,15 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import ColumnDriftGallery from "@/components/media/ColumnDriftGallery";
 import ReelsStrip from "@/components/media/ReelsStrip";
+import TestimonialMarquee from "@/components/events/TestimonialMarquee";
 import LocationBlock from "@/components/LocationBlock";
 import SiteFooter from "@/components/SiteFooter";
 import { getPage } from "@/sanity/lib/getPage";
+import {
+  getReviews,
+  getSiteSettings,
+  footerPropsFromSettings,
+} from "@/sanity/lib/getContent";
 import { PHOTOGRAPHY_PHOTOS, PHOTOGRAPHY_REELS } from "./clusters";
 
 export const metadata: Metadata = {
@@ -20,8 +26,13 @@ export const revalidate = 60;
 export default async function PhotographyPage() {
   // Pull the gallery from Sanity; fall back to placeholders until the client
   // has uploaded photos in /studio (or if Sanity is unreachable).
-  const page = await getPage("photography");
+  const [page, reviews, settings] = await Promise.all([
+    getPage("photography"),
+    getReviews("photography"),
+    getSiteSettings(),
+  ]);
   const photos = page.gallery.length > 0 ? page.gallery : PHOTOGRAPHY_PHOTOS;
+  const reels = page.reels.length > 0 ? page.reels : PHOTOGRAPHY_REELS;
 
   const locationLines = page.locationText
     ? [page.locationText]
@@ -49,7 +60,16 @@ export default async function PhotographyPage() {
         <ReelsStrip
           eyebrow="in motion"
           heading="Films & Reels"
-          reels={PHOTOGRAPHY_REELS}
+          reels={reels}
+        />
+
+        <TestimonialMarquee
+          reviews={reviews}
+          eyebrow="kind words"
+          heading="What Couples Say"
+          googleRating={4.9}
+          googleReviewCount={148}
+          googleUrl="https://www.google.com/maps?cid=10454241291312957415"
         />
 
         <LocationBlock
@@ -58,7 +78,10 @@ export default async function PhotographyPage() {
           lines={locationLines}
         />
       </main>
-      <SiteFooter />
+      <SiteFooter
+        {...footerPropsFromSettings(settings, "photography")}
+        instagramUrl="https://www.instagram.com/aira__photography_"
+      />
     </>
   );
 }

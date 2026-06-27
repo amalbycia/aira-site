@@ -103,7 +103,7 @@ export default function PageHero({ eyebrow, title, subtitle }: PageHeroProps) {
       <style>{`
         .page-hero {
           position: relative;
-          background-color: var(--color-primary);
+          background-color: var(--color-primary-dark);
           color: var(--color-cream);
           min-height: clamp(60vh, 66vh, 78vh);
           display: flex;
@@ -114,7 +114,29 @@ export default function PageHero({ eyebrow, title, subtitle }: PageHeroProps) {
           padding: var(--space-2xl) var(--space-md) var(--space-xl);
           overflow: hidden;
         }
-        .page-hero > * { will-change: transform; }
+        /* Maroon-fleur damask background — same image as the homepage hero, so
+           every page opens on the same backdrop. A scrim keeps the title legible. */
+        .page-hero__bg {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          background-image: url("/images/hero-bg.jpg");
+          background-size: cover;
+          background-position: center;
+        }
+        .page-hero__bg::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(
+              120% 100% at 50% 40%,
+              rgba(90, 22, 22, 0.35) 0%,
+              rgba(90, 22, 22, 0.62) 70%,
+              rgba(60, 14, 14, 0.78) 100%
+            );
+        }
+        .page-hero > *:not(.page-hero__bg) { position: relative; z-index: 1; will-change: transform; }
 
         .page-hero__eyebrow {
           font-family: var(--font-script), cursive;
@@ -181,6 +203,8 @@ export default function PageHero({ eyebrow, title, subtitle }: PageHeroProps) {
           .page-hero__subtitle { font-size: max(16px, 1rem); line-height: 1.6; }
         }
       `}</style>
+
+      <div className="page-hero__bg" aria-hidden="true" />
 
       <p className="page-hero__eyebrow">{eyebrow}</p>
 

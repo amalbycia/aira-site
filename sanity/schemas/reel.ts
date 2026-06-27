@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { BunnyVideoUpload } from "../components/BunnyVideoUpload";
 
 export default defineType({
   name: "reel",
@@ -14,11 +15,13 @@ export default defineType({
     }),
     defineField({
       name: "bunnyVideoId",
-      title: "Bunny Stream Video ID",
+      title: "Reel Video",
       type: "string",
       description:
-        "The video ID from your Bunny Stream library (found in the Bunny dashboard URL). Example: a1b2c3d4-e5f6-7890-abcd-ef1234567890",
-      validation: (Rule) => Rule.required(),
+        "Upload your video here. It uploads securely and starts playing on the site automatically once it finishes processing (a few minutes).",
+      components: { input: BunnyVideoUpload },
+      validation: (Rule) =>
+        Rule.required().error("Please upload a video for this reel."),
     }),
     defineField({
       name: "thumbnail",

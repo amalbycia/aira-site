@@ -108,6 +108,10 @@ body {
   font-family: var(--font-nohemi), sans-serif;
 }
 
+.font-sometimes-times {
+  font-family: var(--font-sometimes-times), serif;
+}
+
 /* ─── Lenis ───────────────────────────────────────────────────────────────── */
 html.lenis,
 html.lenis body {

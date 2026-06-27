@@ -39,3 +39,37 @@ export const PAGE_IDS = {
   photography: "photographyPage",
   events: "eventsPage",
 } as const;
+
+/**
+ * Reviews for a page: published `review` docs whose `page` is this brand OR
+ * "both". Newest first. Used by the testimonial marquee.
+ */
+export const reviewsByBrandQuery = groq`
+  *[_type == "review" && !(_id in path("drafts.**")) && (page == $brand || page == "both")]
+    | order(date desc){
+      _id,
+      reviewerName,
+      rating,
+      reviewText,
+      date
+    }
+`;
+
+/**
+ * The single global site settings document (contact, social, location, logo).
+ */
+export const siteSettingsQuery = groq`
+  *[_id == "siteSettings"][0]{
+    businessName,
+    tagline,
+    yearsOfExperience,
+    email,
+    phone,
+    instagramUrl,
+    facebookUrl,
+    youtubeUrl,
+    locationPhotography,
+    locationEvents,
+    "logoUrl": logo.asset->url
+  }
+`;

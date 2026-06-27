@@ -5,11 +5,11 @@ import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 
 // Placeholder reviews, tasteful and Kerala-wedding in tone. Shape mirrors the
-// Sanity `review` schema (reviewerName / rating / reviewText / date) so live
-// Google Reviews can replace this array later with no layout change.
+// Sanity `review` schema (reviewerName / rating / reviewText / date). Used as a
+// fallback when the page passes no live reviews.
 type Review = { reviewerName: string; rating: number; reviewText: string; date: string };
 
-const REVIEWS: Review[] = [
+const PLACEHOLDER_REVIEWS: Review[] = [
   {
     reviewerName: "Meera & Arjun",
     rating: 5,
@@ -88,9 +88,28 @@ function Card({ review }: { review: Review }) {
  * prefers-reduced-motion by rendering a static, horizontally-scrollable wrap
  * instead of an auto-running loop.
  */
-export default function TestimonialMarquee() {
+export default function TestimonialMarquee({
+  reviews,
+  eyebrow = "kind words",
+  heading = "What Families Say",
+  googleRating,
+  googleReviewCount,
+  googleUrl,
+}: {
+  /** Live reviews from Sanity; falls back to placeholders when empty/omitted. */
+  reviews?: Review[];
+  eyebrow?: string;
+  heading?: string;
+  /** Verified Google aggregate — shows a rating band above the marquee. */
+  googleRating?: number;
+  googleReviewCount?: number;
+  googleUrl?: string;
+} = {}) {
   const rootRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+
+  const data = reviews && reviews.length > 0 ? reviews : PLACEHOLDER_REVIEWS;
+  const showBand = Boolean(googleRating && googleReviewCount);
 
   useGSAP(
     () => {
@@ -136,7 +155,7 @@ export default function TestimonialMarquee() {
         tween.kill();
       };
     },
-    { scope: rootRef },
+    { scope: rootRef, dependencies: [data.length] },
   );
 
   return (
@@ -158,6 +177,40 @@ export default function TestimonialMarquee() {
           font-weight: 400; font-size: clamp(1.4rem, 3vw, 2.2em);
           letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-ink);
         }
+
+        /* Verified Google aggregate band */
+        .tm__band {
+          display: inline-flex;
+          align-items: center;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 0.55em;
+          margin-top: 0.9em;
+          padding: 0.55em 1.1em;
+          border: 1px solid var(--color-cream-dark);
+          border-radius: 999px;
+          background: var(--color-white);
+          box-shadow: 0 10px 30px -18px rgba(122, 31, 31, 0.25);
+        }
+        .tm__band-rating {
+          font-family: var(--font-nohemi), sans-serif;
+          font-weight: 400; font-size: 1.15em; color: var(--color-ink);
+        }
+        .tm__band-count {
+          font-family: var(--font-nohemi), sans-serif;
+          font-weight: 200; font-size: 0.9em; color: var(--color-ink-muted);
+        }
+        .tm__band-link {
+          display: inline-flex; align-items: center; gap: 0.4em;
+          font-family: var(--font-nohemi), sans-serif;
+          font-weight: 400; font-size: 0.82em; letter-spacing: 0.04em;
+          text-transform: uppercase; text-decoration: none;
+          color: var(--color-primary);
+          padding-left: 0.7em; margin-left: 0.2em;
+          border-left: 1px solid var(--color-cream-dark);
+          transition: color 160ms ease;
+        }
+        .tm__band-link:hover { color: var(--color-primary-light); }
 
         .tm__viewport { position: relative; }
         /* Edge fades so cards melt in/out rather than hard-clip */
@@ -189,6 +242,7 @@ export default function TestimonialMarquee() {
           display: flex;
           flex-direction: column;
           gap: 1em;
+          min-height: 16em;
           box-shadow: 0 16px 44px rgba(122, 31, 31, 0.05);
         }
         .tm-card__stars { display: inline-flex; gap: 0.2em; }
@@ -196,6 +250,12 @@ export default function TestimonialMarquee() {
           font-family: var(--font-nohemi), sans-serif;
           font-weight: 200; font-size: 1em; line-height: 1.7;
           color: var(--color-ink); margin: 0;
+          /* Clamp long reviews so every card stays a uniform height. Full text
+             is preserved in Sanity; this only limits the marquee display. */
+          display: -webkit-box;
+          -webkit-line-clamp: 6;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
         .tm-card__meta { display: flex; justify-content: space-between; align-items: baseline; margin-top: auto; }
         .tm-card__name {
@@ -219,14 +279,37 @@ export default function TestimonialMarquee() {
       `}</style>
 
       <div className="tm__head">
-        <p className="tm__eyebrow">kind words</p>
-        <h2 className="tm__heading">What Families Say</h2>
+        <p className="tm__eyebrow">{eyebrow}</p>
+        <h2 className="tm__heading">{heading}</h2>
+
+        {showBand ? (
+          <div className="tm__band">
+            <span className="tm__band-rating">{googleRating!.toFixed(1)}</span>
+            <Stars rating={Math.round(googleRating!)} />
+            <span className="tm__band-count">
+              {googleReviewCount}+ Google reviews
+            </span>
+            {googleUrl ? (
+              <a
+                className="tm__band-link"
+                href={googleUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Read on Google
+                <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+            ) : null}
+          </div>
+        ) : null}
       </div>
 
       <div className="tm__viewport">
         {/* Doubled list for the seamless loop */}
         <div ref={trackRef} className="tm__track">
-          {[...REVIEWS, ...REVIEWS].map((review, i) => (
+          {[...data, ...data].map((review, i) => (
             <Card key={i} review={review} />
           ))}
         </div>

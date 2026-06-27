@@ -6,10 +6,15 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { CustomEase } from "gsap/dist/CustomEase";
+import { DrawSVGPlugin } from "gsap/dist/DrawSVGPlugin";
 import { ScrollTrigger } from "@/lib/gsap";
 
-gsap.registerPlugin(SplitText, CustomEase, ScrollTrigger);
+gsap.registerPlugin(SplitText, CustomEase, DrawSVGPlugin, ScrollTrigger);
 CustomEase.create("slideshow-wipe", "0.625, 0.05, 0, 1");
+
+// Botanical corner flourish — same vine drawn in the footer corners, reused
+// here to frame the hero. Strokes draw in (DrawSVG) as part of the reveal.
+const CORNER_VINE = `<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 190 C10 120 40 70 100 50 C150 33 180 20 190 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M100 50 C90 30 95 12 115 8 C108 26 116 40 100 50Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M55 75 C40 60 42 42 62 36 C56 54 66 66 55 75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M148 33 C140 16 146 2 164 0 C156 16 162 26 148 33Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="100" cy="50" r="3.5" fill="currentColor"/><circle cx="55" cy="75" r="3" fill="currentColor"/><circle cx="148" cy="33" r="3" fill="currentColor"/></svg>`;
 
 const HERO_BG = "/images/hero-bg.jpg";
 
@@ -103,6 +108,11 @@ export default function HeroPreloader() {
       const heroButtons = container.querySelectorAll(".hero-cta-group > *");
       const heroDivider = container.querySelector(".hero-divider");
 
+      // Corner flourish strokes — drawn in (DrawSVG) during the reveal.
+      const cornerDrawables = container.querySelectorAll(
+        "[data-hero-corner] path, [data-hero-corner] circle",
+      );
+
       // SplitText the actual hero title into words (masked).
       let split: SplitText | undefined;
       if (heroTitle.length) {
@@ -133,6 +143,7 @@ export default function HeroPreloader() {
         gsap.set(isScaleUp, { width: "100vw", height: "100dvh" });
         if (split) gsap.set(split.words, { yPercent: 0 });
         gsap.set([heroDivider, ...heroButtons], { yPercent: 0, autoAlpha: 1 });
+        if (cornerDrawables.length) gsap.set(cornerDrawables, { drawSVG: "100%" });
         if (curvePathRef.current) {
           gsap.set(curvePathRef.current, { attr: { d: CURVE_FLAT } });
           const curveTween = gsap.to(curvePathRef.current, {
@@ -164,6 +175,7 @@ export default function HeroPreloader() {
       // Pre-set the hero content below view (standard-motion path).
       if (split) gsap.set(split.words, { yPercent: 110 });
       gsap.set([heroDivider, ...heroButtons], { yPercent: 150, autoAlpha: 0 });
+      if (cornerDrawables.length) gsap.set(cornerDrawables, { drawSVG: "0%" });
 
       // ── Start of Timeline (1:1) ──────────────────────────────────────────
       if (revealImages.length) {
@@ -225,6 +237,15 @@ export default function HeroPreloader() {
         );
       }
 
+      // Corner flourishes draw themselves in alongside the title/buttons.
+      if (cornerDrawables.length) {
+        tl.to(
+          cornerDrawables,
+          { drawSVG: "100%", stagger: 0.05, ease: "power2.inOut", duration: 1.2 },
+          "-=0.9",
+        );
+      }
+
       // ── Bottom curve scroll morph (ported from HeroSection) ───────────────
       if (curvePathRef.current) {
         gsap.set(curvePathRef.current, { attr: { d: CURVE_FLAT } });
@@ -275,8 +296,9 @@ export default function HeroPreloader() {
         /* Loading: header invisible until the timeline's onStart unhides it */
         .crisp-header.is--loading.is--hidden { visibility: hidden; }
 
-        /* Loading: hero content + curve hidden until the reveal */
+        /* Loading: hero content + curve + corners hidden until the reveal */
         .crisp-header.is--loading .hero-content,
+        .crisp-header.is--loading .hero-corner,
         .crisp-header.is--loading .hero-curve { visibility: hidden; }
 
         /* The loader stays mounted before AND after reveal — its center image
@@ -372,11 +394,11 @@ export default function HeroPreloader() {
         .hero-title {
           color: #fdfbf7;
           font-family: var(--font-sometimes-times), serif;
-          font-size: clamp(2rem, 4.6vw, 4em);
+          font-size: clamp(2rem, 6vw, 5.5em);
           font-weight: 400;
-          line-height: 1.14;
+          line-height: 1.28;
           letter-spacing: 0.01em;
-          max-width: 18ch;
+          max-width: 20ch;
           margin-left: auto;
           margin-right: auto;
           margin-bottom: 0.6em;
@@ -394,6 +416,12 @@ export default function HeroPreloader() {
           font-style: normal;
           letter-spacing: 0.01em;
         }
+
+        /* SplitText word masks (mask: "words") clip to the line box, which crops
+           descenders (g, y, p) at this larger size. Give the words + their mask
+           wrappers a little bottom room so the tails aren't cut off. */
+        .hero-title .split-word { padding-bottom: 0.12em; }
+        .hero-title .split-mask { padding-bottom: 0.12em; }
 
         .btn-animate-chars {
           color: var(--color-ink);
@@ -466,6 +494,24 @@ export default function HeroPreloader() {
           z-index: 4;
         }
 
+        /* ── Botanical corner flourishes (gold, frame the hero) ── */
+        .hero-corner {
+          position: absolute;
+          width: 11em;
+          height: 11em;
+          z-index: 3;
+          color: var(--color-gold);
+          opacity: 0.72;
+          pointer-events: none;
+          /* Faint dark drop lifts the gold linework off the busy damask. */
+          filter: drop-shadow(0 1px 1px rgba(15, 6, 6, 0.5));
+        }
+        .hero-corner svg { width: 100%; height: 100%; overflow: visible; }
+        .hero-corner--tl { top: 1.4em; left: 1.4em; }
+        .hero-corner--tr { top: 1.4em; right: 1.4em; transform: scaleX(-1); }
+        .hero-corner--bl { bottom: 4.5em; left: 1.4em; transform: scaleY(-1); }
+        .hero-corner--br { bottom: 4.5em; right: 1.4em; transform: scale(-1, -1); }
+
         @media (max-width: 767px) {
           .hero-title {
             font-size: clamp(1.9rem, 8vw, 2.8rem);
@@ -489,6 +535,11 @@ export default function HeroPreloader() {
             padding-left: 1.3em;
           }
           .hero-cta-group { width: 100%; padding: 0 1em; }
+          .hero-corner { width: 6em; height: 6em; opacity: 0.5; }
+          .hero-corner--tl { top: 0.8em; left: 0.8em; }
+          .hero-corner--tr { top: 0.8em; right: 0.8em; }
+          .hero-corner--bl { bottom: 3.5em; left: 0.8em; }
+          .hero-corner--br { bottom: 3.5em; right: 0.8em; }
         }
       `}</style>
 
@@ -503,6 +554,32 @@ export default function HeroPreloader() {
           <div className="crisp-loader__fade is--duplicate" />
         </div>
       </div>
+
+      {/* Botanical corner flourishes — frame the hero, draw in on reveal */}
+      <div
+        className="hero-corner hero-corner--tl"
+        data-hero-corner=""
+        aria-hidden="true"
+        dangerouslySetInnerHTML={{ __html: CORNER_VINE }}
+      />
+      <div
+        className="hero-corner hero-corner--tr"
+        data-hero-corner=""
+        aria-hidden="true"
+        dangerouslySetInnerHTML={{ __html: CORNER_VINE }}
+      />
+      <div
+        className="hero-corner hero-corner--bl"
+        data-hero-corner=""
+        aria-hidden="true"
+        dangerouslySetInnerHTML={{ __html: CORNER_VINE }}
+      />
+      <div
+        className="hero-corner hero-corner--br"
+        data-hero-corner=""
+        aria-hidden="true"
+        dangerouslySetInnerHTML={{ __html: CORNER_VINE }}
+      />
 
       {/* Hero content — sits over the expanded image, revealed via class swap */}
       <div className="hero-content">

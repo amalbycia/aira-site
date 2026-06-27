@@ -2,7 +2,8 @@ import type { SanityImageSource } from "@sanity/image-url";
 import { client } from "./client";
 import { pageByIdQuery, PAGE_IDS } from "./queries";
 import { urlFor } from "@/lib/imageUrl";
-import type { GalleryPhoto } from "@/components/media/types";
+import { getBunnyMp4Url, getBunnyThumbnailUrl } from "@/lib/bunny";
+import type { GalleryPhoto, ReelItem } from "@/components/media/types";
 
 type RawGalleryItem = {
   image: SanityImageSource;
@@ -30,6 +31,8 @@ export type PageData = {
   locationText?: string;
   /** Gallery photos already mapped to CDN URLs — ready for ColumnDriftGallery. */
   gallery: GalleryPhoto[];
+  /** Reels mapped to playable Bunny URLs — ready for ReelsStrip / ReelCard. */
+  reels: ReelItem[];
 };
 
 /**
@@ -64,9 +67,26 @@ export async function getPage(
       caption: item.caption ?? undefined,
     }));
 
+  // Map each Sanity reel → a playable ReelItem. Poster prefers the client's
+  // uploaded thumbnail; otherwise Bunny's auto-generated thumbnail. videoSrc is
+  // the Bunny MP4 fallback (plays natively in <video>, no HLS player needed).
+  const reels: ReelItem[] = (page?.reels ?? [])
+    .filter((r) => Boolean(r?.bunnyVideoId))
+    .map((r) => ({
+      kind: "reel" as const,
+      span: "portrait" as const,
+      poster: r.thumbnail
+        ? urlFor(r.thumbnail).width(720).quality(75).format("webp").url()
+        : getBunnyThumbnailUrl(r.bunnyVideoId),
+      videoSrc: getBunnyMp4Url(r.bunnyVideoId, "720p"),
+      alt: r.title || "Reel",
+      caption: r.title || undefined,
+    }));
+
   return {
     description: page?.description ?? undefined,
     locationText: page?.locationText ?? undefined,
     gallery,
+    reels,
   };
 }
