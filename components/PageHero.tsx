@@ -136,7 +136,7 @@ export default function PageHero({ eyebrow, title, subtitle }: PageHeroProps) {
               rgba(60, 14, 14, 0.78) 100%
             );
         }
-        .page-hero > *:not(.page-hero__bg) { position: relative; z-index: 1; will-change: transform; }
+        .page-hero > *:not(.page-hero__bg):not(.page-hero__curve) { position: relative; z-index: 1; will-change: transform; }
 
         .page-hero__eyebrow {
           font-family: var(--font-script), cursive;
