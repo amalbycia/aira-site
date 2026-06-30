@@ -9,7 +9,7 @@ export default defineType({
       name: "reviewerName",
       title: "Reviewer Name",
       type: "string",
-      description: "Full name of the person who left the review.",
+      description: "Name of the person who left the review (as shown on the card).",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -26,7 +26,7 @@ export default defineType({
       name: "reviewText",
       title: "Review Text",
       type: "text",
-      description: "What the reviewer said.",
+      description: "What the reviewer said (you can paste it straight from Google).",
       rows: 4,
       validation: (Rule) => Rule.required(),
     }),
@@ -34,17 +34,19 @@ export default defineType({
       name: "date",
       title: "Review Date",
       type: "date",
-      description: "When this review was written.",
+      description: "Roughly when this review was written. Shown on the review card.",
     }),
     defineField({
       name: "page",
-      title: "Belongs To",
+      title: "Show this review on…",
       type: "string",
-      description: "Which page should this review appear on?",
+      description:
+        'Which page(s) this review appears on. Pick "Both Pages" if unsure.',
+      initialValue: "both",
       options: {
         list: [
-          { title: "Aira Photography", value: "photography" },
-          { title: "Agnitantra Events & Catering", value: "events" },
+          { title: "Aira Photography only", value: "photography" },
+          { title: "Agnitantra Events & Caterers only", value: "events" },
           { title: "Both Pages", value: "both" },
         ],
         layout: "radio",

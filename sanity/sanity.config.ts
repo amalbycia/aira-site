@@ -11,6 +11,10 @@ export default defineConfig({
   name: "aira",
   title: "Aira Photography & Events",
 
+  // Studio is mounted at /studio via the app/studio/[[...tool]] route — the
+  // router needs this to resolve tool URLs (without it: "Tool not found").
+  basePath: "/studio",
+
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production",
 

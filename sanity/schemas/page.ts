@@ -27,21 +27,22 @@ export default defineType({
       title: "Page Description",
       type: "text",
       description:
-        "A short description shown on this page (e.g. what the service is about).",
+        "A short paragraph introducing this page (what this service is about). Shown near the top of the page.",
       rows: 3,
     }),
     defineField({
       name: "locationText",
-      title: "Location",
+      title: "Location text",
       type: "string",
       description:
-        'Written location text displayed on the page (e.g. "Based in Mumbai, serving all of India").',
+        'A line describing where you work, shown in this page\'s Location section (e.g. "Based in Kottayam, Kerala — available across India").',
     }),
     defineField({
       name: "gallery",
       title: "Photo Gallery",
       type: "array",
-      description: "Upload photos to display in the gallery section.",
+      description:
+        "Your photos for this page's gallery. Click 'Add item' to upload — drag to reorder. Add as many as you like.",
       of: [
         {
           type: "image",
@@ -49,16 +50,16 @@ export default defineType({
           fields: [
             defineField({
               name: "alt",
-              title: "Alt Text",
+              title: "Photo description",
               type: "string",
               description:
-                'Describe the photo for accessibility and SEO (e.g. "Bride and groom at sunset").',
+                'A few words describing the photo (helps Google and screen-readers), e.g. "Bride and groom at sunset".',
             }),
             defineField({
               name: "caption",
-              title: "Caption",
+              title: "Caption (optional)",
               type: "string",
-              description: "Optional caption shown below the photo.",
+              description: "Optional short caption shown with the photo.",
             }),
           ],
         },
@@ -68,23 +69,24 @@ export default defineType({
       name: "reels",
       title: "Videos / Reels",
       type: "array",
-      description: "Link video reels to display on this page.",
+      description:
+        "The reels shown on this page. Click 'Add item' to pick from your uploaded reels (create new ones under 'Reels & Videos' in the left menu). Tip: a reel set to 'Both Pages' shows here automatically.",
       of: [{ type: "reference", to: [{ type: "reel" }] }],
     }),
     defineField({
       name: "googleReviewsEmbedCode",
-      title: "Google Reviews Embed Code",
+      title: "Google Reviews — advanced embed (optional, usually leave blank)",
       type: "text",
       description:
-        "Paste the full embed code from your Google Reviews widget here. Leave blank if using manually entered reviews instead.",
-      rows: 4,
+        "ADVANCED: only for pasting a third-party Google Reviews widget code. Your site already shows your live Google rating and your best reviews automatically, so you normally do NOT need to touch this.",
+      rows: 3,
     }),
     defineField({
       name: "manualReviews",
-      title: "Manual Reviews",
+      title: "Featured Reviews (optional override)",
       type: "array",
       description:
-        "Add reviews manually if you are not using the Google embed. Each review will display as a card.",
+        "OPTIONAL: hand-pick specific reviews to feature on this page. If left empty, the site automatically shows all reviews marked for this page (managed under 'Reviews' in the left menu).",
       of: [{ type: "reference", to: [{ type: "review" }] }],
     }),
   ],
@@ -92,7 +94,10 @@ export default defineType({
     select: { title: "brand" },
     prepare({ title }) {
       return {
-        title: title === "photography" ? "Aira Photography" : "Agnitantra Events & Catering",
+        title:
+          title === "photography"
+            ? "Aira Photography"
+            : "Agnitantra Events & Caterers",
       };
     },
   },

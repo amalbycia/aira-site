@@ -10,7 +10,8 @@ export default defineType({
       name: "title",
       title: "Video Title",
       type: "string",
-      description: 'A short title for this reel (e.g. "Summer Wedding Highlights 2024").',
+      description:
+        'A short title for this reel (e.g. "Riya & Arjun — Wedding Highlights"). Shown as the caption on the card.',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -25,21 +26,23 @@ export default defineType({
     }),
     defineField({
       name: "thumbnail",
-      title: "Thumbnail Image",
+      title: "Cover Image (optional)",
       type: "image",
       options: { hotspot: true },
       description:
-        "Cover image shown before the video plays. Recommended: 16:9 ratio.",
+        "Optional cover picture shown before the video plays. Reels are tall (portrait), so use a vertical image. Leave blank and we'll use a frame from your video automatically.",
     }),
     defineField({
       name: "page",
-      title: "Belongs To",
+      title: "Show this reel on…",
       type: "string",
-      description: "Which page should this reel appear on?",
+      description:
+        'Choose which page(s) this reel appears on. Pick "Both Pages" if you\'re unsure — it will show everywhere.',
+      initialValue: "both",
       options: {
         list: [
-          { title: "Aira Photography", value: "photography" },
-          { title: "Agnitantra Events & Catering", value: "events" },
+          { title: "Aira Photography only", value: "photography" },
+          { title: "Agnitantra Events & Caterers only", value: "events" },
           { title: "Both Pages", value: "both" },
         ],
         layout: "radio",

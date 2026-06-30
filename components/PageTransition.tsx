@@ -51,6 +51,10 @@ function PageTransitionInner() {
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // Disable the transition entirely inside Sanity Studio — it's an admin SPA
+  // with its own navigation, and the overlay must never cover it.
+  const inStudio = pathname.startsWith("/studio");
+
   // ── COVER (step1): unfilled → filled, then run the supplied navigation. ──
   // Mirrors the first half of the sketch's reveal() timeline.
   const cover = useCallback((navigate: () => void) => {
@@ -105,6 +109,7 @@ function PageTransitionInner() {
 
   // After a navigation completes, the route key changes -> play the reveal half.
   useEffect(() => {
+    if (inStudio) return;
     if (pendingReveal.current && !prefersReduced) {
       pendingReveal.current = false;
       // Wait a frame so the new page has painted under the filled overlay.
@@ -115,7 +120,7 @@ function PageTransitionInner() {
 
   // Intercept internal link clicks site-wide and route them through the cover.
   useEffect(() => {
-    if (prefersReduced) return;
+    if (prefersReduced || inStudio) return;
 
     const onClick = (e: MouseEvent) => {
       if (e.defaultPrevented || e.button !== 0) return;
@@ -141,11 +146,14 @@ function PageTransitionInner() {
 
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
-  }, [cover, router, pathname, prefersReduced]);
+  }, [cover, router, pathname, prefersReduced, inStudio]);
 
+  // In Studio: keep the markup identical for SSR/client (no conditional return,
+  // which would cause a hydration mismatch) but hide + disable the overlay via a
+  // class. The effects above already no-op when inStudio, so it never animates.
   return (
     <svg
-      className="page-transition-overlay"
+      className={`page-transition-overlay${inStudio ? " is--disabled" : ""}`}
       width="100%"
       height="100%"
       viewBox="0 0 100 100"
@@ -169,6 +177,10 @@ function PageTransitionInner() {
         }
         .page-transition-overlay__path {
           fill: var(--color-primary-dark, #5a1616);
+        }
+        /* Inside Sanity Studio: fully removed from view + interaction. */
+        .page-transition-overlay.is--disabled {
+          display: none;
         }
       `}</style>
     </svg>

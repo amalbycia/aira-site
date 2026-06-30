@@ -12,8 +12,9 @@ export default defineType({
       name: "businessName",
       title: "Business Name",
       type: "string",
-      description: 'The shared brand name displayed across the site (e.g. "Aira / Agnitantra").',
-      initialValue: "Aira",
+      description:
+        'Your brand name as shown across the site (e.g. "Agnitantra Events & Caterers / Aira Photography").',
+      initialValue: "Agnitantra Events & Caterers",
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -21,63 +22,69 @@ export default defineType({
       title: "Tagline",
       type: "string",
       description:
-        'A short line that appears on the homepage (e.g. "Capturing moments, crafting memories").',
+        'A short line that appears on the homepage (e.g. "Capturing moments, crafting celebrations").',
     }),
     defineField({
       name: "yearsOfExperience",
       title: "Years of Experience",
       type: "string",
-      description: 'Displayed as a highlight on the site (e.g. "9+").',
+      description:
+        'Shown as a highlight on the site. Just the number with a plus, e.g. "9+".',
       initialValue: "9+",
     }),
     defineField({
       name: "logo",
       title: "Logo",
       type: "image",
-      description: "Your main logo. Used in the navigation bar and footer.",
+      description:
+        "Your logo image (PNG with a transparent background works best). Used in the navigation bar and footer.",
     }),
     defineField({
       name: "email",
       title: "Email Address",
       type: "string",
-      description: "Contact email shown on the site.",
+      description:
+        "The email people can reach you at. Shown in the footer (tapping it opens the visitor's email app).",
     }),
     defineField({
       name: "phone",
       title: "Phone Number",
       type: "string",
-      description: "Contact phone number shown on the site.",
+      description:
+        "Your contact number with country code, e.g. +91 98470 12345. Shown in the footer (tapping it starts a call on phones).",
     }),
     defineField({
       name: "instagramUrl",
-      title: "Instagram URL",
+      title: "Instagram Link",
       type: "url",
-      description: "Full Instagram profile link.",
+      description:
+        "Paste the full link to your Instagram profile (starts with https://). Find it via Instagram → your profile → Share Profile → Copy Link.",
     }),
     defineField({
       name: "facebookUrl",
-      title: "Facebook URL",
+      title: "Facebook Link",
       type: "url",
-      description: "Full Facebook page link.",
+      description: "Paste the full link to your Facebook page (starts with https://).",
     }),
     defineField({
       name: "youtubeUrl",
-      title: "YouTube URL",
+      title: "YouTube Link",
       type: "url",
-      description: "Full YouTube channel link.",
+      description: "Paste the full link to your YouTube channel (starts with https://).",
     }),
     defineField({
       name: "locationPhotography",
-      title: "Photography — Location Text",
+      title: "Location text — Photography page",
       type: "string",
       description:
-        'Location text for the Photography page (e.g. "Based in Chennai, available across South India").',
+        'A line describing where you work, shown on the Photography page (e.g. "Based in Kottayam, Kerala — available across India").',
     }),
     defineField({
       name: "locationEvents",
-      title: "Events — Location Text",
+      title: "Location text — Events page",
       type: "string",
-      description: "Location text for the Events & Catering page.",
+      description:
+        'A line describing where you work, shown on the Events & Catering page (e.g. "Based in Kottayam, Kerala — serving events across the state and beyond").',
     }),
   ],
   preview: {

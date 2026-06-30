@@ -50,25 +50,29 @@ export const structure: StructureResolver = (S) =>
       S.listItem()
         .title("Reels & Videos")
         .schemaType("reel")
-        .child(S.documentTypeList("reel").title("Reels & Videos")),
+        .child(
+          S.documentTypeList("reel").title("Reels & Videos — your uploaded videos"),
+        ),
 
       // ── Reviews ──
       S.listItem()
         .title("Reviews")
         .schemaType("review")
-        .child(S.documentTypeList("review").title("Reviews")),
+        .child(
+          S.documentTypeList("review").title("Reviews — testimonials shown on the site"),
+        ),
 
       S.divider(),
 
       // ── Site Settings (singleton) ──
       S.listItem()
-        .title("Site Settings")
+        .title("Contact & Site Info")
         .id("siteSettings")
         .child(
           S.document()
             .schemaType("siteSettings")
             .documentId("siteSettings")
-            .title("Site Settings"),
+            .title("Contact & Site Info"),
         ),
     ]);
 
