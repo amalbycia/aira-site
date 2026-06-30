@@ -12,7 +12,37 @@ function extractHostname(url: string): string {
   }
 }
 
+// Security headers applied to every response. These are framework-safe (they
+// don't constrain script/style sources, so GSAP/Lenis/Next inline runtime keep
+// working) but close the common low-effort attack surfaces. A full CSP is
+// intentionally omitted — it would need per-nonce wiring for Next's inline
+// bootstrap and the animation libs, and is high-risk for little gain on a
+// static marketing site. Revisit if the threat model changes.
+const securityHeaders = [
+  // Stop MIME sniffing (e.g. a stored file being interpreted as a script).
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  // Don't leak full URLs to third parties on cross-origin navigation.
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  // Disallow being framed by other origins (clickjacking).
+  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  // Drop access to powerful browser features the site never uses.
+  {
+    key: "Permissions-Policy",
+    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+  },
+];
+
 const nextConfig: NextConfig = {
+  async headers() {
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // The admin must never be indexed or framed anywhere.
+      {
+        source: "/manage/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       // Sanity CDN — serves all images uploaded via Sanity Studio

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth/guard";
 
 /**
  * Server-side proxy for uploading a reel to Bunny Stream.
@@ -24,6 +25,11 @@ export const runtime = "nodejs";
 export const maxDuration = 300; // seconds (Vercel function cap; raise plan if needed)
 
 export async function POST(req: NextRequest) {
+  // Admin-only: this streams arbitrary files into the Bunny Stream library.
+  // Without this guard, anyone who finds the URL could burn the Bunny quota.
+  const denied = await requireAdmin();
+  if (denied) return denied;
+
   const LIBRARY_ID = process.env.BUNNY_STREAM_LIBRARY_ID;
   const API_KEY = process.env.BUNNY_STREAM_API_KEY;
 
