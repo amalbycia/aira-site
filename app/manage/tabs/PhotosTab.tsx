@@ -73,9 +73,31 @@ export default function PhotosTab({
     }
   }
 
-  // ── Reorder (drag within grid) ──────────────────────────────────────────────
+  // ── Reorder ─────────────────────────────────────────────────────────────────
+  // Two paths so it works everywhere: HTML5 drag on desktop (pointer), and
+  // move up/down buttons that work on touch devices where native drag doesn't.
   const dragId = useRef<number | null>(null);
   const [overId, setOverId] = useState<number | null>(null);
+
+  async function persistOrder(list: PhotoRow[]) {
+    setCurrent(list);
+    const res = await fetch("/api/admin/photos/reorder", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ ids: list.map((p) => p.id) }),
+    });
+    onToast(res.ok ? "Order saved" : "Could not save order");
+  }
+
+  /** Move the photo at index `from` by `dir` (-1 up, +1 down). */
+  async function move(from: number, dir: -1 | 1) {
+    const to = from + dir;
+    if (to < 0 || to >= current.length) return;
+    const list = [...current];
+    const [moved] = list.splice(from, 1);
+    list.splice(to, 0, moved);
+    await persistOrder(list);
+  }
 
   function onCardDragStart(id: number) {
     dragId.current = id;
@@ -96,14 +118,7 @@ export default function PhotosTab({
     if (from < 0 || to < 0) return;
     const [moved] = list.splice(from, 1);
     list.splice(to, 0, moved);
-    setCurrent(list);
-
-    const res = await fetch("/api/admin/photos/reorder", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ ids: list.map((p) => p.id) }),
-    });
-    onToast(res.ok ? "Order saved" : "Could not save order");
+    await persistOrder(list);
   }
 
   return (
@@ -111,7 +126,10 @@ export default function PhotosTab({
       <div className="section-head">
         <div>
           <h2>Photo Gallery</h2>
-          <p>Drag photos to reorder. They appear on the site in this order.</p>
+          <p>
+            Reorder with the arrows (or drag on desktop). They appear on the site
+            in this order.
+          </p>
         </div>
         <div className="page-switch">
           <button data-active={page === "photography"} onClick={() => setPage("photography")}>
@@ -180,12 +198,31 @@ export default function PhotosTab({
               <button
                 className="photo-card__del"
                 title="Remove photo"
+                aria-label="Remove photo"
                 onClick={() => remove(photo.id)}
               >
                 ✕
               </button>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={photo.url} alt={photo.alt ?? ""} loading="lazy" />
+              <div className="photo-card__move">
+                <button
+                  className="photo-card__arrow"
+                  aria-label="Move earlier"
+                  disabled={i === 0}
+                  onClick={() => move(i, -1)}
+                >
+                  ‹
+                </button>
+                <button
+                  className="photo-card__arrow"
+                  aria-label="Move later"
+                  disabled={i === current.length - 1}
+                  onClick={() => move(i, 1)}
+                >
+                  ›
+                </button>
+              </div>
             </figure>
           ))}
         </div>

@@ -118,22 +118,37 @@ server-side with `sharp` because it ran locally, not on Vercel.)
 
 ---
 
-## 5. Authentication (current — see security notes)
+## 5. Authentication
 
-Single shared password, no user table:
+Multi-user email + password accounts (up to 4), with a shared-password fallback.
 
-- `lib/auth/session.ts` — `passwordMatches()` compares against `ADMIN_PASSWORD`
-  (constant-time). On success, `createSession()` sets an httpOnly cookie whose
-  value is `<expiryMs>.<HMAC-SHA256(payload, ADMIN_SESSION_SECRET)>`.
-  `isAuthenticated()` re-computes the HMAC and checks expiry (30 days).
+- **Accounts** live in the `admin_users` table (`email`, `password_hash`,
+  `created_at`). Passwords are hashed with Node's built-in **scrypt**
+  (`lib/auth/password.ts`, format `scrypt$N$salt$hash`) — no native dependency,
+  Node-24/Vercel safe. Managed from the **Users tab** (`app/api/admin/users`).
+- **Login** (`app/api/admin/login`): verifies email+password against
+  `admin_users` (`verifyAdminCredentials`, constant-time, dummy-hash on miss to
+  avoid timing leaks). Falls back to the shared `ADMIN_PASSWORD` so the owner can
+  always get in (e.g. before the first account exists). **Rate-limited** per IP
+  (`lib/auth/rateLimit.ts`: 8 failures / 15 min lockout, in-memory).
+- **Session** (`lib/auth/session.ts`): `createSession(email)` sets an httpOnly
+  cookie `<expiryMs>.<emailB64url>.<HMAC-SHA256(payload, ADMIN_SESSION_SECRET)>`.
+  The HMAC is the only thing that grants access; the embedded email (covered by
+  the signature) lets the UI show who's signed in. `isAuthenticated()` /
+  `getSessionEmail()` re-verify it; expiry 30 days.
 - `lib/auth/guard.ts` — `requireAdmin()` returns a 401 `NextResponse` or null;
-  every `app/api/admin/*` route calls it first.
-- `app/api/admin/login` / `logout` set/clear the cookie.
+  **every** `app/api/admin/*` route AND `/api/upload-reel` calls it first.
 
-This is deliberately minimal (one owner, content-only admin). **It is NOT
-hardened** — see [HANDOVER-NEXT.md](./HANDOVER-NEXT.md) for the known gaps
-(unauthed `/api/upload-reel`, no login rate-limit, no upload validation) and the
-plan to add Google login.
+**Hardening applied:** `/api/upload-reel` now requires admin; login is
+rate-limited; photo upload is size (8 MB) + mime + magic-byte validated
+server-side; security headers in `next.config.ts` (`X-Content-Type-Options`,
+`Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, plus
+`X-Robots-Tag: noindex` on `/manage`). Auth fails closed when secrets are unset;
+no legacy `?secret=` routes.
+
+> Google OAuth was evaluated and dropped — the owner couldn't provision a Google
+> Cloud project, and the need was a small fixed set of named people, so
+> email+password accounts (no OAuth dependency) fit better.
 
 ---
 
