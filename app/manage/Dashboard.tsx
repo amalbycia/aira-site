@@ -2,19 +2,27 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import type { PhotoRow, ReelRow, ReviewRow, SettingsRow } from "@/lib/cms/admin";
+import type {
+  PhotoRow,
+  ReelRow,
+  ReviewRow,
+  SettingsRow,
+  AdminUserRow,
+} from "@/lib/cms/admin";
 import PhotosTab from "./tabs/PhotosTab";
 import ReelsTab from "./tabs/ReelsTab";
 import ReviewsTab from "./tabs/ReviewsTab";
 import SettingsTab from "./tabs/SettingsTab";
+import UsersTab from "./tabs/UsersTab";
 
-type Tab = "photos" | "reels" | "reviews" | "settings";
+type Tab = "photos" | "reels" | "reviews" | "settings" | "users";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "photos", label: "Photos" },
   { id: "reels", label: "Reels & Videos" },
   { id: "reviews", label: "Reviews" },
   { id: "settings", label: "Settings" },
+  { id: "users", label: "Users" },
 ];
 
 export default function Dashboard({
@@ -22,11 +30,15 @@ export default function Dashboard({
   initialReels,
   initialReviews,
   initialSettings,
+  initialUsers,
+  currentEmail,
 }: {
   initialPhotos: { photography: PhotoRow[]; events: PhotoRow[] };
   initialReels: ReelRow[];
   initialReviews: ReviewRow[];
   initialSettings: SettingsRow | null;
+  initialUsers: AdminUserRow[];
+  currentEmail: string | null;
 }) {
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("photos");
@@ -49,9 +61,16 @@ export default function Dashboard({
           Agnitantra
           <span>Content Manager</span>
         </h1>
-        <button className="btn btn--ghost btn--sm" onClick={logout}>
-          Sign out
-        </button>
+        <div className="admin-topbar__user">
+          {currentEmail ? (
+            <span className="admin-topbar__email" title={currentEmail}>
+              {currentEmail}
+            </span>
+          ) : null}
+          <button className="btn btn--ghost btn--sm" onClick={logout}>
+            Sign out
+          </button>
+        </div>
       </header>
 
       <nav className="admin-tabs">
@@ -76,6 +95,13 @@ export default function Dashboard({
       )}
       {tab === "settings" && (
         <SettingsTab initial={initialSettings} onToast={showToast} />
+      )}
+      {tab === "users" && (
+        <UsersTab
+          initial={initialUsers}
+          currentEmail={currentEmail}
+          onToast={showToast}
+        />
       )}
 
       {toast ? <div className="toast">{toast}</div> : null}
