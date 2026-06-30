@@ -1,7 +1,9 @@
 # Aira Photography & Events — Developer Guide
 
 Wedding photography + event management portfolio. Two sub-brands (Photography / Events & Catering)
-live on separate pages under one Next.js app, managed via Sanity Studio.
+live on separate pages under one Next.js app. Content (photos, reels, reviews, settings) is managed
+by the owner through a **custom admin console at `/manage`** — backed by Neon Postgres for data,
+Bunny Storage for images, and Bunny Stream for video. No third-party CMS.
 
 ---
 
@@ -15,12 +17,16 @@ live on separate pages under one Next.js app, managed via Sanity Studio.
 | tailwindcss | ^4 | Utility CSS |
 | gsap + @gsap/react | ^3.15.0 / ^2.1.2 | Animations |
 | lenis | ^1.3.23 | Smooth scroll |
-| sanity | ^6.0.0 | CMS headless backend |
-| next-sanity | ^13.1.0 | Sanity ↔ Next.js bridge |
-| @sanity/image-url | ^2.1.1 | Sanity image transforms |
-| @sanity/vision | ^6.0.0 | GROQ query explorer in Studio |
+| @neondatabase/serverless | ^1.1.0 | Neon Postgres client (content store) |
+| sharp | ^0.35 | Server-side image optimization (initial import) |
 | prettier | ^3.8.4 | Formatter |
 | eslint-config-prettier | ^10.1.8 | ESLint/Prettier conflict resolution |
+
+**Content infrastructure (no CMS framework):**
+- **Neon Postgres** (`DATABASE_URI`) — tables: `pages`, `gallery_photos`, `reels`, `reviews`, `site_settings`. See `lib/schema.sql`.
+- **Bunny Storage** (`BUNNY_STORAGE_*`, zone `agnitantra-images`) — gallery/cover images, served via `agnitantra-images.b-cdn.net`.
+- **Bunny Stream** (`BUNNY_STREAM_*`, library 691820) — reel videos (HLS + MP4 fallback).
+- **Admin** at `/manage` — password login (`ADMIN_PASSWORD`), signed-cookie session (`ADMIN_SESSION_SECRET`). Client uploads photos (browser-compressed → Bunny Storage) and reels (→ Bunny Stream), edits reviews and settings.
 
 ---
 
@@ -44,26 +50,28 @@ app/                     Next.js App Router — routes and layouts
   page.tsx               Home (hero, about, footer — single scroll)
   photography/page.tsx   Aira Photography sub-brand page
   events/page.tsx        Aira Events & Catering sub-brand page
-  studio/[[...tool]]/    Sanity Studio — catch-all route at /studio
+  manage/                Custom admin console (password-gated)
+    page.tsx             Auth gate → LoginForm or Dashboard
+    Dashboard.tsx        Tabbed shell (Photos / Reels / Reviews / Settings)
+    tabs/                One component per tab
+    compressImage.ts     Browser-side resize→WebP before upload (keeps files small)
+    admin.css            Admin-only styling (scoped under .admin-root)
+  api/
+    upload-reel/         Server proxy: streams a video file to Bunny Stream → guid
+    admin/               Session-guarded content APIs (photos, reels, reviews, settings)
 
-components/
-  desktop/               Components whose layout or animation logic diverges on desktop
-  mobile/                Components whose layout or animation logic diverges on mobile
+components/               Display components (CMS-agnostic — fed by lib/cms)
 
 lib/
+  db.ts                  Neon Postgres client (tagged-template sql``)
+  schema.sql             Content table definitions (reference; tables already created)
   gsap.ts                GSAP + ScrollTrigger setup; matchMedia helper (see Conventions)
-  bunny.ts               Bunny Stream embed/HLS helpers; Bunny Storage upload reference
-  imageUrl.ts            urlFor() helper wrapping @sanity/image-url
-
-sanity/
-  sanity.config.ts       Sanity Studio configuration (projectId, dataset, plugins, schemas)
-  lib/client.ts          Sanity client (used in Server Components and API routes)
-  schemas/               CMS content type definitions — see MAP.md for field-by-field breakdown
-    index.ts             Exports all schemas to sanity.config.ts
-    page.ts              Photography/Events page content (gallery, reels, reviews, location)
-    reel.ts              Individual video/reel entries
-    siteSettings.ts      Singleton: business name, tagline, contact, social, logos
-    review.ts            Manual review entries (fallback when Google embed isn't used)
+  bunny.ts               Bunny Stream (video) + Bunny Storage (image) upload/delete helpers
+  auth/                  session.ts (signed-cookie auth) + guard.ts (requireAdmin)
+  cms/
+    getPage.ts           Public read: page content + gallery + reels for a brand
+    getContent.ts        Public read: reviews + site settings (+ footerPropsFromSettings)
+    admin.ts             Admin-side raw queries + mutations (never import into public pages)
 ```
 
 ---
@@ -87,15 +95,16 @@ sanity/
 - Call `mm.revert()` in the `useGSAP` cleanup return
 - Never put shared logic inside a condition block — hoist it above the `mm.add()` calls
 
-**Sanity**
-- Always use `defineField` / `defineType` — never raw objects in schemas
-- Field `description` strings are written for the client (non-technical language)
-- The `siteSettings` type is a singleton — only one document should ever exist
+**Content / data layer**
+- Public pages read content via `lib/cms/getPage.ts` and `lib/cms/getContent.ts` ONLY — never query Neon directly from a page.
+- Admin mutations go through `app/api/admin/*` routes, each guarded with `requireAdmin()`. The admin-only queries live in `lib/cms/admin.ts` — never import that into a public page.
+- All `lib/cms` read functions fail soft (return `[]`/`{}` on DB error) so the site never hard-crashes if Neon is briefly unreachable. Keep that contract.
+- Admin field labels/help text are written for the non-technical owner.
 
-**Images**
-- Use `urlFor()` from `lib/imageUrl.ts` for all Sanity images
-- Use `getBunnyCdnUrl()` from `lib/bunny.ts` for all Bunny Storage assets
-- Always provide `alt` text
+**Images & video**
+- Gallery/cover images: upload via the admin (browser-compressed → `uploadToBunnyStorage`), served from `agnitantra-images.b-cdn.net`. Use `getBunnyStorageUrl()` from `lib/bunny.ts`.
+- Reel videos: Bunny Stream only (never inline-host video). Use the Stream helpers in `lib/bunny.ts`.
+- Always provide `alt` text.
 
 **Phone optimization (check at every step) — STRICT, see [MOBILE-RULES.md](./MOBILE-RULES.md)**
 - Every component or style change must be checked against mobile viewport widths, not just desktop
@@ -110,8 +119,8 @@ sanity/
 ## Boundaries — Do Not Touch
 
 - `.next/` — build output, auto-generated
-- `.sanity/` — Sanity CLI cache, auto-generated
 - `next-env.d.ts` — auto-generated by Next.js, do not edit manually
+- `app/photography/page.tsx` + `components/media/ColumnDriftGallery.tsx` — the gallery layout is final; feed it data, don't restyle it
 
 ---
 

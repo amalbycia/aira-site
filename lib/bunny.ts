@@ -17,6 +17,12 @@ const STREAM_CDN = (CDN_URL || `https://vz-${STREAM_LIBRARY_ID}.b-cdn.net`).repl
   "",
 );
 
+// Bunny Storage pull-zone host — serves uploaded images (zone: agnitantra-images).
+const STORAGE_CDN = (process.env.NEXT_PUBLIC_BUNNY_STORAGE_CDN_URL ?? "").replace(
+  /\/$/,
+  "",
+);
+
 // ─── Stream ───────────────────────────────────────────────────────────────────
 
 /**
@@ -78,59 +84,83 @@ export function getBunnyMp4Url(
 // ─── Storage / CDN ────────────────────────────────────────────────────────────
 
 /**
- * Builds a CDN URL for a file stored in Bunny Storage.
+ * Builds the public CDN URL for a file stored in Bunny Storage.
  *
- * @param path - The file path within your storage zone (e.g. "images/hero.jpg")
+ * @param path - The file path within the storage zone (e.g. "gallery/hero.jpg")
  *
  * @example
- *   <img src={getBunnyCdnUrl("images/hero.jpg")} alt="Hero" />
+ *   <img src={getBunnyStorageUrl("gallery/hero.jpg")} alt="Hero" />
  */
-export function getBunnyCdnUrl(path: string): string {
-  const base = CDN_URL.replace(/\/$/, "");
+export function getBunnyStorageUrl(path: string): string {
   const filePath = path.replace(/^\//, "");
-  return `${base}/${filePath}`;
+  return `${STORAGE_CDN}/${filePath}`;
+}
+
+/** Bunny Storage REST origin (uploads/deletes go here, NOT the CDN pull zone). */
+const STORAGE_ORIGIN = "https://storage.bunnycdn.com";
+
+/**
+ * Upload a file to Bunny Storage. Server-side only (uses BUNNY_STORAGE_API_KEY).
+ *
+ * @param fileBytes   - Raw file contents (Buffer / Uint8Array / ArrayBuffer)
+ * @param storagePath - Destination path in the zone (e.g. "gallery/abc.webp")
+ * @returns the public CDN url + the storage path (store the path for deletes)
+ */
+export async function uploadToBunnyStorage(
+  fileBytes: Buffer | Uint8Array | ArrayBuffer,
+  storagePath: string,
+): Promise<{ ok: boolean; url: string; path: string }> {
+  const STORAGE_ZONE = process.env.BUNNY_STORAGE_ZONE;
+  const API_KEY = process.env.BUNNY_STORAGE_API_KEY;
+  if (!STORAGE_ZONE || !API_KEY) {
+    throw new Error("BUNNY_STORAGE_ZONE and BUNNY_STORAGE_API_KEY must be set.");
+  }
+
+  const cleanPath = storagePath.replace(/^\//, "");
+  const res = await fetch(`${STORAGE_ORIGIN}/${STORAGE_ZONE}/${cleanPath}`, {
+    method: "PUT",
+    headers: { AccessKey: API_KEY, "Content-Type": "application/octet-stream" },
+    body: fileBytes as BodyInit,
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Bunny Storage upload failed: ${res.status} ${res.statusText} ${await res.text()}`,
+    );
+  }
+  return { ok: true, url: getBunnyStorageUrl(cleanPath), path: cleanPath };
 }
 
 /**
- * Reference implementation: upload a file to Bunny Storage via the REST API.
- *
- * This is a server-side helper (uses BUNNY_STORAGE_API_KEY — never expose to client).
- * Wire this to an API route or Server Action when you need programmatic uploads.
- *
- * @param fileBuffer - Raw file contents as an ArrayBuffer (convert Uint8Array via `.buffer`)
- * @param storagePath - Destination path in the storage zone (e.g. "images/hero.jpg")
- *
- * Docs: https://docs.bunny.net/reference/put_-storagezonename-path-filename
+ * Delete a file from Bunny Storage by its storage path. Server-side only.
+ * Returns true on success or if the file was already gone (404).
  */
-export async function uploadToBunnyStorage(
-  fileBuffer: ArrayBuffer,
-  storagePath: string,
-): Promise<{ ok: boolean; url: string }> {
+export async function deleteFromBunnyStorage(storagePath: string): Promise<boolean> {
   const STORAGE_ZONE = process.env.BUNNY_STORAGE_ZONE;
   const API_KEY = process.env.BUNNY_STORAGE_API_KEY;
-
   if (!STORAGE_ZONE || !API_KEY) {
-    throw new Error(
-      "BUNNY_STORAGE_ZONE and BUNNY_STORAGE_API_KEY must be set in environment variables.",
-    );
+    throw new Error("BUNNY_STORAGE_ZONE and BUNNY_STORAGE_API_KEY must be set.");
   }
-
-  const url = `https://storage.bunnycdn.com/${STORAGE_ZONE}/${storagePath}`;
-
-  const response = await fetch(url, {
-    method: "PUT",
-    headers: {
-      AccessKey: API_KEY,
-      "Content-Type": "application/octet-stream",
-    },
-    body: fileBuffer,
+  const cleanPath = storagePath.replace(/^\//, "");
+  const res = await fetch(`${STORAGE_ORIGIN}/${STORAGE_ZONE}/${cleanPath}`, {
+    method: "DELETE",
+    headers: { AccessKey: API_KEY },
   });
+  return res.ok || res.status === 404;
+}
 
-  if (!response.ok) {
-    throw new Error(
-      `Bunny Storage upload failed: ${response.status} ${response.statusText}`,
-    );
+/**
+ * Delete a video from Bunny Stream by its GUID. Server-side only
+ * (uses BUNNY_STREAM_API_KEY). Returns true on success or if already gone.
+ */
+export async function deleteFromBunnyStream(videoId: string): Promise<boolean> {
+  const API_KEY = process.env.BUNNY_STREAM_API_KEY;
+  if (!STREAM_LIBRARY_ID || !API_KEY) {
+    throw new Error("BUNNY_STREAM_LIBRARY_ID and BUNNY_STREAM_API_KEY must be set.");
   }
-
-  return { ok: true, url: getBunnyCdnUrl(storagePath) };
+  const res = await fetch(
+    `https://video.bunnycdn.com/library/${STREAM_LIBRARY_ID}/videos/${videoId}`,
+    { method: "DELETE", headers: { AccessKey: API_KEY, accept: "application/json" } },
+  );
+  return res.ok || res.status === 404;
 }

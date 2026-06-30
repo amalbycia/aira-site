@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
             },
           ]
         : []),
-      // Bunny Stream — thumbnail images auto-generated per video
+      // Bunny Stream + Storage — thumbnails and all uploaded images/assets
       {
         protocol: "https",
         hostname: "*.b-cdn.net",

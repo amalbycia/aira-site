@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import gsap from "gsap";
 import { CustomEase } from "gsap/dist/CustomEase";
@@ -35,7 +36,12 @@ export default function SideNav() {
   const headerRef = useRef<HTMLElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
+  // The admin console (/manage) has its own UI — never show the site's nav over it.
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith("/manage");
+
   useEffect(() => {
+    if (isAdmin) return;
     const navWrap = navWrapRef.current;
     if (!navWrap) return;
 
@@ -137,7 +143,10 @@ export default function SideNav() {
       hideTrigger?.kill();
       tlRef.current?.kill();
     };
-  }, []);
+  }, [isAdmin]);
+
+  // Hide the site nav entirely inside the admin console.
+  if (isAdmin) return null;
 
   return (
     <>

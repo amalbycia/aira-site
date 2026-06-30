@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import AboutStory from "@/components/about/AboutStory";
 import SiteFooter from "@/components/SiteFooter";
-import { getSiteSettings, footerPropsFromSettings } from "@/sanity/lib/getContent";
+import { getSiteSettings, footerPropsFromSettings } from "@/lib/cms/getContent";
 
 export const metadata: Metadata = {
   title: "About — Aira Photography & Agnitantra Events",

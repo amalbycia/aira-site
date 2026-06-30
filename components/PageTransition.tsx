@@ -51,9 +51,9 @@ function PageTransitionInner() {
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Disable the transition entirely inside Sanity Studio — it's an admin SPA
-  // with its own navigation, and the overlay must never cover it.
-  const inStudio = pathname.startsWith("/studio");
+  // Disable the transition entirely inside the admin console — it has its own
+  // navigation, and the overlay must never cover it.
+  const inStudio = pathname.startsWith("/manage");
 
   // ── COVER (step1): unfilled → filled, then run the supplied navigation. ──
   // Mirrors the first half of the sketch's reveal() timeline.
@@ -137,8 +137,8 @@ function PageTransitionInner() {
       // Skip pure in-page anchors and the current path.
       const [hrefPath] = href.split("#");
       if (hrefPath === pathname) return;
-      // Let the Sanity Studio route load normally.
-      if (hrefPath.startsWith("/studio")) return;
+      // Let the admin console route load normally.
+      if (hrefPath.startsWith("/manage")) return;
 
       e.preventDefault();
       cover(() => router.push(href));

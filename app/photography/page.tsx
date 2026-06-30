@@ -5,12 +5,12 @@ import ReelsStrip from "@/components/media/ReelsStrip";
 import TestimonialMarquee from "@/components/events/TestimonialMarquee";
 import LocationBlock from "@/components/LocationBlock";
 import SiteFooter from "@/components/SiteFooter";
-import { getPage } from "@/sanity/lib/getPage";
+import { getPage } from "@/lib/cms/getPage";
 import {
   getReviews,
   getSiteSettings,
   footerPropsFromSettings,
-} from "@/sanity/lib/getContent";
+} from "@/lib/cms/getContent";
 import { PHOTOGRAPHY_PHOTOS, PHOTOGRAPHY_REELS } from "./clusters";
 
 export const metadata: Metadata = {

@@ -1,7 +1,7 @@
 import HeroPreloader from "@/components/HeroPreloader";
 import AboutSection from "@/components/AboutSection";
 import SiteFooter from "@/components/SiteFooter";
-import { getSiteSettings, footerPropsFromSettings } from "@/sanity/lib/getContent";
+import { getSiteSettings, footerPropsFromSettings } from "@/lib/cms/getContent";
 
 export const revalidate = 60;
 
