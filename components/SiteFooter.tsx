@@ -129,7 +129,12 @@ const CORNER_VINE = `<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3
 // TODO(client): replace the placeholder email/phone with the real values.
 const CONTACT_EMAIL = "hello@agnitantra.com";
 const CONTACT_PHONE = "+91 00000 00000";
-const LOCATION_TEXT = "Based in Kerala — available across India.";
+// Matches the Google Business listing (AGNITANTRA EVENTS & CATERERS):
+// Karilakuzhy Buildings, Kurishummood, Chethipuzha Kadavu, Changanassery,
+// Kerala 686104. The map embed below points at the same pin.
+const LOCATION_TEXT =
+  "Kurishummood, Chethipuzha Kadavu, Changanassery, Kerala 686104.";
+const LOCATION_HOURS = "Open daily from 9 am · by appointment";
 
 export default function SiteFooter({
   instagramUrl = INSTAGRAM_DEFAULT,
@@ -1026,20 +1031,20 @@ export default function SiteFooter({
                   <span className="footer-card__eyebrow font-nohemi">
                     <Sparkle size={10} opacity={0.9} /> Location
                   </span>
-                  <h3 className="footer-card__heading font-sometimes-times">Studio</h3>
+                  <h3 className="footer-card__heading font-sometimes-times">Changanassery</h3>
                   <p className="footer-meta-line">{LOCATION_TEXT}</p>
                   <p
                     className="footer-meta-line"
                     style={{ marginTop: "0.8em", opacity: 0.8 }}
                   >
-                    By appointment · Mon–Sat
+                    {LOCATION_HOURS}
                   </p>
                 </div>
 
                 {/* Squircle Google Map — contained, never bleeds past the card */}
                 <a
                   className="footer-map"
-                  href="https://maps.app.goo.gl/?q=AGNITANTRA+EVENTS+%26+CATERERS"
+                  href="https://www.google.com/maps?cid=10454241291312957415"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Open AGNITANTRA EVENTS & CATERERS on Google Maps"
