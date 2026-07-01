@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import LenisProvider from "@/components/LenisProvider";
 import SideNav from "@/components/SideNav";
 import PageTransition from "@/components/PageTransition";
+import { SITE_URL, SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
 const alexBrush = Alex_Brush({
@@ -52,9 +53,39 @@ const nohemi = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Aira Photography & Agnitantra Events",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Aira Photography & Agnitantra Events — Weddings & Celebrations in Kerala",
+    template: "%s · Aira Photography & Agnitantra Events",
+  },
   description:
-    "Wedding photography and event management — 9+ years of crafting unforgettable celebrations.",
+    "Wedding photography and full-service event management across Kerala — nine years of decor, catering, stage, sound and photography, handled as one team.",
+  keywords: [
+    "wedding photography Kerala",
+    "event management Kerala",
+    "catering Kerala",
+    "wedding planner",
+    "Agnitantra Events",
+    "Aira Photography",
+  ],
+  applicationName: SITE_NAME,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: "Aira Photography & Agnitantra Events",
+    description:
+      "Wedding photography and full-service event management across Kerala — one team for decor, catering, stage, sound and photography.",
+    url: SITE_URL,
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Aira Photography & Agnitantra Events",
+    description:
+      "Wedding photography and full-service event management across Kerala.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

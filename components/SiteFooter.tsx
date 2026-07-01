@@ -567,30 +567,50 @@ export default function SiteFooter({
           backdrop-filter: blur(2px);
         }
         .footer-card--contact { min-height: 18em; }
-        .footer-card--location,
         .footer-card--socials { min-height: 16em; }
+        .footer-card--location { min-height: 16em; }
 
-        /* ── Location card: text left, squircle map right ── */
+        /* Location card carries the map flush to its right edge, so it drops the
+           card's own right padding — the map supplies that edge itself. Flex
+           column so the inner grid fills the card's full height and the map can
+           stretch corner-to-corner. */
+        .footer-card--location {
+          padding-right: 0;
+          display: flex;
+          flex-direction: column;
+        }
+        .footer-card--location > .footer-location { flex: 1; }
+
+        /* ── Location card: text left, map flush to the card's right side ──
+           The map fills the full height of the card and bleeds to the right
+           edge, its right corners matching the card's radius so they line up
+           perfectly. The card doesn't stretch — the map sizes to the text. */
         .footer-location {
           display: grid;
-          grid-template-columns: 1fr minmax(0, 14em);
-          gap: 1.4em;
-          align-items: center;
+          grid-template-columns: 1fr minmax(0, 15.5em);
+          gap: 1.6em;
+          align-items: stretch;
+          min-height: 13.5em;                  /* gives the card a floor height */
           height: 100%;
         }
-        .footer-location__text { min-width: 0; }
-        /* Squircle map — clipped so the iframe corners never bleed past it,
-           sized to sit inside the card padding with room to spare. */
+        .footer-location__text {
+          min-width: 0;
+          align-self: center;
+          padding: 0.1em 0;
+        }
+        /* Map wrapper — a grid cell that stretches to the card's full height.
+           It carries the negative top/bottom margins that cancel the card's
+           padding, so the map bleeds flush to the top, bottom and right edges. */
         .footer-map {
-          display: block;
           position: relative;
+          align-self: stretch;
           width: 100%;
-          aspect-ratio: 1 / 1;
-          max-height: 13em;
-          border-radius: 28% / 28%;            /* squircle-ish superellipse */
+          margin: -1.9em 0;                    /* cancel card's top/bottom padding */
+          border-radius: 0 1.5em 1.5em 0;      /* match card radius on the right */
           overflow: hidden;
           border: 1px solid rgba(201, 169, 110, 0.55);
-          box-shadow: 0 10px 24px -16px rgba(40, 10, 10, 0.5);
+          border-right: none;                   /* flush against the card edge */
+          box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
           background: var(--color-cream-dark);
         }
         .footer-map iframe {
@@ -850,12 +870,26 @@ export default function SiteFooter({
             justify-items: start;
           }
           .footer-social-btn { width: 4.8em; height: 4.8em; }
-          /* Location: stack the map below the text on narrow screens. */
+          /* Location: restore the card's right padding and stack the map below
+             the text, flush to the bottom edge (rounded on the bottom corners),
+             spanning the card's full width. The map goes full-bleed left+right
+             via negative margins that cancel the card's horizontal padding. */
+          .footer-card--location { padding-right: 2em; padding-bottom: 0; }
           .footer-location {
             grid-template-columns: 1fr;
             gap: 1.2em;
+            min-height: 0;
           }
-          .footer-map { max-height: 14em; max-width: 18em; }
+          .footer-map {
+            align-self: stretch;
+            width: auto;                        /* let the L/R margins define width */
+            aspect-ratio: 16 / 10;
+            min-height: 0;
+            margin: 0 -2em 0;                  /* flush to card's L/R; card has no bottom padding */
+            border-radius: 0 0 1.5em 1.5em;    /* round only the bottom corners */
+            border: 1px solid rgba(201, 169, 110, 0.55);
+            border-top: none;
+          }
         }
       `}</style>
 

@@ -4,11 +4,13 @@ import { useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "@/lib/gsap";
 
-// Placeholder Kerala-leaning catering menu. Categories + dishes are easily
-// swapped for Sanity data later (e.g. a `menu` array on the events page doc).
+// Kerala-leaning catering menu. Live data comes from the admin (Neon) via the
+// `categories` prop; if that's empty (DB unconfigured/unreachable, or no menu
+// entered yet) we fall back to this hardcoded placeholder so the section never
+// renders blank.
 type MenuCategory = { id: string; label: string; dishes: string[] };
 
-const MENU: MenuCategory[] = [
+const FALLBACK_MENU: MenuCategory[] = [
   {
     id: "veg",
     label: "Vegetarian",
@@ -57,7 +59,15 @@ const MENU: MenuCategory[] = [
   },
 ];
 
-export default function CateringMenu() {
+export default function CateringMenu({
+  categories,
+}: {
+  /** Live menu from the admin. Falls back to the placeholder when empty. */
+  categories?: MenuCategory[];
+} = {}) {
+  const MENU =
+    categories && categories.length > 0 ? categories : FALLBACK_MENU;
+
   const [active, setActive] = useState(MENU[0].id);
   const listRef = useRef<HTMLUListElement>(null);
 

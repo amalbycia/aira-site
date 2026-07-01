@@ -67,6 +67,40 @@ export async function getReviews(
   }
 }
 
+/** A catering-menu category with its ordered dish names, for the events page. */
+export type MenuCategory = {
+  id: string;
+  label: string;
+  dishes: string[];
+};
+
+/**
+ * The catering menu (categories, each with dish names in order). Returns [] if
+ * the DB is unconfigured/unreachable OR empty, so the events page falls back to
+ * its hardcoded placeholder menu without throwing.
+ */
+export async function getMenu(): Promise<MenuCategory[]> {
+  if (!hasDb()) return [];
+  try {
+    const [cats, dishes] = (await Promise.all([
+      sql`select id, label from menu_categories order by sort_order asc, id asc`,
+      sql`select category_id, name from menu_dishes order by sort_order asc, id asc`,
+    ])) as [
+      { id: number; label: string }[],
+      { category_id: number; name: string }[],
+    ];
+
+    return cats.map((c) => ({
+      id: String(c.id),
+      label: c.label,
+      dishes: dishes.filter((d) => d.category_id === c.id).map((d) => d.name),
+    }));
+  } catch (err) {
+    console.error("[getMenu] query failed:", err);
+    return [];
+  }
+}
+
 type SettingsRow = {
   business_name: string | null;
   tagline: string | null;

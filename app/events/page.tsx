@@ -9,7 +9,7 @@ import TestimonialMarquee from "@/components/events/TestimonialMarquee";
 import LocationBlock from "@/components/LocationBlock";
 import SiteFooter from "@/components/SiteFooter";
 import { getPage } from "@/lib/cms/getPage";
-import { getReviews } from "@/lib/cms/getContent";
+import { getReviews, getMenu } from "@/lib/cms/getContent";
 import { EVENTS_CLUSTERS } from "./clusters";
 
 export const metadata: Metadata = {
@@ -23,9 +23,10 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function EventsPage() {
-  const [page, reviews] = await Promise.all([
+  const [page, reviews, menu] = await Promise.all([
     getPage("events"),
     getReviews("events"),
+    getMenu(),
   ]);
 
   const hasLiveGallery = page.gallery.length > 0;
@@ -46,7 +47,7 @@ export default async function EventsPage() {
           subtitle="Decor, stage, catering, sound, makeup and more — one team handling every detail so your family can simply enjoy the day."
         />
 
-        <CateringMenu />
+        <CateringMenu categories={menu} />
 
         <ServicesList />
 

@@ -247,6 +247,92 @@ export async function deleteReview(id: number): Promise<void> {
   await sql`delete from reviews where id = ${id}`;
 }
 
+// ── Catering menu (categories + dishes) ──────────────────────────────────────
+
+export type MenuDishRow = {
+  id: number;
+  category_id: number;
+  name: string;
+  sort_order: number;
+};
+
+export type MenuCategoryRow = {
+  id: number;
+  label: string;
+  sort_order: number;
+  dishes: MenuDishRow[];
+};
+
+/** Full menu (categories, each with its ordered dishes) for the admin editor. */
+export async function listMenu(): Promise<MenuCategoryRow[]> {
+  const [cats, dishes] = (await Promise.all([
+    sql`select id, label, sort_order from menu_categories order by sort_order asc, id asc`,
+    sql`select id, category_id, name, sort_order from menu_dishes order by sort_order asc, id asc`,
+  ])) as [Omit<MenuCategoryRow, "dishes">[], MenuDishRow[]];
+
+  return cats.map((c) => ({
+    ...c,
+    dishes: dishes.filter((d) => d.category_id === c.id),
+  }));
+}
+
+export async function addMenuCategory(label: string): Promise<MenuCategoryRow> {
+  const next = (await sql`
+    select coalesce(max(sort_order), -1) + 1 as n from menu_categories
+  `) as { n: number }[];
+  const rows = (await sql`
+    insert into menu_categories (label, sort_order)
+    values (${label.trim()}, ${next[0].n})
+    returning id, label, sort_order
+  `) as Omit<MenuCategoryRow, "dishes">[];
+  return { ...rows[0], dishes: [] };
+}
+
+export async function renameMenuCategory(id: number, label: string): Promise<void> {
+  await sql`update menu_categories set label = ${label.trim()} where id = ${id}`;
+}
+
+/** Deletes a category and (via ON DELETE CASCADE) all its dishes. */
+export async function deleteMenuCategory(id: number): Promise<void> {
+  await sql`delete from menu_categories where id = ${id}`;
+}
+
+export async function reorderMenuCategories(ids: number[]): Promise<void> {
+  for (let i = 0; i < ids.length; i++) {
+    await sql`update menu_categories set sort_order = ${i} where id = ${ids[i]}`;
+  }
+}
+
+export async function addMenuDish(
+  categoryId: number,
+  name: string,
+): Promise<MenuDishRow> {
+  const next = (await sql`
+    select coalesce(max(sort_order), -1) + 1 as n
+    from menu_dishes where category_id = ${categoryId}
+  `) as { n: number }[];
+  const rows = (await sql`
+    insert into menu_dishes (category_id, name, sort_order)
+    values (${categoryId}, ${name.trim()}, ${next[0].n})
+    returning id, category_id, name, sort_order
+  `) as MenuDishRow[];
+  return rows[0];
+}
+
+export async function renameMenuDish(id: number, name: string): Promise<void> {
+  await sql`update menu_dishes set name = ${name.trim()} where id = ${id}`;
+}
+
+export async function deleteMenuDish(id: number): Promise<void> {
+  await sql`delete from menu_dishes where id = ${id}`;
+}
+
+export async function reorderMenuDishes(ids: number[]): Promise<void> {
+  for (let i = 0; i < ids.length; i++) {
+    await sql`update menu_dishes set sort_order = ${i} where id = ${ids[i]}`;
+  }
+}
+
 // ── Settings ─────────────────────────────────────────────────────────────────
 
 export type SettingsRow = {
