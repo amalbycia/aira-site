@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
-import ColumnDriftGallery from "@/components/media/ColumnDriftGallery";
+import GalleryWithLightbox from "@/components/media/GalleryWithLightbox";
 import ReelsStrip from "@/components/media/ReelsStrip";
 import TestimonialMarquee from "@/components/events/TestimonialMarquee";
 import LocationBlock from "@/components/LocationBlock";
@@ -44,7 +44,7 @@ export default async function PhotographyPage() {
           subtitle="Weddings, portraits and the moments between — told in stills and film, with nine years behind the lens."
         />
 
-        <ColumnDriftGallery
+        <GalleryWithLightbox
           eyebrow="the gallery"
           heading="Stories, Frame by Frame"
           photos={photos}

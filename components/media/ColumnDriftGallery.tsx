@@ -31,19 +31,26 @@ export default function ColumnDriftGallery({
   heading,
   photos,
   columns = 4,
+  onPhotoClick,
 }: {
   eyebrow: string;
   heading: string;
   photos: GalleryPhoto[];
   columns?: number;
+  /** Optional: fired with the photo's ORIGINAL flat index when a frame is clicked. */
+  onPhotoClick?: (index: number) => void;
 }) {
   const rootRef = useRef<HTMLElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
   // Distribute photos round-robin into N columns (left to right, like the
   // source grid's literal column markup) so each column is its own DOM track.
-  const cols: GalleryPhoto[][] = Array.from({ length: columns }, () => []);
-  photos.forEach((photo, i) => cols[i % columns].push(photo));
+  // Keep each photo's original flat index so clicks can map back to it.
+  const cols: { photo: GalleryPhoto; index: number }[][] = Array.from(
+    { length: columns },
+    () => [],
+  );
+  photos.forEach((photo, i) => cols[i % columns].push({ photo, index: i }));
 
   useGSAP(
     () => {
@@ -285,11 +292,25 @@ export default function ColumnDriftGallery({
       <div ref={gridRef} className="column-drift__grid">
         {cols.map((col, ci) => (
           <div key={ci} data-drift-column="" className="column-drift__column">
-            {col.map((photo, pi) => (
+            {col.map(({ photo, index }) => (
               <figure
-                key={pi}
+                key={index}
                 data-drift-frame=""
                 className="column-drift__frame"
+                style={onPhotoClick ? { cursor: "zoom-in" } : undefined}
+                onClick={onPhotoClick ? () => onPhotoClick(index) : undefined}
+                {...(onPhotoClick
+                  ? {
+                      role: "button",
+                      tabIndex: 0,
+                      onKeyDown: (e: React.KeyboardEvent) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          onPhotoClick(index);
+                        }
+                      },
+                    }
+                  : {})}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
