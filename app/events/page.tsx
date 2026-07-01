@@ -9,11 +9,7 @@ import TestimonialMarquee from "@/components/events/TestimonialMarquee";
 import LocationBlock from "@/components/LocationBlock";
 import SiteFooter from "@/components/SiteFooter";
 import { getPage } from "@/lib/cms/getPage";
-import {
-  getReviews,
-  getSiteSettings,
-  footerPropsFromSettings,
-} from "@/lib/cms/getContent";
+import { getReviews } from "@/lib/cms/getContent";
 import { EVENTS_CLUSTERS } from "./clusters";
 
 export const metadata: Metadata = {
@@ -27,21 +23,19 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function EventsPage() {
-  const [page, reviews, settings] = await Promise.all([
+  const [page, reviews] = await Promise.all([
     getPage("events"),
     getReviews("events"),
-    getSiteSettings(),
   ]);
 
   const hasLiveGallery = page.gallery.length > 0;
   const hasLiveReels = page.reels.length > 0;
 
-  const locationLines = page.locationText
-    ? [page.locationText]
-    : [
-        "Based in Kerala — serving weddings and events across the state and beyond.",
-        "Tell us your venue; we bring the whole production to you.",
-      ];
+  // Location is hardcoded (not admin-managed).
+  const locationLines = [
+    "Based in Kerala — serving weddings and events across the state and beyond.",
+    "Tell us your venue; we bring the whole production to you.",
+  ];
 
   return (
     <>
@@ -88,10 +82,7 @@ export default async function EventsPage() {
           lines={locationLines}
         />
       </main>
-      <SiteFooter
-        {...footerPropsFromSettings(settings, "events")}
-        instagramUrl="https://www.instagram.com/agnitantra_events_and_caterers"
-      />
+      <SiteFooter instagramUrl="https://www.instagram.com/agnitantra_events_and_caterers" />
     </>
   );
 }

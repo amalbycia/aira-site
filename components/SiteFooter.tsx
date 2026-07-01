@@ -125,36 +125,29 @@ const FILIGREE = `<svg viewBox="0 0 600 40" fill="none" xmlns="http://www.w3.org
 // footer corners for ornamental density.
 const CORNER_VINE = `<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 190 C10 120 40 70 100 50 C150 33 180 20 190 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M100 50 C90 30 95 12 115 8 C108 26 116 40 100 50Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M55 75 C40 60 42 42 62 36 C56 54 66 66 55 75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M148 33 C140 16 146 2 164 0 C156 16 162 26 148 33Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="100" cy="50" r="3.5" fill="currentColor"/><circle cx="55" cy="75" r="3" fill="currentColor"/><circle cx="148" cy="33" r="3" fill="currentColor"/></svg>`;
 
+// Hardcoded contact + location. These are NOT admin-managed — edit them here.
+// TODO(client): replace the placeholder email/phone with the real values.
+const CONTACT_EMAIL = "hello@agnitantra.com";
+const CONTACT_PHONE = "+91 00000 00000";
+const LOCATION_TEXT = "Based in Kerala — available across India.";
+
 export default function SiteFooter({
   instagramUrl = INSTAGRAM_DEFAULT,
-  facebookUrl,
-  youtubeUrl,
-  email,
-  phone,
-  locationText,
 }: {
-  /** Instagram differs per page (Photography vs Events); the rest are brand-wide. */
+  /**
+   * Instagram differs per page (Aira Photography vs Agnitantra Events), so it's
+   * the one footer value passed in per page. Everything else (Facebook, YouTube,
+   * Linktree, contact, location) is hardcoded above / in the SOCIALS constant.
+   */
   instagramUrl?: string;
-  /** Social/contact overrides from Sanity siteSettings; fall back to defaults. */
-  facebookUrl?: string;
-  youtubeUrl?: string;
-  email?: string;
-  phone?: string;
-  locationText?: string;
-}) {
-  // Override each social href with a Sanity value when present, else the default.
-  const overrides: Record<string, string | undefined> = {
-    instagram: instagramUrl,
-    facebook: facebookUrl,
-    youtube: youtubeUrl,
-  };
+} = {}) {
+  // Only Instagram varies per page; the rest use their hardcoded hrefs.
   const socials = SOCIALS.map((s) =>
-    overrides[s.key] ? { ...s, href: overrides[s.key]! } : s,
+    s.key === "instagram" ? { ...s, href: instagramUrl } : s,
   );
 
-  // Contact + location, Sanity-driven with sensible fallbacks.
-  const contactEmail = email || "hello@agnitantra.com";
-  const contactPhone = phone || "+91 00000 00000";
+  const contactEmail = CONTACT_EMAIL;
+  const contactPhone = CONTACT_PHONE;
   const telHref = `tel:${contactPhone.replace(/[^\d+]/g, "")}`;
   const mailHref = `mailto:${contactEmail}`;
 
@@ -1000,9 +993,7 @@ export default function SiteFooter({
                     <Sparkle size={10} opacity={0.9} /> Location
                   </span>
                   <h3 className="footer-card__heading font-sometimes-times">Studio</h3>
-                  <p className="footer-meta-line">
-                    {locationText || "Based in Kerala — available across India."}
-                  </p>
+                  <p className="footer-meta-line">{LOCATION_TEXT}</p>
                   <p
                     className="footer-meta-line"
                     style={{ marginTop: "0.8em", opacity: 0.8 }}

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import AboutStory from "@/components/about/AboutStory";
 import SiteFooter from "@/components/SiteFooter";
-import { getSiteSettings, footerPropsFromSettings } from "@/lib/cms/getContent";
 
 export const metadata: Metadata = {
   title: "About — Aira Photography & Agnitantra Events",
@@ -10,11 +9,7 @@ export const metadata: Metadata = {
     "Founded in 2018 by Amal Sebastian Kalarickal, Aira Photography & Agnitantra Events & Caterers is a full-service event and visual-storytelling team — nine years of weddings and celebrations across Kerala.",
 };
 
-export const revalidate = 60;
-
-export default async function AboutPage() {
-  const settings = await getSiteSettings();
-
+export default function AboutPage() {
   return (
     <>
       <main style={{ position: "relative", zIndex: 1 }}>
@@ -26,7 +21,7 @@ export default async function AboutPage() {
 
         <AboutStory />
       </main>
-      <SiteFooter {...footerPropsFromSettings(settings)} />
+      <SiteFooter />
     </>
   );
 }

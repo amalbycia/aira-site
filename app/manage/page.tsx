@@ -5,7 +5,6 @@ import {
   listPhotos,
   listReels,
   listReviews,
-  getSettingsRow,
   listAdminUsers,
 } from "@/lib/cms/admin";
 import { getSessionEmail } from "@/lib/auth/session";
@@ -18,13 +17,12 @@ export default async function ManagePage() {
   }
 
   // Load initial data server-side so the dashboard renders populated.
-  const [photographyPhotos, eventsPhotos, reels, reviews, settings, users, currentEmail] =
+  const [photographyPhotos, eventsPhotos, reels, reviews, users, currentEmail] =
     await Promise.all([
       listPhotos("photography"),
       listPhotos("events"),
       listReels(),
       listReviews(),
-      getSettingsRow(),
       listAdminUsers(),
       getSessionEmail(),
     ]);
@@ -34,7 +32,6 @@ export default async function ManagePage() {
       initialPhotos={{ photography: photographyPhotos, events: eventsPhotos }}
       initialReels={reels}
       initialReviews={reviews}
-      initialSettings={settings}
       initialUsers={users}
       currentEmail={currentEmail}
     />

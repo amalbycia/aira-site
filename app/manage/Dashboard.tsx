@@ -6,22 +6,22 @@ import type {
   PhotoRow,
   ReelRow,
   ReviewRow,
-  SettingsRow,
   AdminUserRow,
 } from "@/lib/cms/admin";
 import PhotosTab from "./tabs/PhotosTab";
 import ReelsTab from "./tabs/ReelsTab";
 import ReviewsTab from "./tabs/ReviewsTab";
-import SettingsTab from "./tabs/SettingsTab";
 import UsersTab from "./tabs/UsersTab";
 
-type Tab = "photos" | "reels" | "reviews" | "settings" | "users";
+// The admin manages only content that actually changes: photos, reels, reviews
+// (+ user accounts). Everything else on the site — socials, contact, location,
+// About copy — is intentionally hardcoded, so there is no Settings tab.
+type Tab = "photos" | "reels" | "reviews" | "users";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "photos", label: "Photos" },
   { id: "reels", label: "Reels & Videos" },
   { id: "reviews", label: "Reviews" },
-  { id: "settings", label: "Settings" },
   { id: "users", label: "Users" },
 ];
 
@@ -29,14 +29,12 @@ export default function Dashboard({
   initialPhotos,
   initialReels,
   initialReviews,
-  initialSettings,
   initialUsers,
   currentEmail,
 }: {
   initialPhotos: { photography: PhotoRow[]; events: PhotoRow[] };
   initialReels: ReelRow[];
   initialReviews: ReviewRow[];
-  initialSettings: SettingsRow | null;
   initialUsers: AdminUserRow[];
   currentEmail: string | null;
 }) {
@@ -92,9 +90,6 @@ export default function Dashboard({
       {tab === "reels" && <ReelsTab initial={initialReels} onToast={showToast} />}
       {tab === "reviews" && (
         <ReviewsTab initial={initialReviews} onToast={showToast} />
-      )}
-      {tab === "settings" && (
-        <SettingsTab initial={initialSettings} onToast={showToast} />
       )}
       {tab === "users" && (
         <UsersTab

@@ -6,11 +6,7 @@ import TestimonialMarquee from "@/components/events/TestimonialMarquee";
 import LocationBlock from "@/components/LocationBlock";
 import SiteFooter from "@/components/SiteFooter";
 import { getPage } from "@/lib/cms/getPage";
-import {
-  getReviews,
-  getSiteSettings,
-  footerPropsFromSettings,
-} from "@/lib/cms/getContent";
+import { getReviews } from "@/lib/cms/getContent";
 import { PHOTOGRAPHY_PHOTOS, PHOTOGRAPHY_REELS } from "./clusters";
 
 export const metadata: Metadata = {
@@ -26,20 +22,18 @@ export const revalidate = 60;
 export default async function PhotographyPage() {
   // Pull the gallery from Sanity; fall back to placeholders until the client
   // has uploaded photos in /studio (or if Sanity is unreachable).
-  const [page, reviews, settings] = await Promise.all([
+  const [page, reviews] = await Promise.all([
     getPage("photography"),
     getReviews("photography"),
-    getSiteSettings(),
   ]);
   const photos = page.gallery.length > 0 ? page.gallery : PHOTOGRAPHY_PHOTOS;
   const reels = page.reels.length > 0 ? page.reels : PHOTOGRAPHY_REELS;
 
-  const locationLines = page.locationText
-    ? [page.locationText]
-    : [
-        "Based in Kerala — available across India and beyond.",
-        "Destination weddings welcome; we travel for the right story.",
-      ];
+  // Location is hardcoded (not admin-managed).
+  const locationLines = [
+    "Based in Kerala — available across India and beyond.",
+    "Destination weddings welcome; we travel for the right story.",
+  ];
 
   return (
     <>
@@ -78,10 +72,7 @@ export default async function PhotographyPage() {
           lines={locationLines}
         />
       </main>
-      <SiteFooter
-        {...footerPropsFromSettings(settings, "photography")}
-        instagramUrl="https://www.instagram.com/aira__photography_"
-      />
+      <SiteFooter instagramUrl="https://www.instagram.com/aira__photography_" />
     </>
   );
 }
