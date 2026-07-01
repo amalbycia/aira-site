@@ -188,6 +188,12 @@ export default function PhotoLightbox({
           display: flex;
           align-items: center;
           overflow: hidden;
+          /* Nudge the whole track a touch left of dead-centre, so the active
+             photo sits slightly left and a bit more of the next one shows. */
+          transform: translateX(-6vw);
+        }
+        @media (max-width: 991px) {
+          .lb__wrap { transform: translateX(-10vw); }
         }
         .lb__list {
           display: flex;
