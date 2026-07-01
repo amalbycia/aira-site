@@ -207,47 +207,34 @@ export default function PhotoLightbox({
           padding-left: 1.25em;
           padding-right: 1.25em;
           position: relative;
-          opacity: 0.55;
-          /* Neighbours sit back a touch; the active one rises + enlarges. */
-          transform: scale(0.9);
-          transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.22,1,0.36,1);
+          opacity: 0.72;
+          transition: opacity 0.4s;
           cursor: pointer;
         }
-        .lb__slide.active {
-          opacity: 1;
-          transform: scale(1.06);
-          cursor: default;
-          z-index: 1;
-        }
+        .lb__slide.active { opacity: 1; cursor: default; }
         .lb__slide-inner {
           position: relative;
           width: 100%;
           height: 100%;
           border-radius: 0.5em;
           overflow: hidden;
-          background: #0e0a0a; /* fill behind a contained (uncropped) photo */
           box-shadow: 0 30px 80px -34px rgba(0,0,0,0.85);
         }
         .lb__slide.active .lb__slide-inner {
           box-shadow:
-            0 44px 110px -28px rgba(0,0,0,0.92),
+            0 40px 100px -30px rgba(0,0,0,0.9),
             0 0 0 1px rgba(201,169,110,0.4);
         }
         .lb__img {
           width: 100%;
           height: 100%;
-          /* Neighbours fill their frame (cover); the centred/active photo is
-             shown in FULL (contain) so nothing is cropped. */
           object-fit: cover;
           display: block;
-          transition: object-fit 0s;
           -webkit-user-drag: none;
           user-select: none;
         }
-        .lb__slide.active .lb__img { object-fit: contain; }
         @media (prefers-reduced-motion: reduce) {
-          .lb__slide { transition: opacity 200ms ease; transform: none; }
-          .lb__slide.active { transform: none; }
+          .lb__slide { transition: opacity 200ms ease; }
         }
 
         /* ── Overlay: step counter (left) ─────────────────────────────────── */
