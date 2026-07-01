@@ -25,6 +25,11 @@ export default function LenisProvider({
     // One unified loop keeps every scroll-driven tween in lockstep.
     const lenis = new Lenis({ autoRaf: false });
 
+    // Expose the instance so overlays (e.g. the photo lightbox) can stop/start
+    // smooth scroll while a modal is open — plain `overflow:hidden` doesn't
+    // hold Lenis back on its own.
+    (window as Window & { __lenis?: Lenis }).__lenis = lenis;
+
     // Keep ScrollTrigger in sync on every Lenis scroll frame.
     lenis.on("scroll", ScrollTrigger.update);
 
@@ -38,6 +43,7 @@ export default function LenisProvider({
     return () => {
       gsap.ticker.remove(onTick);
       lenis.off("scroll", ScrollTrigger.update);
+      delete (window as Window & { __lenis?: Lenis }).__lenis;
       lenis.destroy();
       // Restore default lag smoothing for any non-Lenis routes (e.g. /manage).
       gsap.ticker.lagSmoothing(500, 33);

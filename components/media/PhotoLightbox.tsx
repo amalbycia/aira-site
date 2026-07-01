@@ -116,12 +116,25 @@ export default function PhotoLightbox({
         loopRef.current?.next({ ease: "power3", duration: 0.725 });
     };
     window.addEventListener("keydown", onKey);
+
+    // Lock background scroll. overflow:hidden alone won't hold Lenis back, so
+    // stop the shared Lenis instance too (exposed by LenisProvider), and resume
+    // it on close.
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const lenis = (window as Window & { __lenis?: { stop: () => void; start: () => void } }).__lenis;
+    lenis?.stop();
+
+    // Hide the site's fixed nav ("Menu") button while the lightbox is open —
+    // only the lightbox's own X should show. (See the global rule in <style>.)
+    document.documentElement.classList.add("lb-open");
+
     rootRef.current?.focus();
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prevOverflow;
+      lenis?.start();
+      document.documentElement.classList.remove("lb-open");
     };
   }, [isOpen, onClose]);
 
@@ -144,11 +157,13 @@ export default function PhotoLightbox({
         .lb {
           position: fixed;
           inset: 0;
-          z-index: 100;
+          z-index: 200; /* above the site's fixed nav (z-index:100) */
           overflow: hidden;
           outline: none;
           animation: lb-fade 260ms ease both;
         }
+        /* Hide the site's "Menu" nav button while the lightbox is open. */
+        html.lb-open .sidenav__header { display: none !important; }
         @keyframes lb-fade { from { opacity: 0; } to { opacity: 1; } }
         @media (prefers-reduced-motion: reduce) { .lb { animation: none; } }
 
@@ -159,11 +174,9 @@ export default function PhotoLightbox({
           z-index: 0;
           /* Near-neutral dark so the centered photo renders true-colour; the
              maroon only tints the corners as a faint vignette, never the middle. */
+          /* Fully opaque — the gallery behind must NOT show through. */
           background:
-            radial-gradient(130% 100% at 50% 50%, transparent 55%, rgba(90,22,22,0.35) 100%),
-            rgba(14, 10, 10, 0.96);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
+            radial-gradient(130% 100% at 50% 50%, #171010 55%, #2a1414 100%);
         }
         .lb__backdrop { position: absolute; inset: 0; z-index: 1; }
 
@@ -194,7 +207,7 @@ export default function PhotoLightbox({
           padding-left: 1.25em;
           padding-right: 1.25em;
           position: relative;
-          opacity: 0.2;
+          opacity: 0.72;
           transition: opacity 0.4s;
           cursor: pointer;
         }
@@ -241,9 +254,9 @@ export default function PhotoLightbox({
           display: flex;
           align-items: center;
           gap: 0.2em;
-          font-family: var(--font-nohemi), sans-serif;
+          font-family: var(--font-sometimes-times), serif;
           font-size: clamp(2.4em, 4.5vw, 4.5em);
-          font-weight: 700;
+          font-weight: 400;
           line-height: 1;
         }
         .lb__count-col { height: 1em; overflow: hidden; }
@@ -274,36 +287,23 @@ export default function PhotoLightbox({
           gap: 1.2em;
         }
         .lb__btn {
-          position: relative;
-          width: 4em;
-          height: 4em;
+          width: 3.6em;
+          height: 3.6em;
           display: grid;
           place-items: center;
           color: var(--color-cream);
-          background: transparent;
-          border: 1px solid rgba(245,237,224,0.25);
-          border-radius: 0.4em;
+          background: rgba(26,10,10,0.4);
+          border: 1px solid rgba(201,169,110,0.45);
+          border-radius: 0.6em;
           cursor: pointer;
-          transition:
-            transform 0.475s cubic-bezier(0.625,0.05,0,1),
-            opacity 0.475s cubic-bezier(0.625,0.05,0,1);
+          transition: background 200ms ease, border-color 200ms ease, transform 200ms ease;
         }
-        .lb__btn-corners { position: absolute; inset: -1px; z-index: 2;
-          transition: transform 0.475s cubic-bezier(0.625,0.05,0,1); }
-        .lb__btn-corner {
-          position: absolute;
-          width: 1em; height: 1em;
-          border-top: 1px solid var(--color-gold);
-          border-left: 1px solid var(--color-gold);
-          border-top-left-radius: 0.4em;
+        .lb__btn:hover {
+          background: var(--color-primary);
+          border-color: var(--color-gold);
+          transform: translateY(-2px);
         }
-        .lb__btn-corner.tr { inset: 0 0 auto auto; transform: rotate(90deg); }
-        .lb__btn-corner.br { inset: auto 0 0 auto; transform: rotate(180deg); }
-        .lb__btn-corner.bl { inset: auto auto 0 0; transform: rotate(-90deg); }
-        .lb__nav:hover .lb__btn { opacity: 0.4; }
-        .lb__btn:hover { transform: scale(0.85); opacity: 1 !important; }
-        .lb__btn:hover .lb__btn-corners { transform: scale(1.4); }
-        .lb__btn svg { width: 1em; height: 0.75em; }
+        .lb__btn svg { width: 1.1em; height: 0.85em; }
         .lb__btn--next svg { transform: rotate(180deg); }
 
         .lb__close {
@@ -375,23 +375,11 @@ export default function PhotoLightbox({
           <svg viewBox="0 0 17 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M6 1L1 6l5 5M1 6h16" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          <span className="lb__btn-corners">
-            <span className="lb__btn-corner" />
-            <span className="lb__btn-corner tr" />
-            <span className="lb__btn-corner br" />
-            <span className="lb__btn-corner bl" />
-          </span>
         </button>
         <button className="lb__btn lb__btn--next" onClick={next} aria-label="Next photo">
           <svg viewBox="0 0 17 12" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M6 1L1 6l5 5M1 6h16" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          <span className="lb__btn-corners">
-            <span className="lb__btn-corner" />
-            <span className="lb__btn-corner tr" />
-            <span className="lb__btn-corner br" />
-            <span className="lb__btn-corner bl" />
-          </span>
         </button>
       </div>
     </div>
