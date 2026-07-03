@@ -29,8 +29,10 @@ export type ReelItem = {
   kind: "reel";
   /** Poster frame shown before play — local placeholder now, Bunny thumb later. */
   poster: string;
-  /** Self-hosted video URL. Omit until Bunny is wired; poster shows alone. */
+  /** Self-hosted MP4 URL (Bunny "MP4 fallback"). Used when HLS isn't available. */
   videoSrc?: string;
+  /** Bunny HLS (.m3u8) URL — adaptive streaming, played via hls.js. Preferred. */
+  hlsSrc?: string;
   alt: string;
   caption?: string;
   /** Reels are vertical by nature, but the grid still honors an explicit span. */

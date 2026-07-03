@@ -1,5 +1,9 @@
 import { sql, hasDb } from "@/lib/db";
-import { getBunnyMp4Url, getBunnyThumbnailUrl } from "@/lib/bunny";
+import {
+  getBunnyMp4Url,
+  getBunnyThumbnailUrl,
+  getBunnyHlsUrl,
+} from "@/lib/bunny";
 import type { GalleryPhoto, ReelItem } from "@/components/media/types";
 
 export type PageData = {
@@ -54,6 +58,7 @@ export async function getPage(
       kind: "reel" as const,
       span: "portrait" as const,
       poster: r.thumbnail_url || getBunnyThumbnailUrl(r.bunny_video_id),
+      hlsSrc: getBunnyHlsUrl(r.bunny_video_id),
       videoSrc: getBunnyMp4Url(r.bunny_video_id, "720p"),
       alt: r.title || "Reel",
       caption: r.title || undefined,
