@@ -26,7 +26,7 @@ Bunny Storage for images, and Bunny Stream for video. No third-party CMS.
 - **Neon Postgres** (`DATABASE_URI`) — tables: `pages`, `gallery_photos`, `reels`, `reviews`, `site_settings`. See `lib/schema.sql`.
 - **Bunny Storage** (`BUNNY_STORAGE_*`, zone `agnitantra-images`) — gallery/cover images, served via `agnitantra-images.b-cdn.net`.
 - **Bunny Stream** (`BUNNY_STREAM_*`, library 691820) — reel videos (HLS + MP4 fallback).
-- **Admin** at `/manage` — password login (`ADMIN_PASSWORD`), signed-cookie session (`ADMIN_SESSION_SECRET`). Client uploads photos (browser-compressed → Bunny Storage) and reels (→ Bunny Stream), edits reviews and settings.
+- **Admin** at `/manage` — auth via **Clerk** (Google sign-in; users managed in the Clerk dashboard). Every `app/api/admin/**` route is gated by `requireAdmin()`, which checks Clerk's `auth()`. Client uploads photos (browser-compressed → Bunny Storage) and reels (→ Bunny Stream), edits reviews, and edits the Events catering menu. **See [ADMIN-CONSOLE.md](./ADMIN-CONSOLE.md) for the full console + auth setup — read it before touching auth or `/manage`.** (The old custom password login / `admin_users` table / `lib/auth/session.ts` are retired — do not wire new code to them.)
 
 ---
 
@@ -126,9 +126,12 @@ lib/
 
 ## Further Reading
 
+- [ADMIN-CONSOLE.md](./ADMIN-CONSOLE.md) — how `/manage` + Clerk auth work; setup steps and gotchas
+- [HANDOVER-CLERK.md](./HANDOVER-CLERK.md) — contextual handover + Clerk migration plan/status
 - [MAP.md](./MAP.md) — architectural reasoning for every major file and folder
 - [TODO.md](./TODO.md) — living build checklist, section by section
 - [CLIENTRAWDETAILS.md](./CLIENTRAWDETAILS.md) — client requirements verbatim + organized
+- [TODO-REELS-PLAYER.md](./TODO-REELS-PLAYER.md) — parked: Osmo HLS reels-player upgrade
 
 ---
 

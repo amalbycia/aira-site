@@ -82,7 +82,10 @@ export default function ColumnDriftGallery({
         columnEls.forEach((col, i) => {
           const tween = gsap.to(col, {
             ease: "none",
-            yPercent: -1 * i * 10,
+            // Subtle drift: keep the columns-separate feel but small enough that
+            // a tile barely moves, so a click while smooth-scroll is still
+            // settling can't land on a different photo than the one you see.
+            yPercent: -1 * i * 3,
             scrollTrigger: {
               trigger: grid,
               start: "top bottom",
@@ -99,9 +102,9 @@ export default function ColumnDriftGallery({
         imageEls.forEach((img) => {
           const tween = gsap.fromTo(
             img,
-            { y: 30 },
+            { y: 8 },
             {
-              y: -30,
+              y: -8,
               ease: "none",
               scrollTrigger: {
                 trigger: img.closest("[data-drift-frame]") ?? img,
@@ -132,7 +135,10 @@ export default function ColumnDriftGallery({
         columnEls.forEach((col, i) => {
           const tween = gsap.to(col, {
             ease: "none",
-            yPercent: -1 * i * 10,
+            // Subtle drift: keep the columns-separate feel but small enough that
+            // a tile barely moves, so a click while smooth-scroll is still
+            // settling can't land on a different photo than the one you see.
+            yPercent: -1 * i * 3,
             scrollTrigger: {
               trigger: grid,
               start: "top bottom",
@@ -146,9 +152,9 @@ export default function ColumnDriftGallery({
         imageEls.forEach((img) => {
           const tween = gsap.fromTo(
             img,
-            { y: 30 },
+            { y: 8 },
             {
-              y: -30,
+              y: -8,
               ease: "none",
               scrollTrigger: {
                 trigger: img.closest("[data-drift-frame]") ?? img,

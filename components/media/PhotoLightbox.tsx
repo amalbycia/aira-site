@@ -71,25 +71,65 @@ export default function PhotoLightbox({
       }
     };
 
+    // With `center: true`, horizontalLoop's own index (closestIndex) can be
+    // offset by ~one slide from the item actually parked in the middle — which
+    // made the `.active` highlight + counter point at a DIFFERENT photo than the
+    // one visually centered (and clicking a neighbour centered the wrong one).
+    // So we derive "active" from real geometry: whichever slide's centre is
+    // closest to the viewport centre is the active one.
+    const centeredIndex = () => {
+      const mid = window.innerWidth / 2;
+      let best = 0;
+      let bestDist = Infinity;
+      slides.forEach((s, i) => {
+        const r = s.getBoundingClientRect();
+        const d = Math.abs(r.left + r.width / 2 - mid);
+        if (d < bestDist) {
+          bestDist = d;
+          best = i;
+        }
+      });
+      return best;
+    };
+    const syncActive = (animate: boolean) => applyActive(centeredIndex(), animate);
+
     const loop = horizontalLoop(slides, {
       paused: true,
       draggable: !prefersReduced, // momentum drag; skip for reduced-motion
       center: true,
       speed: 1,
-      onChange: (_el, index) => applyActive(index, true),
+      // Re-sync on every loop update so the highlight/counter follow the slide
+      // that's actually centred, through drags and toIndex tweens alike.
+      onChange: () => syncActive(true),
     });
     loopRef.current = loop;
 
-    // Open on the clicked photo, no animation.
-    loop.toIndex(openIndex!, { duration: 0 });
-    applyActive(loop.current(), false);
+    // Center a target slide by stepping RELATIVE to whatever is currently
+    // centred. `toIndex` is unreliable under `center: true` (it parks the item
+    // ~one slot off), so we advance by the exact number of slides between the
+    // centred one and the target — next()/previous() are offset-agnostic and
+    // land the right photo dead-centre.
+    const goToSlide = (target: number, vars?: gsap.TweenVars) => {
+      const from = centeredIndex();
+      let delta = target - from;
+      // Take the shortest way round the infinite loop.
+      if (delta > slides.length / 2) delta -= slides.length;
+      if (delta < -slides.length / 2) delta += slides.length;
+      if (delta === 0) return;
+      loop.toIndex(loop.current() + delta, vars);
+    };
 
-    // Click a non-active slide → bring it to center (demo: loop.toIndex(i)).
+    // Open on the clicked photo (no animation), then sync the highlight to the
+    // slide that actually landed in the centre.
+    goToSlide(openIndex!, { duration: 0 });
+    syncActive(false);
+
+    // Click a non-active slide → bring it to center.
     const clickHandlers: Array<() => void> = [];
     slides.forEach((slide, i) => {
       const h = () => {
         if (slide.classList.contains("active")) return;
-        loop.toIndex(i, { ease: "power3", duration: 0.725 });
+        goToSlide(i, { ease: "power3", duration: 0.725 });
       };
       slide.addEventListener("click", h);
       clickHandlers.push(() => slide.removeEventListener("click", h));
@@ -173,10 +213,11 @@ export default function PhotoLightbox({
           inset: 0;
           z-index: 0;
           /* Near-neutral dark so the centered photo renders true-colour; the
-             maroon only tints the corners as a faint vignette, never the middle. */
-          /* Fully opaque — the gallery behind must NOT show through. */
+             maroon only tints the corners as a faint vignette, never the middle.
+             Fully opaque — the gallery behind must NOT show through. Kept a touch
+             lighter/flatter so the lightbox reads bright, not gloomy. */
           background:
-            radial-gradient(130% 100% at 50% 50%, #171010 55%, #2a1414 100%);
+            radial-gradient(150% 120% at 50% 50%, #34201f 62%, #3d2222 100%);
         }
         .lb__backdrop { position: absolute; inset: 0; z-index: 1; }
 
@@ -193,7 +234,9 @@ export default function PhotoLightbox({
           transform: translateX(-6vw);
         }
         @media (max-width: 991px) {
-          .lb__wrap { transform: translateX(-10vw); }
+          /* Barely nudge left on mobile — a bigger shift pushed the next slide
+             half off-screen where overflow clipped it into a "bar" on the right. */
+          .lb__wrap { transform: translateX(-2vw); }
         }
         .lb__list {
           display: flex;
@@ -213,7 +256,7 @@ export default function PhotoLightbox({
           padding-left: 1.25em;
           padding-right: 1.25em;
           position: relative;
-          opacity: 0.72;
+          opacity: 0.94;
           transition: opacity 0.4s;
           cursor: pointer;
         }
@@ -254,7 +297,9 @@ export default function PhotoLightbox({
           padding-left: 2em;
           color: var(--color-cream);
           pointer-events: none;
-          background-image: linear-gradient(90deg, rgba(20,8,8,0.9) 60%, rgba(20,8,8,0));
+          /* Gradient only backs the number for legibility; fades out well before
+             the centered image so it never tints the photo. */
+          background-image: linear-gradient(90deg, rgba(20,8,8,0.72) 20%, rgba(20,8,8,0) 65%);
         }
         .lb__count {
           display: flex;
@@ -330,9 +375,20 @@ export default function PhotoLightbox({
 
         @media (max-width: 991px) {
           .lb__slide { width: 78vw; }
-          .lb__overlay { width: 78vw; padding-left: 1.2em;
-            background-image: linear-gradient(90deg, rgba(20,8,8,0.85) 40%, rgba(20,8,8,0)); }
-          .lb__count { font-size: clamp(2em, 9vw, 3.2em); }
+          /* Keep the counter bottom-left but stop its gradient from washing over
+             the photo: narrow it and fade out quickly, so the image stays clear. */
+          .lb__overlay {
+            width: 60vw;
+            inset: auto auto 0 0;
+            height: auto;
+            align-items: flex-end;
+            padding: 0 0 1.4em 1.2em;
+            background-image: linear-gradient(90deg, rgba(20,8,8,0.6) 12%, rgba(20,8,8,0) 55%);
+          }
+          .lb__count {
+            font-size: clamp(2em, 9vw, 3.2em);
+            text-shadow: 0 1px 6px rgba(0,0,0,0.85);
+          }
           .lb__btn { width: 3.2em; height: 3.2em; }
         }
       `}</style>

@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Alex_Brush, Cormorant_Garamond, DM_Sans } from "next/font/google";
 import localFont from "next/font/local";
@@ -82,8 +83,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Aira Photography & Agnitantra Events",
-    description:
-      "Wedding photography and full-service event management across Kerala.",
+    description: "Wedding photography and full-service event management across Kerala.",
   },
   robots: { index: true, follow: true },
 };
@@ -99,11 +99,13 @@ export default function RootLayout({
       className={`${alexBrush.variable} ${cormorant.variable} ${dmSans.variable} ${nohemi.variable} ${sometimesTimes.variable}`}
     >
       <body>
-        <LenisProvider>
-          <SideNav />
-          {children}
-          <PageTransition />
-        </LenisProvider>
+        <ClerkProvider afterSignOutUrl="/">
+          <LenisProvider>
+            <SideNav />
+            {children}
+            <PageTransition />
+          </LenisProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

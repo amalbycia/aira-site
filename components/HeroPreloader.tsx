@@ -293,6 +293,15 @@ export default function HeroPreloader() {
           min-height: calc(100vh - 2em);
         }
 
+        /* Once revealed, the expanded hero image is the background. Its height is
+           100dvh, but the section's min-height is 100vh-based — on mobile these
+           differ as the browser chrome shows/hides, which briefly exposed the
+           cream backdrop as a band at the top/bottom. Switch the backdrop to the
+           maroon so any such gap blends into the hero instead of flashing cream. */
+        .crisp-header:not(.is--loading) {
+          background-color: var(--color-primary);
+        }
+
         /* Loading: header invisible until the timeline's onStart unhides it */
         .crisp-header.is--loading.is--hidden { visibility: hidden; }
 
@@ -305,6 +314,28 @@ export default function HeroPreloader() {
            expands to become the hero background, so it must not be removed.
            Only the side fade gradients are dropped when is--loading is gone. */
         .crisp-header:not(.is--loading) .crisp-loader__fade { display: none; }
+
+        /* Static hero-bg layer: the SAME image as the carousel's center tile,
+           object-fit:cover so it perfectly fills the section on every viewport.
+           It sits BEHIND the carousel (z-index 0) and is hidden while the loader
+           plays; once revealed it shows through. The animating tile expands and
+           lands ON TOP of this identical image — so if the tile ever leaves a
+           gap or stretches (100dvh vs 100vh on mobile), what shows underneath is
+           the matching bg, not cream. Result: seamless full cover, animation
+           untouched. */
+        .crisp-header__bg {
+          position: absolute;
+          inset: 0;
+          z-index: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center;
+          visibility: hidden;
+        }
+        .crisp-header:not(.is--loading) .crisp-header__bg {
+          visibility: visible;
+        }
 
         /* ── Loader (Osmo crisp) ── */
         .crisp-loader {
@@ -542,6 +573,13 @@ export default function HeroPreloader() {
           .hero-corner--br { bottom: 3.5em; right: 0.8em; }
         }
       `}</style>
+
+      {/* Static hero background — same image as the carousel's center tile,
+          object-fit:cover so it fills the section perfectly. Hidden while the
+          loader plays; revealed after the morph so the expanded tile lands on an
+          identical, already-covering image (no cream band, no visible stretch). */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={HERO_BG} alt="" aria-hidden="true" className="crisp-header__bg" />
 
       {/* Loader carousel — center image is the real hero bg, expands to fill */}
       <div className="crisp-loader">

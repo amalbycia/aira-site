@@ -1,50 +1,44 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { UserButton } from "@clerk/nextjs";
 import type {
   PhotoRow,
   ReelRow,
   ReviewRow,
-  AdminUserRow,
   MenuCategoryRow,
 } from "@/lib/cms/admin";
 import PhotosTab from "./tabs/PhotosTab";
 import ReelsTab from "./tabs/ReelsTab";
 import ReviewsTab from "./tabs/ReviewsTab";
-import UsersTab from "./tabs/UsersTab";
 import MenuTab from "./tabs/MenuTab";
 
 // The admin manages only content that actually changes: photos, reels, reviews,
-// the events catering menu (+ user accounts). Everything else on the site —
-// socials, contact, location, About copy — is intentionally hardcoded, so there
-// is no Settings tab.
-type Tab = "photos" | "reels" | "reviews" | "menu" | "users";
+// and the events catering menu. User accounts are managed in the Clerk
+// dashboard (not here). Everything else on the site — socials, contact,
+// location, About copy — is intentionally hardcoded, so there is no Settings tab.
+type Tab = "photos" | "reels" | "reviews" | "menu";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "photos", label: "Photos" },
   { id: "reels", label: "Reels & Videos" },
   { id: "reviews", label: "Reviews" },
   { id: "menu", label: "Events Menu" },
-  { id: "users", label: "Users" },
 ];
 
 export default function Dashboard({
   initialPhotos,
   initialReels,
   initialReviews,
-  initialUsers,
   initialMenu,
   currentEmail,
 }: {
   initialPhotos: { photography: PhotoRow[]; events: PhotoRow[] };
   initialReels: ReelRow[];
   initialReviews: ReviewRow[];
-  initialUsers: AdminUserRow[];
   initialMenu: MenuCategoryRow[];
   currentEmail: string | null;
 }) {
-  const router = useRouter();
   const [tab, setTab] = useState<Tab>("photos");
   const [toast, setToast] = useState<string | null>(null);
 
@@ -52,11 +46,6 @@ export default function Dashboard({
     setToast(msg);
     window.setTimeout(() => setToast(null), 2600);
   }, []);
-
-  async function logout() {
-    await fetch("/api/admin/logout", { method: "POST" });
-    router.refresh();
-  }
 
   return (
     <div className="admin-shell">
@@ -71,9 +60,10 @@ export default function Dashboard({
               {currentEmail}
             </span>
           ) : null}
-          <button className="btn btn--ghost btn--sm" onClick={logout}>
-            Sign out
-          </button>
+          {/* Clerk account menu — sign out, manage account. Returns to the home
+              page after sign-out. */}
+          <UserButton />
+
         </div>
       </header>
 
@@ -98,13 +88,6 @@ export default function Dashboard({
         <ReviewsTab initial={initialReviews} onToast={showToast} />
       )}
       {tab === "menu" && <MenuTab initial={initialMenu} onToast={showToast} />}
-      {tab === "users" && (
-        <UsersTab
-          initial={initialUsers}
-          currentEmail={currentEmail}
-          onToast={showToast}
-        />
-      )}
 
       {toast ? <div className="toast">{toast}</div> : null}
     </div>
