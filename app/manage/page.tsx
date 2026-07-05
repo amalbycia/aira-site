@@ -10,17 +10,29 @@ export default async function ManagePage() {
   const { isAuthenticated, redirectToSignIn } = await auth();
   if (!isAuthenticated) return redirectToSignIn();
 
-  // Load initial data server-side so the dashboard renders populated. User
-  // accounts are managed in the Clerk dashboard now — no admin_users query.
-  const [photographyPhotos, eventsPhotos, reels, reviews, menu, user] =
-    await Promise.all([
-      listPhotos("photography"),
-      listPhotos("events"),
-      listReels(),
-      listReviews(),
-      listMenu(),
-      currentUser(),
-    ]);
+  // Load initial data server-side so the dashboard renders populated, split by
+  // page (photos, reels and reviews are all strictly per-page now — each page
+  // has its own Reviews section). User accounts are managed in the Clerk
+  // dashboard.
+  const [
+    photographyPhotos,
+    eventsPhotos,
+    photographyReels,
+    eventsReels,
+    photographyReviews,
+    eventsReviews,
+    menu,
+    user,
+  ] = await Promise.all([
+    listPhotos("photography"),
+    listPhotos("events"),
+    listReels("photography"),
+    listReels("events"),
+    listReviews("photography"),
+    listReviews("events"),
+    listMenu(),
+    currentUser(),
+  ]);
 
   const currentEmail =
     user?.primaryEmailAddress?.emailAddress ??
@@ -30,8 +42,8 @@ export default async function ManagePage() {
   return (
     <Dashboard
       initialPhotos={{ photography: photographyPhotos, events: eventsPhotos }}
-      initialReels={reels}
-      initialReviews={reviews}
+      initialReels={{ photography: photographyReels, events: eventsReels }}
+      initialReviews={{ photography: photographyReviews, events: eventsReviews }}
       initialMenu={menu}
       currentEmail={currentEmail}
     />

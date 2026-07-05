@@ -110,7 +110,20 @@
   white-space: nowrap;
 }
 
-/* ── Tabs ────────────────────────────────────────────────────────────────── */
+/* ── Page nav (top level: Photography | Events) ──────────────────────────── */
+.admin-pagenav {
+  display: flex;
+  margin-bottom: 1rem;
+}
+.page-switch--brand {
+  font-size: 0.98rem;
+}
+.page-switch--brand button {
+  padding: 0.55rem 1.4rem;
+  font-weight: 600;
+}
+
+/* ── Tabs (second level: the page's sections) ────────────────────────────── */
 .admin-tabs {
   display: flex;
   gap: 0.4rem;

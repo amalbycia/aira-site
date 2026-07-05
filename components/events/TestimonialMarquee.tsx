@@ -178,39 +178,76 @@ export default function TestimonialMarquee({
           letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-ink);
         }
 
-        /* Verified Google aggregate band */
-        .tm__band {
+        /* ── Verified Google rating — the section's focal hero block ── */
+        .tm__rating {
           display: inline-flex;
           align-items: center;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 0.55em;
-          margin-top: 0.9em;
-          padding: 0.55em 1.1em;
+          gap: clamp(1em, 3vw, 1.8em);
+          margin-top: 1.4em;
+          padding: 1.1em clamp(1.2em, 3vw, 1.9em);
           border: 1px solid var(--color-cream-dark);
-          border-radius: 999px;
+          border-radius: 1.5em;
           background: var(--color-white);
-          box-shadow: 0 10px 30px -18px rgba(122, 31, 31, 0.25);
+          box-shadow: 0 24px 60px -34px rgba(122, 31, 31, 0.4);
+          text-align: left;
         }
-        .tm__band-rating {
-          font-family: var(--font-nohemi), sans-serif;
-          font-weight: 400; font-size: 1.15em; color: var(--color-ink);
+        /* Left: the big score */
+        .tm__rating-score {
+          display: flex;
+          align-items: baseline;
+          gap: 0.15em;
+          padding-right: clamp(1em, 3vw, 1.8em);
+          border-right: 1px solid var(--color-cream-dark);
         }
-        .tm__band-count {
-          font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200; font-size: 0.9em; color: var(--color-ink-muted);
-        }
-        .tm__band-link {
-          display: inline-flex; align-items: center; gap: 0.4em;
-          font-family: var(--font-nohemi), sans-serif;
-          font-weight: 400; font-size: 0.82em; letter-spacing: 0.04em;
-          text-transform: uppercase; text-decoration: none;
+        .tm__rating-num {
+          font-family: var(--font-sometimes-times), serif;
+          font-weight: 400;
+          font-size: clamp(3.4rem, 9vw, 5rem);
+          line-height: 0.9;
           color: var(--color-primary);
-          padding-left: 0.7em; margin-left: 0.2em;
-          border-left: 1px solid var(--color-cream-dark);
+        }
+        .tm__rating-outof {
+          font-family: var(--font-nohemi), sans-serif;
+          font-weight: 200;
+          font-size: clamp(1rem, 2.4vw, 1.35rem);
+          color: var(--color-ink-muted);
+        }
+        /* Right: stars, count, CTA */
+        .tm__rating-detail {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.4em;
+        }
+        .tm__rating-stars .tm-card__stars { gap: 0.25em; }
+        .tm__rating-stars svg { width: 20px; height: 20px; }
+        .tm__rating-count {
+          font-family: var(--font-nohemi), sans-serif;
+          font-weight: 200;
+          font-size: clamp(0.9rem, 1.8vw, 1.02rem);
+          line-height: 1.35;
+          color: var(--color-ink-muted);
+        }
+        .tm__rating-count strong {
+          font-weight: 400;
+          color: var(--color-ink);
+        }
+        .tm__rating-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5em;
+          margin-top: 0.25em;
+          font-family: var(--font-nohemi), sans-serif;
+          font-weight: 400;
+          font-size: clamp(0.8rem, 1.6vw, 0.9rem);
+          letter-spacing: 0.02em;
+          text-decoration: none;
+          color: var(--color-primary);
           transition: color 160ms ease;
         }
-        .tm__band-link:hover { color: var(--color-primary-light); }
+        .tm__rating-link:hover { color: var(--color-primary-light); }
+        .tm__rating-arrow { transition: transform 200ms ease; }
+        .tm__rating-link:hover .tm__rating-arrow { transform: translateX(3px); }
 
         .tm__viewport { position: relative; }
         /* Edge fades so cards melt in/out rather than hard-clip */
@@ -251,7 +288,7 @@ export default function TestimonialMarquee({
           font-weight: 200; font-size: 1em; line-height: 1.7;
           color: var(--color-ink); margin: 0;
           /* Clamp long reviews so every card stays a uniform height. Full text
-             is preserved in Sanity; this only limits the marquee display. */
+             is preserved in the DB; this only limits the marquee display. */
           display: -webkit-box;
           -webkit-line-clamp: 6;
           -webkit-box-orient: vertical;
@@ -270,6 +307,23 @@ export default function TestimonialMarquee({
         @media (max-width: 767px) {
           .tm { padding: var(--space-lg) 0; }
           .tm__head { padding: 0 1em; }
+          /* Rating: stack score over detail, centered, drop the divider. */
+          .tm__rating {
+            flex-direction: column;
+            gap: 0.6em;
+            width: 100%;
+            max-width: 22em;
+            padding: 1.2em 1.3em;
+            text-align: center;
+          }
+          .tm__rating-score {
+            padding-right: 0;
+            border-right: none;
+            justify-content: center;
+          }
+          .tm__rating-detail { align-items: center; }
+          .tm__rating-count { font-size: max(15px, 0.95rem); }
+          .tm__rating-link { font-size: max(14px, 0.85rem); }
           .tm__track { gap: 1em; padding: 0.5em 1em; }
           .tm-card { width: 78vw; max-width: 20em; padding: 1.5em; }
           .tm-card__text { font-size: max(16px, 1em); line-height: 1.6; }
@@ -283,25 +337,40 @@ export default function TestimonialMarquee({
         <h2 className="tm__heading">{heading}</h2>
 
         {showBand ? (
-          <div className="tm__band">
-            <span className="tm__band-rating">{googleRating!.toFixed(1)}</span>
-            <Stars rating={Math.round(googleRating!)} />
-            <span className="tm__band-count">
-              {googleReviewCount}+ Google reviews
-            </span>
-            {googleUrl ? (
-              <a
-                className="tm__band-link"
-                href={googleUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Read on Google
-                <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                  <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
-            ) : null}
+          <div className="tm__rating" role="group" aria-label={`${googleRating} out of 5, from ${googleReviewCount}+ Google reviews`}>
+            <div className="tm__rating-score">
+              <span className="tm__rating-num">{googleRating!.toFixed(1)}</span>
+              <span className="tm__rating-outof">/ 5</span>
+            </div>
+            <div className="tm__rating-detail">
+              <span className="tm__rating-stars">
+                <Stars rating={Math.round(googleRating!)} />
+              </span>
+              <span className="tm__rating-count">
+                Rated by{" "}
+                <strong>{googleReviewCount}+ couples &amp; families</strong> on
+                Google
+              </span>
+              {googleUrl ? (
+                <a
+                  className="tm__rating-link"
+                  href={googleUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fill="#4285F4" d="M23 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.2a5.3 5.3 0 01-2.3 3.5v2.9h3.7c2.2-2 3.4-5 3.4-8.6z" />
+                    <path fill="#34A853" d="M12 24c3.1 0 5.7-1 7.6-2.8l-3.7-2.9c-1 .7-2.3 1.1-3.9 1.1-3 0-5.5-2-6.4-4.7H1.8v3C3.7 21.4 7.5 24 12 24z" />
+                    <path fill="#FBBC05" d="M5.6 14.7a7.2 7.2 0 010-4.6v-3H1.8a12 12 0 000 10.6l3.8-3z" />
+                    <path fill="#EA4335" d="M12 4.8c1.7 0 3.2.6 4.4 1.7l3.3-3.3C17.7 1.2 15.1 0 12 0 7.5 0 3.7 2.6 1.8 6.4l3.8 3C6.5 6.8 9 4.8 12 4.8z" />
+                  </svg>
+                  Read our reviews on Google
+                  <svg className="tm__rating-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                    <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+              ) : null}
+            </div>
           </div>
         ) : null}
       </div>

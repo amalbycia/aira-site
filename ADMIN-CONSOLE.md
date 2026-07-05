@@ -8,12 +8,33 @@ the hard way.
 
 ## What the console manages
 
-| Tab | Edits | Backed by |
-|---|---|---|
-| **Photos** | Gallery images per brand (Photography / Events) | `gallery_photos` (Neon) + Bunny Storage |
-| **Reels & Videos** | Reels shown on each page | `reels` (Neon) + Bunny Stream |
-| **Reviews** | Testimonials in the marquee | `reviews` (Neon) |
-| **Events Menu** | Catering menu (categories + dishes) on the Events page | `menu_categories` + `menu_dishes` (Neon) |
+The console is organized **by page**, not by content type. You first pick **Photography** or
+**Events** (top switch), then edit that page's sections. Photos and reels are **strictly per-page**
+— a photography reel never appears on Events, and vice-versa.
+
+```
+Photography            Events
+  ├─ Photos              ├─ Photos
+  ├─ Reels & Videos      ├─ Reels & Videos
+  └─ Reviews             ├─ Events Menu
+                         └─ Reviews
+```
+
+| Section | Under | Edits | Backed by |
+|---|---|---|---|
+| **Photos** | both pages | Gallery images for that page | `gallery_photos` (Neon) + Bunny Storage |
+| **Reels & Videos** | both pages | Reels for that page | `reels` (Neon) + Bunny Stream |
+| **Reviews** | both pages | Testimonials in that page's marquee | `reviews` (Neon) |
+| **Events Menu** | Events | Catering menu (categories + dishes) | `menu_categories` + `menu_dishes` (Neon) |
+
+**Reviews are per-page.** Photography and Events each have their own review set, edited
+independently. Photography was seeded with a copy of the events reviews via
+`scripts/seed-photography-reviews.mjs`; the owner can now edit them separately. If a page has no
+reviews, its marquee falls back to the curated `PLACEHOLDER_REVIEWS` in `TestimonialMarquee.tsx`.
+
+`page` is a strict per-page value (`photography` | `events`) on `gallery_photos`, `reels`, and
+`reviews`. The old 3-way `"both"` scope was retired in the admin split (see `PLAN-ADMIN-REVAMP.md`);
+`scripts/migrate-scope.mjs` moved the 4 `both` reels + 15 `both` reviews to `events`.
 
 Everything else on the site (socials, contact, About copy, location) is **hardcoded** — there's no
 Settings tab by design.
@@ -89,4 +110,4 @@ Google social login (enabled in Clerk dashboard → Social Connections → Googl
 - `HANDOVER-CLERK.md` — contextual handover + the Clerk migration plan/status.
 - `CLAUDE.md` — full developer guide (conventions, boundaries, mobile rules).
 - `ARCHITECTURE.md` — deeper architectural reasoning.
-- `TODO-REELS-PLAYER.md` — parked task (Osmo HLS reels player), unrelated to auth.
+- `PLAN-ADMIN-REVAMP.md` — the per-page admin split + reviews rating hero (this reorganization).

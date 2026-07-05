@@ -126,9 +126,18 @@ const FILIGREE = `<svg viewBox="0 0 600 40" fill="none" xmlns="http://www.w3.org
 const CORNER_VINE = `<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 190 C10 120 40 70 100 50 C150 33 180 20 190 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M100 50 C90 30 95 12 115 8 C108 26 116 40 100 50Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M55 75 C40 60 42 42 62 36 C56 54 66 66 55 75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M148 33 C140 16 146 2 164 0 C156 16 162 26 148 33Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="100" cy="50" r="3.5" fill="currentColor"/><circle cx="55" cy="75" r="3" fill="currentColor"/><circle cx="148" cy="33" r="3" fill="currentColor"/></svg>`;
 
 // Hardcoded contact + location. These are NOT admin-managed — edit them here.
-// TODO(client): replace the placeholder email/phone with the real values.
+// TODO(client): replace the placeholder email/phone/WhatsApp with real values.
 const CONTACT_EMAIL = "hello@agnitantra.com";
 const CONTACT_PHONE = "+91 00000 00000";
+// Second line the client can share (landline / alternate) — optional. Set to ""
+// to hide the row entirely.
+const CONTACT_PHONE_ALT = "";
+// WhatsApp business number in international format (digits only, no +/spaces).
+// Defaults to CONTACT_PHONE if left blank. TODO(client): set the real number.
+const WHATSAPP_NUMBER = "";
+// Pre-filled message the WhatsApp chat opens with.
+const WHATSAPP_MESSAGE =
+  "Hi Agnitantra! I'd like to enquire about your photography & events services.";
 // Matches the Google Business listing (AGNITANTRA EVENTS & CATERERS):
 // Karilakuzhy Buildings, Kurishummood, Chethipuzha Kadavu, Changanassery,
 // Kerala 686104. The map embed below points at the same pin.
@@ -153,8 +162,15 @@ export default function SiteFooter({
 
   const contactEmail = CONTACT_EMAIL;
   const contactPhone = CONTACT_PHONE;
+  const contactPhoneAlt = CONTACT_PHONE_ALT;
   const telHref = `tel:${contactPhone.replace(/[^\d+]/g, "")}`;
+  const telAltHref = `tel:${contactPhoneAlt.replace(/[^\d+]/g, "")}`;
   const mailHref = `mailto:${contactEmail}`;
+  // WhatsApp deep link: digits-only number + URL-encoded prefilled text.
+  const waDigits = (WHATSAPP_NUMBER || contactPhone).replace(/[^\d]/g, "");
+  const whatsappHref = `https://wa.me/${waDigits}?text=${encodeURIComponent(
+    WHATSAPP_MESSAGE,
+  )}`;
 
   const footerRef = useRef<HTMLElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -572,6 +588,22 @@ export default function SiteFooter({
           backdrop-filter: blur(2px);
         }
         .footer-card--contact { min-height: 18em; }
+
+        /* ── Contact card: details (left) + action buttons (right) ── */
+        .footer-contact {
+          display: grid;
+          grid-template-columns: 1.25fr minmax(15em, 0.9fr);
+          gap: clamp(1.6em, 4vw, 3.2em);
+          align-items: center;
+        }
+        .footer-contact__info { min-width: 0; }
+
+        /* Contact details as a definition list — icon + label + value(s). */
+        .footer-contact__actions {
+          display: flex;
+          flex-direction: column;
+          gap: 0.9em;
+        }
         .footer-card--socials { min-height: 16em; }
         .footer-card--location { min-height: 16em; }
 
@@ -665,40 +697,150 @@ export default function SiteFooter({
         .footer-contact-lines {
           display: flex;
           flex-direction: column;
-          gap: 0.35em;
-          margin-top: 1.1em;
+          gap: 0.9em;
+          margin-top: 1.3em;
         }
         .footer-contact-line {
+          display: flex;
+          align-items: flex-start;
+          gap: 0.75em;
+        }
+        /* Icon chip */
+        .footer-contact-line dt {
+          flex-shrink: 0;
           display: inline-flex;
           align-items: center;
-          gap: 0.6em;
+          justify-content: center;
+          width: 2.2em;
+          height: 2.2em;
+          border-radius: 0.7em;
+          background: rgba(201, 169, 110, 0.16);
+          border: 1px solid rgba(201, 169, 110, 0.4);
+          color: var(--color-primary);
+        }
+        .footer-contact-line dd {
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 0.05em;
+          min-width: 0;
+        }
+        .footer-contact-line__label {
+          font-size: 0.6rem;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--color-primary);
+          opacity: 0.8;
+        }
+        .footer-contact-line__value {
           color: var(--color-ink);
           text-decoration: none;
           font-size: 1.05em;
+          line-height: 1.35;
           width: fit-content;
           transition: color 160ms ease;
         }
-        .footer-contact-line:hover { color: var(--color-primary); }
-        .footer-contact-line svg { color: var(--color-gold); flex-shrink: 0; }
+        .footer-contact-line__value:hover {
+          color: var(--color-primary);
+        }
 
-        .footer-pill {
+        /* ── Big action buttons (WhatsApp / Email) ── */
+        .footer-action {
+          position: relative;
+          display: flex;
+          align-items: center;
+          gap: 0.9em;
+          padding: 0.95em 1.15em;
+          border-radius: 1.3em;                 /* match .footer-social-btn */
+          text-decoration: none;
+          overflow: hidden;
+          isolation: isolate;
+          transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1),
+                      box-shadow 340ms ease, filter 340ms ease;
+          will-change: transform;
+        }
+        .footer-action::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: -1;
+          transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1),
+                      opacity 340ms ease;
+        }
+        .footer-action:hover {
+          transform: translateY(-3px);
+        }
+        .footer-action:active { transform: translateY(-1px); }
+        .footer-action:hover .footer-action__arrow {
+          transform: translateX(3px);
+        }
+
+        .footer-action__icon {
+          flex-shrink: 0;
           display: inline-flex;
           align-items: center;
-          gap: 0.6em;
-          margin-top: 1.4em;
-          padding: 0.8em 1.5em;
-          border-radius: 999px;
-          background-color: var(--color-primary);
-          color: var(--color-cream);
-          font-size: 0.8em;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          text-decoration: none;
-          transition: background-color 200ms ease, transform 200ms ease;
+          justify-content: center;
+          width: 3em;
+          height: 3em;
+          border-radius: 0.95em;
         }
-        .footer-pill:hover {
-          background-color: var(--color-primary-light);
-          transform: translateY(-2px);
+        .footer-action__body {
+          display: flex;
+          flex-direction: column;
+          gap: 0.1em;
+          flex: 1;
+          min-width: 0;
+        }
+        .footer-action__label {
+          font-size: 1.02em;
+          line-height: 1.1;
+          letter-spacing: 0.01em;
+        }
+        .footer-action__hint {
+          font-size: 0.72em;
+          line-height: 1.2;
+          opacity: 0.72;
+        }
+        .footer-action__arrow {
+          flex-shrink: 0;
+          display: inline-flex;
+          transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* WhatsApp — brand green, the loudest button */
+        .footer-action--whatsapp {
+          color: #ffffff;
+          box-shadow: 0 12px 26px -14px rgba(18, 91, 55, 0.75);
+        }
+        .footer-action--whatsapp::before {
+          background: linear-gradient(135deg, #25d366 0%, #128c4b 100%);
+        }
+        .footer-action--whatsapp:hover {
+          box-shadow: 0 18px 34px -14px rgba(18, 91, 55, 0.85);
+        }
+        .footer-action--whatsapp .footer-action__icon {
+          background: rgba(255, 255, 255, 0.18);
+          color: #ffffff;
+        }
+
+        /* Email — brand maroon, the supporting button */
+        .footer-action--email {
+          color: var(--color-cream);
+          box-shadow: 0 12px 26px -14px rgba(60, 14, 14, 0.7);
+        }
+        .footer-action--email::before {
+          background: linear-gradient(
+            135deg,
+            var(--color-primary) 0%,
+            var(--color-primary-dark) 100%
+          );
+        }
+        .footer-action--email:hover {
+          box-shadow: 0 18px 34px -14px rgba(60, 14, 14, 0.8);
+        }
+        .footer-action--email .footer-action__icon {
+          background: rgba(255, 255, 255, 0.14);
+          color: var(--color-cream);
         }
 
         .footer-meta-line {
@@ -862,6 +1004,12 @@ export default function SiteFooter({
 
         @media (max-width: 767px) {
           .footer-cards-row { grid-template-columns: 1fr; }
+          /* Contact: stack details above the action buttons. */
+          .footer-contact {
+            grid-template-columns: 1fr;
+            gap: 1.6em;
+          }
+          .footer-action__hint { font-size: 0.68em; }
           .footer-nav-list {
             flex-wrap: wrap;
             gap: 0.6em 1.4em;
@@ -988,39 +1136,109 @@ export default function SiteFooter({
 
         {/* ── Cards ── */}
         <div className="footer-cards-stack">
-          {/* Contact — the focal card */}
+          {/* Contact — the focal card: written details (left) + big WhatsApp /
+              Email action buttons (right). */}
           <div className="footer-card footer-card--contact">
-            <span className="footer-card__eyebrow font-nohemi">
-              <Sparkle size={10} opacity={0.9} /> Contact
-            </span>
-            <h3 className="footer-card__heading font-sometimes-times">
-              Let&rsquo;s create something timeless.
-            </h3>
-            <p className="footer-card__lead">
-              Tell us about your day — weddings, portraits, celebrations, and
-              catering. We&rsquo;d love to hear the story you want to tell.
-            </p>
-            <div className="footer-contact-lines">
-              <a className="footer-contact-line" href={mailHref}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.4" />
-                  <path d="M4 7l8 6 8-6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                {contactEmail}
-              </a>
-              <a className="footer-contact-line" href={telHref}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <path d="M5 4h3l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v3a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                {contactPhone}
-              </a>
+            <div className="footer-contact">
+              {/* Left: heading, lead, and the written contact details */}
+              <div className="footer-contact__info">
+                <span className="footer-card__eyebrow font-nohemi">
+                  <Sparkle size={10} opacity={0.9} /> Contact
+                </span>
+                <h3 className="footer-card__heading font-sometimes-times">
+                  Let&rsquo;s create something timeless.
+                </h3>
+                <p className="footer-card__lead">
+                  Tell us about your day — weddings, portraits, celebrations,
+                  and catering. We&rsquo;d love to hear the story you want to
+                  tell.
+                </p>
+
+                <dl className="footer-contact-lines">
+                  <div className="footer-contact-line">
+                    <dt aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5 4h3l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v3a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </dt>
+                    <dd>
+                      <span className="footer-contact-line__label font-nohemi">Call us</span>
+                      <a className="footer-contact-line__value" href={telHref}>
+                        {contactPhone}
+                      </a>
+                      {contactPhoneAlt ? (
+                        <a className="footer-contact-line__value" href={telAltHref}>
+                          {contactPhoneAlt}
+                        </a>
+                      ) : null}
+                    </dd>
+                  </div>
+
+                  <div className="footer-contact-line">
+                    <dt aria-hidden="true">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.4" />
+                        <path d="M4 7l8 6 8-6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </dt>
+                    <dd>
+                      <span className="footer-contact-line__label font-nohemi">Email</span>
+                      <a className="footer-contact-line__value" href={mailHref}>
+                        {contactEmail}
+                      </a>
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+
+              {/* Right: the two prominent action buttons */}
+              <div className="footer-contact__actions">
+                <a
+                  className="footer-action footer-action--whatsapp"
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Chat with us on WhatsApp"
+                >
+                  <span className="footer-action__icon" aria-hidden="true">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.8 14.16c-.24.68-1.42 1.32-1.95 1.36-.53.05-1.02.24-3.45-.72-2.91-1.15-4.76-4.15-4.9-4.34-.14-.19-1.17-1.56-1.17-2.98s.74-2.11 1-2.4c.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.42-.07.65.5.24.58.82 2 .89 2.15.07.14.12.31.02.5-.09.19-.14.31-.29.48-.14.17-.3.38-.43.51-.14.14-.29.29-.12.58.17.29.74 1.22 1.59 1.98 1.09.97 2.01 1.27 2.3 1.42.29.14.46.12.63-.07.17-.19.72-.84.91-1.13.19-.29.38-.24.65-.14.26.1 1.66.78 1.95.93.29.14.48.21.55.33.07.12.07.72-.17 1.4z" />
+                    </svg>
+                  </span>
+                  <span className="footer-action__body">
+                    <span className="footer-action__label font-nohemi">WhatsApp</span>
+                    <span className="footer-action__hint">Chat with us instantly</span>
+                  </span>
+                  <span className="footer-action__arrow" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                </a>
+
+                <a
+                  className="footer-action footer-action--email"
+                  href={mailHref}
+                  aria-label={`Email us at ${contactEmail}`}
+                >
+                  <span className="footer-action__icon" aria-hidden="true">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" strokeWidth="1.6" />
+                      <path d="M4 7.5l8 5.5 8-5.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                  <span className="footer-action__body">
+                    <span className="footer-action__label font-nohemi">Email us</span>
+                    <span className="footer-action__hint">We reply within a day</span>
+                  </span>
+                  <span className="footer-action__arrow" aria-hidden="true">
+                    <svg width="15" height="15" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </span>
+                </a>
+              </div>
             </div>
-            <Link href="/events" className="footer-pill font-nohemi">
-              Enquire
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </Link>
           </div>
 
           <div className="footer-cards-row">

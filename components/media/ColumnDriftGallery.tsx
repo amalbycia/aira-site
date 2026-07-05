@@ -102,9 +102,9 @@ export default function ColumnDriftGallery({
         imageEls.forEach((img) => {
           const tween = gsap.fromTo(
             img,
-            { y: 8 },
+            { y: 20 },
             {
-              y: -8,
+              y: -20,
               ease: "none",
               scrollTrigger: {
                 trigger: img.closest("[data-drift-frame]") ?? img,
@@ -152,9 +152,9 @@ export default function ColumnDriftGallery({
         imageEls.forEach((img) => {
           const tween = gsap.fromTo(
             img,
-            { y: 8 },
+            { y: 20 },
             {
-              y: -8,
+              y: -20,
               ease: "none",
               scrollTrigger: {
                 trigger: img.closest("[data-drift-frame]") ?? img,

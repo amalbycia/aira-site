@@ -1,27 +1,28 @@
 "use client";
 
 import { useState, useRef } from "react";
-import type { ReelRow, ContentScope } from "@/lib/cms/admin";
+import type { ReelRow, PageBrand } from "@/lib/cms/admin";
 
 const CDN = process.env.NEXT_PUBLIC_BUNNY_CDN_URL ?? "";
 const thumb = (guid: string) => `${CDN.replace(/\/$/, "")}/${guid}/thumbnail.jpg`;
 
-const SCOPE_LABEL: Record<ContentScope, string> = {
+const PAGE_LABEL: Record<PageBrand, string> = {
   photography: "Photography",
   events: "Events",
-  both: "Both pages",
 };
 
 export default function ReelsTab({
+  page,
   initial,
   onToast,
 }: {
+  /** Which page this section manages — reels are strictly per-page. */
+  page: PageBrand;
   initial: ReelRow[];
   onToast: (msg: string) => void;
 }) {
   const [reels, setReels] = useState(initial);
   const [title, setTitle] = useState("");
-  const [scope, setScope] = useState<ContentScope>("both");
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -65,7 +66,7 @@ export default function ReelsTab({
       const res = await fetch("/api/admin/reels", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ bunnyVideoId: guid, title: title.trim(), page: scope }),
+        body: JSON.stringify({ bunnyVideoId: guid, title: title.trim(), page }),
       });
       setUploading(false);
       if (res.ok) {
@@ -101,30 +102,23 @@ export default function ReelsTab({
       <div className="section-head">
         <div>
           <h2>Reels & Videos</h2>
-          <p>Upload a video, choose which page it shows on. Hosted on Bunny Stream.</p>
+          <p>
+            Upload a video for the {PAGE_LABEL[page]} page. Hosted on Bunny
+            Stream — it starts playing once Bunny finishes processing.
+          </p>
         </div>
       </div>
 
       <div className="card">
-        <div className="grid-2">
-          <label className="field" style={{ marginBottom: 0 }}>
-            <span className="field__label">Reel title</span>
-            <input
-              className="input"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Riya & Arjun — Highlights"
-            />
-          </label>
-          <label className="field" style={{ marginBottom: 0 }}>
-            <span className="field__label">Show on</span>
-            <select className="select" value={scope} onChange={(e) => setScope(e.target.value as ContentScope)}>
-              <option value="both">Both pages</option>
-              <option value="photography">Photography only</option>
-              <option value="events">Events only</option>
-            </select>
-          </label>
-        </div>
+        <label className="field" style={{ marginBottom: 0 }}>
+          <span className="field__label">Reel title</span>
+          <input
+            className="input"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g. Riya & Arjun — Highlights"
+          />
+        </label>
         <div style={{ marginTop: "1rem", display: "flex", alignItems: "center", gap: "1rem" }}>
           <button className="btn btn--primary" onClick={pick} disabled={uploading}>
             {uploading ? `Uploading… ${progress}%` : "Upload video"}
@@ -163,9 +157,6 @@ export default function ReelsTab({
               />
               <div className="reel-row__body">
                 <div className="review-row__name">{reel.title || "Untitled reel"}</div>
-                <div className="review-row__meta">
-                  <span className="badge">{SCOPE_LABEL[reel.page]}</span>
-                </div>
               </div>
               <button className="btn btn--danger btn--sm" onClick={() => remove(reel.id)}>
                 Remove

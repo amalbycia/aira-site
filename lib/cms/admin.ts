@@ -8,7 +8,10 @@ import { sql } from "@/lib/db";
  */
 
 export type PageBrand = "photography" | "events";
-export type ContentScope = "photography" | "events" | "both";
+// Reels and reviews are now strictly per-page (the old "both" scope was retired
+// in the admin split — see PLAN-ADMIN-REVAMP.md). ContentScope is kept as an
+// alias of PageBrand so existing imports keep working.
+export type ContentScope = PageBrand;
 
 export type PhotoRow = {
   id: number;
@@ -87,10 +90,11 @@ export async function reorderPhotos(ids: number[]): Promise<void> {
 
 // ── Reels ────────────────────────────────────────────────────────────────────
 
-export async function listReels(): Promise<ReelRow[]> {
+export async function listReels(page: PageBrand): Promise<ReelRow[]> {
   return (await sql`
     select id, page, bunny_video_id, title, thumbnail_url, sort_order
-    from reels order by sort_order asc, id asc
+    from reels where page = ${page}
+    order by sort_order asc, id asc
   `) as ReelRow[];
 }
 
@@ -119,10 +123,11 @@ export async function deleteReel(id: number): Promise<string | null> {
 
 // ── Reviews ──────────────────────────────────────────────────────────────────
 
-export async function listReviews(): Promise<ReviewRow[]> {
+export async function listReviews(page: PageBrand): Promise<ReviewRow[]> {
   return (await sql`
     select id, page, reviewer_name, rating, review_text, review_date, sort_order
-    from reviews order by review_date desc nulls last, sort_order asc, id desc
+    from reviews where page = ${page}
+    order by review_date desc nulls last, sort_order asc, id desc
   `) as ReviewRow[];
 }
 

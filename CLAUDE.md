@@ -50,9 +50,9 @@ app/                     Next.js App Router — routes and layouts
   page.tsx               Home (hero, about, footer — single scroll)
   photography/page.tsx   Aira Photography sub-brand page
   events/page.tsx        Aira Events & Catering sub-brand page
-  manage/                Custom admin console (password-gated)
-    page.tsx             Auth gate → LoginForm or Dashboard
-    Dashboard.tsx        Tabbed shell (Photos / Reels / Reviews / Settings)
+  manage/                Custom admin console (Clerk-gated — Google sign-in)
+    page.tsx             Clerk auth gate → Dashboard
+    Dashboard.tsx        Tabbed shell (Photos / Reels / Reviews / Menu)
     tabs/                One component per tab
     compressImage.ts     Browser-side resize→WebP before upload (keeps files small)
     admin.css            Admin-only styling (scoped under .admin-root)
@@ -67,7 +67,7 @@ lib/
   schema.sql             Content table definitions (reference; tables already created)
   gsap.ts                GSAP + ScrollTrigger setup; matchMedia helper (see Conventions)
   bunny.ts               Bunny Stream (video) + Bunny Storage (image) upload/delete helpers
-  auth/                  session.ts (signed-cookie auth) + guard.ts (requireAdmin)
+  auth/                  guard.ts — requireAdmin() (checks Clerk's auth())
   cms/
     getPage.ts           Public read: page content + gallery + reels for a brand
     getContent.ts        Public read: reviews + site settings (+ footerPropsFromSettings)
@@ -131,7 +131,7 @@ lib/
 - [MAP.md](./MAP.md) — architectural reasoning for every major file and folder
 - [TODO.md](./TODO.md) — living build checklist, section by section
 - [CLIENTRAWDETAILS.md](./CLIENTRAWDETAILS.md) — client requirements verbatim + organized
-- [TODO-REELS-PLAYER.md](./TODO-REELS-PLAYER.md) — parked: Osmo HLS reels-player upgrade
+- [SITE-JOURNEY.md](./SITE-JOURNEY.md) — how the site was built (the Sanity → custom-console history + rationale)
 
 ---
 

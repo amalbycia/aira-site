@@ -5,13 +5,17 @@ import { listReels, addReel, type ContentScope } from "@/lib/cms/admin";
 export const runtime = "nodejs";
 
 const isScope = (v: unknown): v is ContentScope =>
-  v === "photography" || v === "events" || v === "both";
+  v === "photography" || v === "events";
 
-/** GET /api/admin/reels — list all reels. */
-export async function GET() {
+/** GET /api/admin/reels?page=photography|events — list a page's reels. */
+export async function GET(req: NextRequest) {
   const denied = await requireAdmin();
   if (denied) return denied;
-  return NextResponse.json({ reels: await listReels() });
+  const page = req.nextUrl.searchParams.get("page");
+  if (!isScope(page)) {
+    return NextResponse.json({ error: "page must be photography or events" }, { status: 400 });
+  }
+  return NextResponse.json({ reels: await listReels(page) });
 }
 
 /**
@@ -31,7 +35,10 @@ export async function POST(req: NextRequest) {
   if (!body.bunnyVideoId) {
     return NextResponse.json({ error: "bunnyVideoId is required" }, { status: 400 });
   }
-  const page: ContentScope = isScope(body.page) ? body.page : "both";
+  if (!isScope(body.page)) {
+    return NextResponse.json({ error: "page must be photography or events" }, { status: 400 });
+  }
+  const page: ContentScope = body.page;
   const reel = await addReel({
     page,
     bunnyVideoId: body.bunnyVideoId,

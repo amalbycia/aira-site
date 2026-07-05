@@ -5,7 +5,7 @@ import { updateReview, deleteReview, type ContentScope } from "@/lib/cms/admin";
 export const runtime = "nodejs";
 
 const isScope = (v: unknown): v is ContentScope =>
-  v === "photography" || v === "events" || v === "both";
+  v === "photography" || v === "events";
 
 /** PUT /api/admin/reviews/[id] — edit a review. */
 export async function PUT(
@@ -34,8 +34,11 @@ export async function PUT(
       { status: 400 },
     );
   }
+  if (!isScope(b.page)) {
+    return NextResponse.json({ error: "page must be photography or events" }, { status: 400 });
+  }
   await updateReview(reviewId, {
-    page: isScope(b.page) ? b.page : "both",
+    page: b.page,
     reviewerName: b.reviewerName,
     rating: Math.min(5, Math.max(1, Number(b.rating) || 5)),
     reviewText: b.reviewText,

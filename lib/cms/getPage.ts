@@ -42,7 +42,7 @@ export async function getPage(
       sql`select url, alt, caption from gallery_photos
           where page = ${brand} order by sort_order asc, id asc`,
       sql`select bunny_video_id, title, thumbnail_url from reels
-          where page = ${brand} or page = 'both'
+          where page = ${brand}
           order by sort_order asc, id asc`,
     ])) as [PageRow[], PhotoRow[], ReelRow[]];
 

@@ -7,24 +7,35 @@ import type {
   ReelRow,
   ReviewRow,
   MenuCategoryRow,
+  PageBrand,
 } from "@/lib/cms/admin";
 import PhotosTab from "./tabs/PhotosTab";
 import ReelsTab from "./tabs/ReelsTab";
 import ReviewsTab from "./tabs/ReviewsTab";
 import MenuTab from "./tabs/MenuTab";
 
-// The admin manages only content that actually changes: photos, reels, reviews,
-// and the events catering menu. User accounts are managed in the Clerk
-// dashboard (not here). Everything else on the site — socials, contact,
-// location, About copy — is intentionally hardcoded, so there is no Settings tab.
-type Tab = "photos" | "reels" | "reviews" | "menu";
+// The console is organized BY PAGE (Photography vs Events), not by content type.
+// Each page owns its own photos and reels; Events additionally owns the catering
+// menu and the reviews. User accounts live in the Clerk dashboard; socials,
+// contact, location and About copy are hardcoded — so there is no Settings tab.
+type Brand = PageBrand;
+type Section = "photos" | "reels" | "menu" | "reviews";
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: "photos", label: "Photos" },
-  { id: "reels", label: "Reels & Videos" },
-  { id: "reviews", label: "Reviews" },
-  { id: "menu", label: "Events Menu" },
-];
+// Which sections each page exposes, in order. Both pages have their own
+// Reviews now (edited independently); only Events has the catering menu.
+const SECTIONS: Record<Brand, { id: Section; label: string }[]> = {
+  photography: [
+    { id: "photos", label: "Photos" },
+    { id: "reels", label: "Reels & Videos" },
+    { id: "reviews", label: "Reviews" },
+  ],
+  events: [
+    { id: "photos", label: "Photos" },
+    { id: "reels", label: "Reels & Videos" },
+    { id: "menu", label: "Events Menu" },
+    { id: "reviews", label: "Reviews" },
+  ],
+};
 
 export default function Dashboard({
   initialPhotos,
@@ -34,18 +45,28 @@ export default function Dashboard({
   currentEmail,
 }: {
   initialPhotos: { photography: PhotoRow[]; events: PhotoRow[] };
-  initialReels: ReelRow[];
-  initialReviews: ReviewRow[];
+  initialReels: { photography: ReelRow[]; events: ReelRow[] };
+  initialReviews: { photography: ReviewRow[]; events: ReviewRow[] };
   initialMenu: MenuCategoryRow[];
   currentEmail: string | null;
 }) {
-  const [tab, setTab] = useState<Tab>("photos");
+  const [brand, setBrand] = useState<Brand>("photography");
+  const [section, setSection] = useState<Section>("photos");
   const [toast, setToast] = useState<string | null>(null);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
     window.setTimeout(() => setToast(null), 2600);
   }, []);
+
+  // Switching page resets to that page's first section, so we never land on a
+  // section the page doesn't have (e.g. Photography → Reviews).
+  const selectBrand = useCallback((next: Brand) => {
+    setBrand(next);
+    setSection(SECTIONS[next][0].id);
+  }, []);
+
+  const sections = SECTIONS[brand];
 
   return (
     <div className="admin-shell">
@@ -63,31 +84,70 @@ export default function Dashboard({
           {/* Clerk account menu — sign out, manage account. Returns to the home
               page after sign-out. */}
           <UserButton />
-
         </div>
       </header>
 
-      <nav className="admin-tabs">
-        {TABS.map((t) => (
+      {/* Top level: pick the page you're editing. */}
+      <div className="admin-pagenav">
+        <div className="page-switch page-switch--brand">
           <button
-            key={t.id}
-            className="admin-tab"
-            data-active={tab === t.id}
-            onClick={() => setTab(t.id)}
+            data-active={brand === "photography"}
+            onClick={() => selectBrand("photography")}
           >
-            {t.label}
+            Photography
+          </button>
+          <button
+            data-active={brand === "events"}
+            onClick={() => selectBrand("events")}
+          >
+            Events
+          </button>
+        </div>
+      </div>
+
+      {/* Second level: the chosen page's sections. */}
+      <nav className="admin-tabs" aria-label={`${brand} sections`}>
+        {sections.map((s) => (
+          <button
+            key={s.id}
+            className="admin-tab"
+            data-active={section === s.id}
+            onClick={() => setSection(s.id)}
+          >
+            {s.label}
           </button>
         ))}
       </nav>
 
-      {tab === "photos" && (
-        <PhotosTab initial={initialPhotos} onToast={showToast} />
+      {/* Keyed by brand so switching pages remounts the tab with fresh initial
+          data (a photography reel list never bleeds into events, etc.). */}
+      {section === "photos" && (
+        <PhotosTab
+          key={`photos-${brand}`}
+          page={brand}
+          initial={initialPhotos[brand]}
+          onToast={showToast}
+        />
       )}
-      {tab === "reels" && <ReelsTab initial={initialReels} onToast={showToast} />}
-      {tab === "reviews" && (
-        <ReviewsTab initial={initialReviews} onToast={showToast} />
+      {section === "reels" && (
+        <ReelsTab
+          key={`reels-${brand}`}
+          page={brand}
+          initial={initialReels[brand]}
+          onToast={showToast}
+        />
       )}
-      {tab === "menu" && <MenuTab initial={initialMenu} onToast={showToast} />}
+      {section === "menu" && brand === "events" && (
+        <MenuTab initial={initialMenu} onToast={showToast} />
+      )}
+      {section === "reviews" && (
+        <ReviewsTab
+          key={`reviews-${brand}`}
+          page={brand}
+          initial={initialReviews[brand]}
+          onToast={showToast}
+        />
+      )}
 
       {toast ? <div className="toast">{toast}</div> : null}
     </div>

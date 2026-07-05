@@ -40,7 +40,7 @@ type ReviewRow = {
 
 /**
  * Published reviews for a brand ("photography" | "events"), newest first.
- * Includes reviews tagged for that page OR "both". Returns [] if the DB is
+ * Reviews are strictly per-page now (no "both"). Returns [] if the DB is
  * unconfigured/unreachable so callers fall back to their placeholder reviews.
  */
 export async function getReviews(
@@ -51,7 +51,7 @@ export async function getReviews(
     const rows = (await sql`
       select reviewer_name, rating, review_text, review_date
       from reviews
-      where page = ${brand} or page = 'both'
+      where page = ${brand}
       order by review_date desc nulls last, sort_order asc, id desc
     `) as ReviewRow[];
 

@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import ColumnDriftGallery from "./ColumnDriftGallery";
-import PhotoLightbox from "./PhotoLightbox";
+import PhotoViewer from "./PhotoViewer";
 import type { GalleryPhoto } from "./types";
 
 /**
  * Client wrapper that pairs the (do-not-restyle) ColumnDriftGallery with the
- * click-to-open PhotoLightbox. Clicking any photo opens the draggable portrait
- * slider at that photo. Keeps all lightbox state on the client so the page can
- * stay a Server Component.
+ * click-to-open PhotoViewer. Clicking any photo opens the fullscreen viewer at
+ * that photo, where it can be swiped/dragged through. Keeps all viewer state on
+ * the client so the page can stay a Server Component.
  */
 export default function GalleryWithLightbox({
   eyebrow,
@@ -33,7 +33,7 @@ export default function GalleryWithLightbox({
         columns={columns}
         onPhotoClick={setOpenIndex}
       />
-      <PhotoLightbox
+      <PhotoViewer
         photos={photos}
         openIndex={openIndex}
         onClose={() => setOpenIndex(null)}

@@ -5,22 +5,20 @@ import type { PhotoRow, PageBrand } from "@/lib/cms/admin";
 import { compressImage } from "../compressImage";
 
 export default function PhotosTab({
+  page,
   initial,
   onToast,
 }: {
-  initial: { photography: PhotoRow[]; events: PhotoRow[] };
+  /** Which page's gallery this manages — photos are strictly per-page. */
+  page: PageBrand;
+  initial: PhotoRow[];
   onToast: (msg: string) => void;
 }) {
-  const [page, setPage] = useState<PageBrand>("photography");
-  const [photos, setPhotos] = useState(initial);
+  const [current, setCurrent] = useState<PhotoRow[]>(initial);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [dragActive, setDragActive] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
-
-  const current = photos[page];
-  const setCurrent = (next: PhotoRow[]) =>
-    setPhotos((p) => ({ ...p, [page]: next }));
 
   // ── Upload (compress in browser → POST one at a time) ──────────────────────
   const upload = useCallback(
@@ -48,7 +46,7 @@ export default function PhotosTab({
         setProgress({ done: i + 1, total: images.length });
       }
 
-      setPhotos((p) => ({ ...p, [page]: [...p[page], ...added] }));
+      setCurrent((list) => [...list, ...added]);
       setUploading(false);
       onToast(`${added.length} photo${added.length === 1 ? "" : "s"} added`);
     },
@@ -130,14 +128,6 @@ export default function PhotosTab({
             Reorder with the arrows (or drag on desktop). They appear on the site
             in this order.
           </p>
-        </div>
-        <div className="page-switch">
-          <button data-active={page === "photography"} onClick={() => setPage("photography")}>
-            Photography
-          </button>
-          <button data-active={page === "events"} onClick={() => setPage("events")}>
-            Events
-          </button>
         </div>
       </div>
 

@@ -1,13 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { ReviewRow, ContentScope } from "@/lib/cms/admin";
-
-const SCOPE_LABEL: Record<ContentScope, string> = {
-  photography: "Photography",
-  events: "Events",
-  both: "Both pages",
-};
+import type { ReviewRow, PageBrand } from "@/lib/cms/admin";
 
 type Draft = {
   id?: number;
@@ -15,7 +9,6 @@ type Draft = {
   rating: number;
   reviewText: string;
   reviewDate: string;
-  page: ContentScope;
 };
 
 const emptyDraft = (): Draft => ({
@@ -23,7 +16,6 @@ const emptyDraft = (): Draft => ({
   rating: 5,
   reviewText: "",
   reviewDate: "",
-  page: "both",
 });
 
 function fmtDate(d: string | null): string {
@@ -34,9 +26,12 @@ function fmtDate(d: string | null): string {
 }
 
 export default function ReviewsTab({
+  page,
   initial,
   onToast,
 }: {
+  /** Which page these reviews belong to — strictly per-page now. */
+  page: PageBrand;
   initial: ReviewRow[];
   onToast: (msg: string) => void;
 }) {
@@ -54,7 +49,6 @@ export default function ReviewsTab({
       rating: r.rating,
       reviewText: r.review_text,
       reviewDate: r.review_date ? r.review_date.slice(0, 10) : "",
-      page: r.page,
     });
   }
 
@@ -70,7 +64,7 @@ export default function ReviewsTab({
       rating: draft.rating,
       reviewText: draft.reviewText.trim(),
       reviewDate: draft.reviewDate || undefined,
-      page: draft.page,
+      page,
     });
     const isEdit = draft.id != null;
     const res = await fetch(
@@ -92,7 +86,7 @@ export default function ReviewsTab({
                 rating: draft.rating,
                 review_text: draft.reviewText.trim(),
                 review_date: draft.reviewDate || null,
-                page: draft.page,
+                page,
               }
             : r,
         ),
@@ -139,8 +133,6 @@ export default function ReviewsTab({
                 <div className="review-row__name">{r.reviewer_name}</div>
                 <div className="review-row__meta">
                   <span className="stars">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
-                  {" · "}
-                  <span className="badge">{SCOPE_LABEL[r.page]}</span>
                   {r.review_date ? ` · ${fmtDate(r.review_date)}` : ""}
                 </div>
                 <p className="review-row__text">{r.review_text}</p>
@@ -192,29 +184,15 @@ export default function ReviewsTab({
                 onChange={(e) => setDraft({ ...draft, reviewText: e.target.value })}
               />
             </label>
-            <div className="grid-2">
-              <label className="field">
-                <span className="field__label">Date (optional)</span>
-                <input
-                  type="date"
-                  className="input"
-                  value={draft.reviewDate}
-                  onChange={(e) => setDraft({ ...draft, reviewDate: e.target.value })}
-                />
-              </label>
-              <label className="field">
-                <span className="field__label">Show on</span>
-                <select
-                  className="select"
-                  value={draft.page}
-                  onChange={(e) => setDraft({ ...draft, page: e.target.value as ContentScope })}
-                >
-                  <option value="both">Both pages</option>
-                  <option value="photography">Photography only</option>
-                  <option value="events">Events only</option>
-                </select>
-              </label>
-            </div>
+            <label className="field">
+              <span className="field__label">Date (optional)</span>
+              <input
+                type="date"
+                className="input"
+                value={draft.reviewDate}
+                onChange={(e) => setDraft({ ...draft, reviewDate: e.target.value })}
+              />
+            </label>
             <div className="modal__actions">
               <button className="btn btn--ghost" onClick={() => setDraft(null)}>
                 Cancel
