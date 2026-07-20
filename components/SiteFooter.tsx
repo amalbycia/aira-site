@@ -126,15 +126,15 @@ const FILIGREE = `<svg viewBox="0 0 600 40" fill="none" xmlns="http://www.w3.org
 const CORNER_VINE = `<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 190 C10 120 40 70 100 50 C150 33 180 20 190 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M100 50 C90 30 95 12 115 8 C108 26 116 40 100 50Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M55 75 C40 60 42 42 62 36 C56 54 66 66 55 75Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M148 33 C140 16 146 2 164 0 C156 16 162 26 148 33Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="100" cy="50" r="3.5" fill="currentColor"/><circle cx="55" cy="75" r="3" fill="currentColor"/><circle cx="148" cy="33" r="3" fill="currentColor"/></svg>`;
 
 // Hardcoded contact + location. These are NOT admin-managed — edit them here.
-// TODO(client): replace the placeholder email/phone/WhatsApp with real values.
+// TODO(client): replace the placeholder email with the real address.
 const CONTACT_EMAIL = "hello@agnitantra.com";
-const CONTACT_PHONE = "+91 00000 00000";
+const CONTACT_PHONE = "+91 80897 03793";
 // Second line the client can share (landline / alternate) — optional. Set to ""
 // to hide the row entirely.
 const CONTACT_PHONE_ALT = "";
 // WhatsApp business number in international format (digits only, no +/spaces).
-// Defaults to CONTACT_PHONE if left blank. TODO(client): set the real number.
-const WHATSAPP_NUMBER = "";
+// Defaults to CONTACT_PHONE if left blank.
+const WHATSAPP_NUMBER = "918089703793";
 // Pre-filled message the WhatsApp chat opens with.
 const WHATSAPP_MESSAGE =
   "Hi Agnitantra! I'd like to enquire about your photography & events services.";
@@ -143,7 +143,9 @@ const WHATSAPP_MESSAGE =
 // Kerala 686104. The map embed below points at the same pin.
 const LOCATION_TEXT =
   "Kurishummood, Chethipuzha Kadavu, Changanassery, Kerala 686104.";
-const LOCATION_HOURS = "Open daily from 9 am · by appointment";
+// Deliberately no opening times — the client prefers an open invitation to call
+// rather than committing to hours.
+const LOCATION_HOURS = "Call us anytime";
 
 export default function SiteFooter({
   instagramUrl = INSTAGRAM_DEFAULT,
@@ -168,7 +170,7 @@ export default function SiteFooter({
   const mailHref = `mailto:${contactEmail}`;
   // WhatsApp deep link: digits-only number + URL-encoded prefilled text.
   const waDigits = (WHATSAPP_NUMBER || contactPhone).replace(/[^\d]/g, "");
-  const whatsappHref = `https://wa.me/${waDigits}?text=${encodeURIComponent(
+  const whatsappHref = `https://api.whatsapp.com/send?phone=${waDigits}&text=${encodeURIComponent(
     WHATSAPP_MESSAGE,
   )}`;
 
