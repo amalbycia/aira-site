@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 // scrolling bento cards on a marquee (mirrors the TestimonialMarquee motion).
 // Each gets a small line icon drawn inline so there's no asset dependency.
 const SERVICES: { name: string; note: string; icon: string }[] = [
-  { name: "Photography & Videography", note: "Aira Photography — timeless, cinematic storytelling.", icon: "camera" },
+  { name: "Wedding Photography", note: "Aira Photography — timeless, cinematic storytelling.", icon: "camera" },
   { name: "Event Shoot Coverage", note: "Full coverage, start to finish.", icon: "film" },
   { name: "Stage Decoration", note: "Striking, venue-transforming design.", icon: "sparkle" },
   { name: "Stage Programs", note: "Flawlessly organised, professionally run.", icon: "mic" },
@@ -136,13 +136,27 @@ export default function AboutStory() {
     <section ref={rootRef} aria-label="About Aira & Agnitantra" className="about-story">
       <style>{`
         .about-story {
+          /* Warm, layered backdrop (all on-brand: cream + gold + maroon) so the
+             page reads richer than flat cream, without leaving the theme. */
           background-color: var(--color-cream);
+          background-image:
+            radial-gradient(60% 45% at 85% 0%, rgba(201,169,110,0.20), transparent 70%),
+            radial-gradient(55% 40% at 0% 100%, rgba(122,31,31,0.10), transparent 70%);
           color: var(--color-ink);
           padding: var(--space-2xl) var(--space-md) var(--space-xl);
           position: relative;
           overflow: hidden;
         }
-        .about-wrap { max-width: 60em; margin: 0 auto; }
+        /* Faint oversized gold sparkle drifting behind the intro for depth. */
+        .about-story::before {
+          content: "";
+          position: absolute;
+          top: -6em; right: -6em;
+          width: 26em; height: 26em;
+          background: radial-gradient(circle, rgba(201,169,110,0.16), transparent 68%);
+          pointer-events: none;
+        }
+        .about-wrap { max-width: 60em; margin: 0 auto; position: relative; }
 
         .about-eyebrow {
           font-family: var(--font-script), cursive;
@@ -162,7 +176,7 @@ export default function AboutStory() {
         }
         .about-para {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200;
+          font-weight: 300;
           font-size: clamp(1rem, 1.5vw, 1.1em);
           line-height: 1.9;
           color: var(--color-ink-muted);
@@ -179,17 +193,23 @@ export default function AboutStory() {
           align-items: center;
           margin: var(--space-xl) 0;
           padding: var(--space-lg) clamp(1.4em, 4vw, 2.6em);
-          border: 1px solid var(--color-cream-dark);
+          border: 1px solid rgba(201, 169, 110, 0.45);
           border-radius: 1.6em;
-          background: var(--color-white);
-          box-shadow: 0 24px 60px -40px rgba(122, 31, 31, 0.4);
+          /* Deep maroon gradient — the band becomes a rich focal moment, with a
+             soft gold glow bleeding from the top-right. */
+          background:
+            radial-gradient(90% 140% at 100% 0%, rgba(201,169,110,0.22), transparent 60%),
+            linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+          box-shadow: 0 30px 70px -34px rgba(122, 31, 31, 0.6);
+          position: relative;
+          overflow: hidden;
         }
         .about-stat {
           font-family: var(--font-sometimes-times), serif;
           font-weight: 400;
           font-size: clamp(3.5rem, 10vw, 7em);
           line-height: 0.9;
-          color: var(--color-primary);
+          color: var(--color-cream);
           display: flex;
           align-items: flex-start;
         }
@@ -197,7 +217,7 @@ export default function AboutStory() {
           font-size: 0.4em;
           margin-top: 0.5em;
           margin-left: 0.05em;
-          color: var(--color-gold);
+          color: var(--color-gold-light);
         }
         .about-stat__label {
           display: block;
@@ -206,17 +226,17 @@ export default function AboutStory() {
           font-size: 0.13em;
           letter-spacing: 0.22em;
           text-transform: uppercase;
-          color: var(--color-ink-muted);
+          color: var(--color-gold-light);
           margin-top: 1.2em;
         }
         .about-feature__text {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200;
+          font-weight: 300;
           font-size: clamp(1rem, 1.5vw, 1.1em);
           line-height: 1.8;
-          color: var(--color-ink-muted);
+          color: var(--color-cream-dark);
         }
-        .about-feature__text strong { color: var(--color-ink); font-weight: 400; }
+        .about-feature__text strong { color: #ffffff; font-weight: 400; }
 
         /* ── Service scope — bento marquee (full-bleed) ── */
         .about-svc { margin: var(--space-xl) 0 var(--space-lg); overflow: hidden; }
@@ -296,7 +316,7 @@ export default function AboutStory() {
 
         .bento__num {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200; font-size: 0.78em;
+          font-weight: 300; font-size: 0.86em;
           letter-spacing: 0.14em;
           color: var(--color-gold);
         }
@@ -318,7 +338,7 @@ export default function AboutStory() {
           display: block;
           margin-top: 0.35em;
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200; font-size: 0.9em;
+          font-weight: 300; font-size: 0.98em;
           line-height: 1.5;
           color: var(--color-ink-muted);
         }

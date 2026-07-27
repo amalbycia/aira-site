@@ -173,10 +173,10 @@ export default function PageHero({ eyebrow, title, subtitle }: PageHeroProps) {
 
         .page-hero__subtitle {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200;
-          font-size: clamp(0.95rem, 1.6vw, 1.05em);
+          font-weight: 300;
+          font-size: clamp(1.15rem, 1.9vw, 1.3em);
           line-height: 1.7;
-          letter-spacing: 0.04em;
+          letter-spacing: 0.03em;
           color: var(--color-cream-dark);
           max-width: 46ch;
           margin-top: 1.4em;
@@ -200,7 +200,7 @@ export default function PageHero({ eyebrow, title, subtitle }: PageHeroProps) {
             padding: calc(var(--space-2xl) + 2em) var(--space-md) var(--space-lg);
           }
           .page-hero__title { font-size: clamp(1.7rem, 9vw, 2.6rem); max-width: 18ch; }
-          .page-hero__subtitle { font-size: max(16px, 1rem); line-height: 1.6; }
+          .page-hero__subtitle { font-size: max(17px, 1.12rem); line-height: 1.6; }
         }
       `}</style>
 

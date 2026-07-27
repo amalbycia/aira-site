@@ -13,15 +13,15 @@ gsap.defaults({ ease: "main", duration: 0.7 });
 
 const NAV_LINKS = [
   { label: "Home", href: "/", num: "01" },
-  { label: "About", href: "/#about", num: "02" },
+  { label: "About", href: "/about", num: "02" },
   { label: "Photography", href: "/photography", num: "03" },
   { label: "Events", href: "/events", num: "04" },
   { label: "Contact", href: "/#contact", num: "05" },
 ];
 
 const SOCIALS = [
-  { label: "Instagram", href: "https://instagram.com/agnitantraevents" },
-  { label: "WhatsApp", href: "https://wa.me/919999999999" },
+  { label: "Instagram", href: "https://www.instagram.com/agnitantra_events_and_caterers" },
+  { label: "WhatsApp", href: "https://api.whatsapp.com/send?phone=918089703793" },
 ];
 
 export default function SideNav() {

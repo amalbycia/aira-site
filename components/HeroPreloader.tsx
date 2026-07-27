@@ -417,6 +417,10 @@ export default function HeroPreloader() {
             0 0 6px rgba(255, 250, 240, 0.35),
             0 1px 2px rgba(15, 6, 6, 0.45);
         }
+        /* Two stacked lines — "Agnitantra Events" over "Aira Photography"
+           (the client dropped the "&"). Each line is its own block so they
+           always break, at any width. */
+        .hero-title__line { display: block; }
         .hero-title__sub {
           color: #fdfbf7;
           font-family: var(--font-sometimes-times), serif;
@@ -592,8 +596,8 @@ export default function HeroPreloader() {
       {/* Hero content — sits over the expanded image, revealed via class swap */}
       <div className="hero-content">
         <h1 className="hero-title">
-          Agnitantra Events{" "}
-          <span className="hero-title__sub">&amp; Aira Photography</span>
+          <span className="hero-title__line">Agnitantra Events</span>
+          <span className="hero-title__line hero-title__sub">Aira Photography</span>
         </h1>
 
         <div
@@ -615,7 +619,7 @@ export default function HeroPreloader() {
           <Link href="/photography" className="btn-animate-chars">
             <div className="btn-animate-chars__bg" />
             <span className="btn-animate-chars__text">
-              <span data-button-animate-chars="">Our Photography</span>
+              <span data-button-animate-chars="">Photography</span>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ flexShrink: 0 }}>
                 <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

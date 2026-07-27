@@ -257,7 +257,7 @@ export default function ColumnDriftGallery({
           bottom: 0;
           padding: 1.4em 1em 0.8em;
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200;
+          font-weight: 300;
           font-size: 0.8em;
           letter-spacing: 0.03em;
           color: var(--color-cream);

@@ -79,16 +79,16 @@ export default function LocationBlock({
         }
         .location-block__line {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200;
-          font-size: clamp(1rem, 1.6vw, 1.15em);
+          font-weight: 300;
+          font-size: clamp(1.15rem, 1.9vw, 1.35em);
           line-height: 1.8;
           color: var(--color-ink-muted);
-          max-width: 40ch;
+          max-width: 42ch;
           margin: 0 auto;
         }
         @media (max-width: 767px) {
           .location-block { padding: var(--space-lg) 1em var(--space-xl); }
-          .location-block__line { font-size: max(16px, 1rem); line-height: 1.6; }
+          .location-block__line { font-size: max(17px, 1.12rem); line-height: 1.6; }
         }
       `}</style>
       <p className="location-block__eyebrow" data-loc-fade>{eyebrow}</p>

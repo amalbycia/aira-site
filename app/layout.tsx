@@ -5,7 +5,9 @@ import localFont from "next/font/local";
 import LenisProvider from "@/components/LenisProvider";
 import SideNav from "@/components/SideNav";
 import PageTransition from "@/components/PageTransition";
+import JsonLd from "@/components/JsonLd";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
+import { organizationSchema, websiteSchema } from "@/lib/structuredData";
 import "./globals.css";
 
 const alexBrush = Alex_Brush({
@@ -85,7 +87,24 @@ export const metadata: Metadata = {
     title: "Aira Photography & Agnitantra Events",
     description: "Wedding photography and full-service event management across Kerala.",
   },
-  robots: { index: true, follow: true },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  // Local-intent geo hints (Changanassery, Kerala).
+  other: {
+    "geo.region": "IN-KL",
+    "geo.placename": "Changanassery, Kerala",
+    "geo.position": "9.459812;76.548263",
+    ICBM: "9.459812, 76.548263",
+  },
 };
 
 export default function RootLayout({
@@ -99,6 +118,10 @@ export default function RootLayout({
       className={`${alexBrush.variable} ${cormorant.variable} ${dmSans.variable} ${nohemi.variable} ${sometimesTimes.variable}`}
     >
       <body>
+        {/* Site-wide structured data: the business entity + WebSite node.
+            Per-page schema (breadcrumbs, image galleries, FAQ) is added in the
+            individual pages. */}
+        <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <ClerkProvider afterSignOutUrl="/">
           <LenisProvider>
             <SideNav />

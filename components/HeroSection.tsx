@@ -150,7 +150,7 @@ export default function HeroSection() {
         .hero-title__sub {
           color: var(--color-cream-dark);
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200;
+          font-weight: 300;
           font-style: normal;
           text-transform: uppercase;
           letter-spacing: 0.04em;

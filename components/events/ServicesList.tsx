@@ -15,7 +15,7 @@ const SERVICES = [
   { n: "05", name: "Makeup Artistry", blurb: "Professional bridal and party makeup, on schedule and on point." },
   { n: "06", name: "Car Rentals", blurb: "Premium cars for elegant arrivals and departures." },
   { n: "07", name: "Dancers", blurb: "Talented dancers and live entertainment to lift the room." },
-  { n: "08", name: "Photography & Video", blurb: "Full event shoot coverage by Aira Photography — stills and film." },
+  { n: "08", name: "Wedding Photography", blurb: "Full event shoot coverage by Aira Photography — stills and film." },
 ];
 
 /**
@@ -95,7 +95,7 @@ export default function ServicesList() {
 
         .services__n {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200; font-size: 0.95em;
+          font-weight: 300; font-size: 1.03em;
           color: var(--color-gold); letter-spacing: 0.08em;
         }
         .services__name {
@@ -105,7 +105,7 @@ export default function ServicesList() {
         }
         .services__blurb {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200; font-size: 0.95em; line-height: 1.6;
+          font-weight: 300; font-size: 1.15em; line-height: 1.65;
           color: var(--color-cream-dark);
         }
 

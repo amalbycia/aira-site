@@ -111,7 +111,7 @@ export default function CateringMenu({
           letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-ink);
         }
         .catering__intro {
-          font-family: var(--font-nohemi), sans-serif; font-weight: 200;
+          font-family: var(--font-nohemi), sans-serif; font-weight: 300;
           font-size: 1em; line-height: 1.8; color: var(--color-ink-muted);
           max-width: 52ch; margin: 0.8em auto 0;
         }
@@ -160,7 +160,7 @@ export default function CateringMenu({
         .catering__dish {
           display: flex; align-items: baseline; gap: 0.7em;
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200; font-size: 1.05em; line-height: 1.6;
+          font-weight: 300; font-size: 1.12em; line-height: 1.6;
           color: var(--color-ink);
           padding: 0.55em 0;
           border-bottom: 1px solid var(--color-cream);
@@ -174,7 +174,7 @@ export default function CateringMenu({
           margin-top: 0.55em;
         }
         .catering__note {
-          font-family: var(--font-nohemi), sans-serif; font-weight: 200;
+          font-family: var(--font-nohemi), sans-serif; font-weight: 300;
           font-size: 0.85em; color: var(--color-ink-muted);
           text-align: center; margin-top: 1.6em; font-style: italic;
         }

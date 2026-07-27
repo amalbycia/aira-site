@@ -208,7 +208,7 @@ export default function TestimonialMarquee({
         }
         .tm__rating-outof {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200;
+          font-weight: 300;
           font-size: clamp(1rem, 2.4vw, 1.35rem);
           color: var(--color-ink-muted);
         }
@@ -223,7 +223,7 @@ export default function TestimonialMarquee({
         .tm__rating-stars svg { width: 20px; height: 20px; }
         .tm__rating-count {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200;
+          font-weight: 300;
           font-size: clamp(0.9rem, 1.8vw, 1.02rem);
           line-height: 1.35;
           color: var(--color-ink-muted);
@@ -285,7 +285,7 @@ export default function TestimonialMarquee({
         .tm-card__stars { display: inline-flex; gap: 0.2em; }
         .tm-card__text {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200; font-size: 1em; line-height: 1.7;
+          font-weight: 300; font-size: 1.08em; line-height: 1.7;
           color: var(--color-ink); margin: 0;
           /* Clamp long reviews so every card stays a uniform height. Full text
              is preserved in the DB; this only limits the marquee display. */
@@ -301,7 +301,7 @@ export default function TestimonialMarquee({
         }
         .tm-card__date {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200; font-size: 0.8em; color: var(--color-ink-muted);
+          font-weight: 300; font-size: 0.85em; color: var(--color-ink-muted);
         }
 
         @media (max-width: 767px) {

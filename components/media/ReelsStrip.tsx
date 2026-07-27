@@ -89,7 +89,7 @@ export default function ReelsStrip({
         }
         .reels-strip__hint {
           font-family: var(--font-nohemi), sans-serif;
-          font-weight: 200;
+          font-weight: 300;
           font-size: 0.85em;
           letter-spacing: 0.04em;
           color: var(--color-cream-dark);

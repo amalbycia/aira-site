@@ -74,13 +74,13 @@ export default function AboutSection() {
       <style>{`
         .about-layout {
           position: relative;
-          max-width: 84em;
+          max-width: 90em;
           margin: 0 auto;
           display: grid;
-          grid-template-columns: 1fr minmax(0, 36em) 1fr;
+          grid-template-columns: 1fr minmax(0, 46em) 1fr;
           align-items: center;
-          gap: var(--space-md);
-          min-height: 40em;
+          gap: var(--space-lg);
+          min-height: 46em;
         }
 
         .about-image {
@@ -100,7 +100,7 @@ export default function AboutSection() {
 
         .about-image--1 {
           top: 0;
-          left: 8%;
+          left: 3%;
           width: 13em;
           height: 13em;
         }
@@ -114,7 +114,7 @@ export default function AboutSection() {
 
         .about-image--3 {
           top: 2%;
-          right: 6%;
+          right: 2%;
           width: 13.5em;
           height: 19em;
         }
@@ -162,8 +162,8 @@ export default function AboutSection() {
             className="font-script"
             style={{
               color: "var(--color-primary)",
-              fontSize: "3em",
-              marginBottom: "0.4em",
+              fontSize: "3.6em",
+              marginBottom: "0.35em",
             }}
           >
             about us
@@ -172,28 +172,32 @@ export default function AboutSection() {
           <h2
             className="font-nohemi"
             style={{
-              fontSize: "clamp(1.8rem, 3vw, 2.6em)",
+              fontSize: "clamp(2.2rem, 3.6vw, 3.2em)",
               fontWeight: 400,
-              lineHeight: 1.2,
+              lineHeight: 1.18,
               color: "var(--color-ink)",
-              marginBottom: "0.9em",
+              marginBottom: "0.7em",
             }}
           >
             Nine years of weddings, told properly.
           </h2>
 
           <p
-            className="font-nohemi"
+            className="font-nohemi about-lede"
             style={{
-              fontSize: "1em",
-              lineHeight: 1.9,
+              fontSize: "clamp(1.15rem, 1.5vw, 1.4em)",
+              lineHeight: 1.8,
               color: "var(--color-ink-muted)",
-              fontWeight: 200,
-              marginBottom: "1.6em",
+              fontWeight: 300,
+              marginBottom: "1.7em",
+              maxWidth: "40ch",
+              marginLeft: "auto",
+              marginRight: "auto",
             }}
           >
-            Founded in 2018, Aira Photography &amp; Agnitantra Events &amp; Caters
-            brings creative artistry and full-service event management together —
+            Founded in 2018, Aira Photography &amp; Agnitantra Events &amp;
+            Caterers brings creative artistry and full-service event management
+            together —
             photography, videography, decor, catering, and coordination, handled
             as one team so every family gets our full attention.
           </p>
@@ -203,11 +207,11 @@ export default function AboutSection() {
             className="font-nohemi"
             style={{
               display: "inline-block",
-              padding: "0.8em 2.2em",
+              padding: "1em 2.8em",
               borderRadius: "999px",
               border: "1px solid var(--color-primary)",
               color: "var(--color-primary)",
-              fontSize: "0.85em",
+              fontSize: "1em",
               fontWeight: 400,
               letterSpacing: "0.04em",
               textDecoration: "none",
