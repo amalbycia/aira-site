@@ -348,7 +348,7 @@ export default function TestimonialMarquee({
               </span>
               <span className="tm__rating-count">
                 Rated by{" "}
-                <strong>{googleReviewCount}+ couples &amp; families</strong> on
+                <strong>{googleReviewCount}+ couples and families</strong> on
                 Google
               </span>
               {googleUrl ? (

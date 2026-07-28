@@ -6,7 +6,7 @@ import { ImageResponse } from "next/og";
 // default OG image for every route via Next's file convention.
 export const runtime = "edge";
 export const alt =
-  "Aira Photography & Agnitantra Events — Weddings & Celebrations in Kerala";
+  "Aira Photography and Agnitantra Events — Weddings and Celebrations in Kerala";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -51,10 +51,10 @@ export default function OpengraphImage() {
             marginBottom: 34,
           }}
         >
-          &amp; Agnitantra Events
+and Agnitantra Events
         </div>
         <div style={{ fontSize: 34, color: "#e8d9c4", maxWidth: 900 }}>
-          Wedding photography &amp; full-service event management across Kerala
+          Wedding photography and full-service event management across Kerala
         </div>
         <div
           style={{

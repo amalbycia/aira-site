@@ -19,9 +19,9 @@ import {
 import { EVENTS_CLUSTERS } from "./clusters";
 
 export const metadata: Metadata = {
-  title: "Event Management & Catering in Kerala — Agnitantra Events",
+  title: "Event Management and Catering in Kerala — Agnitantra Events",
   description:
-    "Agnitantra Events & Catering — the best event management in Kerala. Decor, stage, catering, light & sound, makeup, cars and entertainment handled as one team. Nine years of weddings and celebrations across Kerala.",
+    "Agnitantra Events and Caterers — the best event management in Kerala. Decor, stage, catering, light and sound, makeup, cars and entertainment handled as one team. Nine years of weddings and celebrations across Kerala.",
   keywords: [
     "event management Kerala",
     "best event management in Kerala",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/events" },
   openGraph: {
-    title: "Event Management & Catering in Kerala — Agnitantra Events",
+    title: "Event Management and Catering in Kerala — Agnitantra Events",
     description:
       "Full-service event management across Kerala — decor, stage, catering, sound, makeup and more, handled as one team.",
     url: "/events",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
 const EVENTS_FAQ = [
   {
     q: "What areas in Kerala does Agnitantra Events serve?",
-    a: "Agnitantra Events & Caterers is based in Changanassery and serves weddings and events across Kerala — including Kottayam, Kochi, Thiruvananthapuram and Thrissur — and travels for destination events.",
+    a: "Agnitantra Events and Caterers is based in Changanassery and serves weddings and events across Kerala — including Kottayam, Kochi, Thiruvananthapuram and Thrissur — and travels for destination events.",
   },
   {
     q: "What services does Agnitantra Events provide?",
@@ -56,7 +56,7 @@ const EVENTS_FAQ = [
   },
   {
     q: "Does Agnitantra provide both photography and event management?",
-    a: "Yes. Aira Photography and Agnitantra Events & Caterers are one team, so photography, videography and full event management are coordinated together under one roof.",
+    a: "Yes. Aira Photography and Agnitantra Events and Caterers are one team, so photography, videography and full event management are coordinated together under one roof.",
   },
 ];
 
@@ -100,7 +100,7 @@ export default async function EventsPage() {
       <main style={{ position: "relative", zIndex: 1 }}>
         <PageHero
           eyebrow="every celebration, in full"
-          title="Agnitantra Events & Catering"
+          title="Agnitantra Events and Caterers"
           subtitle="Decor, stage, catering, sound, makeup and more — one team handling every detail so your family can simply enjoy the day."
         />
 
@@ -124,7 +124,7 @@ export default async function EventsPage() {
         )}
 
         {hasLiveReels ? (
-          <ReelsStrip eyebrow="in motion" heading="Films & Reels" reels={page.reels} />
+          <ReelsStrip eyebrow="in motion" heading="Films and Reels" reels={page.reels} />
         ) : null}
 
         <TestimonialMarquee

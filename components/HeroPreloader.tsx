@@ -418,9 +418,9 @@ export default function HeroPreloader() {
             0 1px 2px rgba(15, 6, 6, 0.45);
         }
         /* Two stacked lines — "Agnitantra Events" over "Aira Photography"
-           (the client dropped the "&"). Each line is its own block so they
-           always break, at any width. */
-        .hero-title__line { display: block; }
+           (the client dropped the "&"). Each line is its own block AND never
+           wraps internally, so it's always exactly two lines at any width. */
+        .hero-title__line { display: block; white-space: nowrap; }
         .hero-title__sub {
           color: #fdfbf7;
           font-family: var(--font-sometimes-times), serif;
@@ -526,9 +526,11 @@ export default function HeroPreloader() {
 
         @media (max-width: 767px) {
           .hero-title {
-            font-size: clamp(1.9rem, 8vw, 2.8rem);
-            white-space: normal;
-            max-width: 14ch;
+            /* Sized so the longest line ("Aira Photography", ~16ch) fits on ONE
+               line down to ~360px. Lines never wrap (see .hero-title__line), so
+               it's always exactly two lines on phones. */
+            font-size: clamp(1.6rem, 7.2vw, 2.6rem);
+            max-width: none;
             margin-left: auto;
             margin-right: auto;
           }
@@ -629,7 +631,7 @@ export default function HeroPreloader() {
           <Link href="/events" className="btn-animate-chars">
             <div className="btn-animate-chars__bg" />
             <span className="btn-animate-chars__text">
-              <span data-button-animate-chars="">Events &amp; Catering</span>
+              <span data-button-animate-chars="">Events and Caterers</span>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style={{ flexShrink: 0 }}>
                 <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

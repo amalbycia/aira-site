@@ -8,7 +8,7 @@ export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://agnitantraevents.com"
 ).replace(/\/$/, "");
 
-export const SITE_NAME = "Aira Photography & Agnitantra Events";
+export const SITE_NAME = "Aira Photography and Agnitantra Events";
 
 /**
  * Business facts — the single source of truth for structured data (JSON-LD),
@@ -17,8 +17,10 @@ export const SITE_NAME = "Aira Photography & Agnitantra Events";
  * (2026 local-SEO guidance: schema NAP consistent with GBP.)
  */
 export const BUSINESS = {
+  // legalName MUST match the Google Business Profile exactly (NAP consistency),
+  // so it keeps the "&" as GBP has it — don't "fix" this one.
   legalName: "Agnitantra Events & Caterers",
-  brandName: "Aira Photography & Agnitantra Events",
+  brandName: "Aira Photography and Agnitantra Events",
   founder: "Amal Sebastian Kalarickal",
   foundingYear: "2018",
   phone: "+918089703793",

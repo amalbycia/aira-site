@@ -58,8 +58,8 @@ const nohemi = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Aira Photography & Agnitantra Events — Weddings & Celebrations in Kerala",
-    template: "%s · Aira Photography & Agnitantra Events",
+    default: "Aira Photography and Agnitantra Events — Weddings and Celebrations in Kerala",
+    template: "%s · Aira Photography and Agnitantra Events",
   },
   description:
     "Wedding photography and full-service event management across Kerala — nine years of decor, catering, stage, sound and photography, handled as one team.",
@@ -76,7 +76,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
-    title: "Aira Photography & Agnitantra Events",
+    title: "Aira Photography and Agnitantra Events",
     description:
       "Wedding photography and full-service event management across Kerala — one team for decor, catering, stage, sound and photography.",
     url: SITE_URL,
@@ -84,7 +84,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aira Photography & Agnitantra Events",
+    title: "Aira Photography and Agnitantra Events",
     description: "Wedding photography and full-service event management across Kerala.",
   },
   robots: {

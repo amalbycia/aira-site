@@ -17,7 +17,7 @@ import { PHOTOGRAPHY_PHOTOS, PHOTOGRAPHY_REELS } from "./clusters";
 export const metadata: Metadata = {
   title: "Wedding Photography in Kerala — Aira Photography",
   description:
-    "Aira Photography — timeless wedding and portrait photography & cinematography across Kerala. Nine years capturing weddings in Changanassery, Kottayam, Kochi and beyond.",
+    "Aira Photography — timeless wedding and portrait photography and cinematography across Kerala. Nine years capturing weddings in Changanassery, Kottayam, Kochi and beyond.",
   keywords: [
     "wedding photography Kerala",
     "best wedding photographer Kerala",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Wedding Photography in Kerala — Aira Photography",
     description:
-      "Timeless wedding and portrait photography & cinematography across Kerala — nine years of craft.",
+      "Timeless wedding and portrait photography and cinematography across Kerala — nine years of craft.",
     url: "/photography",
     type: "website",
   },
@@ -88,7 +88,7 @@ export default async function PhotographyPage() {
 
         <ReelsStrip
           eyebrow="in motion"
-          heading="Films & Reels"
+          heading="Films and Reels"
           reels={reels}
         />
 

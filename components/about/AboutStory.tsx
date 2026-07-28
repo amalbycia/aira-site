@@ -16,10 +16,10 @@ const SERVICES: { name: string; note: string; icon: string }[] = [
   { name: "Stage Decoration", note: "Striking, venue-transforming design.", icon: "sparkle" },
   { name: "Stage Programs", note: "Flawlessly organised, professionally run.", icon: "mic" },
   { name: "Catering", note: "Premium menus that elevate the day.", icon: "plate" },
-  { name: "Light & Sound", note: "State-of-the-art production.", icon: "bolt" },
+  { name: "Light and Sound", note: "State-of-the-art production.", icon: "bolt" },
   { name: "Makeup Artistry", note: "Professional, on-call styling.", icon: "brush" },
   { name: "Car Rentals", note: "Elegant arrivals, premium fleet.", icon: "car" },
-  { name: "Dancers & Entertainment", note: "Talented performers, high energy.", icon: "star" },
+  { name: "Dancers and Entertainment", note: "Talented performers, high energy.", icon: "star" },
 ];
 
 // Minimal 24px line icons (currentColor) — keyed by the icon name above.
@@ -133,7 +133,7 @@ export default function AboutStory() {
   );
 
   return (
-    <section ref={rootRef} aria-label="About Aira & Agnitantra" className="about-story">
+    <section ref={rootRef} aria-label="About Aira and Agnitantra" className="about-story">
       <style>{`
         .about-story {
           /* Warm, layered backdrop (all on-brand: cream + gold + maroon) so the
@@ -157,6 +157,38 @@ export default function AboutStory() {
           pointer-events: none;
         }
         .about-wrap { max-width: 60em; margin: 0 auto; position: relative; }
+
+        /* Framed intro block — same technique as the homepage About section:
+           a fine gold hairline over a soft warm panel, finished with gold
+           corner ticks. Editorial and light, never a bulky card. */
+        .about-intro {
+          position: relative;
+          z-index: 1;
+          padding: clamp(2em, 4vw, 3.4em) clamp(1.6em, 4vw, 3em);
+          border: 1px solid rgba(201, 169, 110, 0.55);
+          border-radius: 1.4em;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,0.55), rgba(245,237,224,0.35));
+          box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.6) inset,
+            0 30px 70px -46px rgba(122, 31, 31, 0.45);
+          backdrop-filter: blur(1px);
+        }
+        /* Gold corner ticks — kept subtle so the frame stays refined. */
+        .about-intro__corner {
+          position: absolute;
+          width: 1.4em;
+          height: 1.4em;
+          border-color: var(--color-gold);
+          opacity: 0.85;
+          pointer-events: none;
+        }
+        .about-intro__corner--tl { top: 0.7em; left: 0.7em; border-top: 1.5px solid; border-left: 1.5px solid; border-top-left-radius: 0.5em; }
+        .about-intro__corner--tr { top: 0.7em; right: 0.7em; border-top: 1.5px solid; border-right: 1.5px solid; border-top-right-radius: 0.5em; }
+        .about-intro__corner--bl { bottom: 0.7em; left: 0.7em; border-bottom: 1.5px solid; border-left: 1.5px solid; border-bottom-left-radius: 0.5em; }
+        .about-intro__corner--br { bottom: 0.7em; right: 0.7em; border-bottom: 1.5px solid; border-right: 1.5px solid; border-bottom-right-radius: 0.5em; }
+        /* Last paragraph sits flush to the frame's bottom padding. */
+        .about-intro .about-para:last-of-type { margin-bottom: 0; }
 
         .about-eyebrow {
           font-family: var(--font-script), cursive;
@@ -405,27 +437,34 @@ export default function AboutStory() {
       `}</style>
 
       <div className="about-wrap">
-        <p className="about-eyebrow" data-reveal>about us</p>
-        <h2 className="about-lede" data-reveal>
-          Where creative artistry meets logistical mastery.
-        </h2>
+        <div className="about-intro" data-reveal>
+          <span className="about-intro__corner about-intro__corner--tl" aria-hidden="true" />
+          <span className="about-intro__corner about-intro__corner--tr" aria-hidden="true" />
+          <span className="about-intro__corner about-intro__corner--bl" aria-hidden="true" />
+          <span className="about-intro__corner about-intro__corner--br" aria-hidden="true" />
 
-        <p className="about-para" data-reveal>
-          Founded in <strong>2018</strong> by <strong>Amal Sebastian
-          Kalarickal</strong>, Aira Photography &amp; Agnitantra Events &amp;
-          Caterers has grown into a premier, all-inclusive event management
-          solution. We seamlessly integrate creative artistry with logistical
-          expertise to bring diverse celebrations to life — delivering
-          exceptional visual storytelling through high-quality photography,
-          videography, and complete event coverage.
-        </p>
-        <p className="about-para" data-reveal>
-          Beyond capturing memories, we transform venues with striking stage
-          decorations and organise flawless stage programs, so every event has a
-          captivating, professional presence. Driven by a commitment to
-          full-service excellence, we handle every intricate detail — giving our
-          clients a genuinely stress-free experience.
-        </p>
+          <p className="about-eyebrow">about us</p>
+          <h2 className="about-lede">
+            Where creative artistry meets logistical mastery.
+          </h2>
+
+          <p className="about-para">
+            Founded in <strong>2018</strong> by <strong>Amal Sebastian
+            Kalarickal</strong>, Aira Photography and Agnitantra Events and
+            Caterers has grown into a premier, all-inclusive event management
+            solution. We seamlessly integrate creative artistry with logistical
+            expertise to bring diverse celebrations to life — delivering
+            exceptional visual storytelling through high-quality photography,
+            videography, and complete event coverage.
+          </p>
+          <p className="about-para">
+            Beyond capturing memories, we transform venues with striking stage
+            decorations and organise flawless stage programs, so every event has a
+            captivating, professional presence. Driven by a commitment to
+            full-service excellence, we handle every intricate detail — giving our
+            clients a genuinely stress-free experience.
+          </p>
+        </div>
 
         {/* ── 9+ years feature ── */}
         <div className="about-feature" data-reveal>
@@ -485,7 +524,7 @@ export default function AboutStory() {
               </svg>
             </Link>
             <Link href="/events" className="about-pill about-pill--solid">
-              Events &amp; Catering
+              Events and Caterers
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                 <path d="M1 7h12M8 2l5 5-5 5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>

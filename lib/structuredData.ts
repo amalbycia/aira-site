@@ -80,14 +80,14 @@ export function organizationSchema(): Json {
     // Service catalogue — helps AI engines enumerate what the business offers.
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "Photography & Event Services",
+      name: "Photography and Event Services",
       itemListElement: [
         "Wedding Photography",
-        "Wedding Videography & Cinematography",
+        "Wedding Videography and Cinematography",
         "Event Shoot Coverage",
         "Stage Decoration",
         "Catering",
-        "Light & Sound",
+        "Light and Sound",
         "Makeup Artistry",
         "Car Rentals",
         "Event Management",

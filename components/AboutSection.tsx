@@ -131,7 +131,34 @@ export default function AboutSection() {
           text-align: center;
           position: relative;
           z-index: 1;
+          /* Framed block: a soft warm panel with a fine gold hairline, so the
+             copy reads as an intentional "frame" — light and editorial, not a
+             heavy card. Decorative gold corner ticks (::before/::after on the
+             inner frame) finish it. */
+          padding: clamp(2em, 4vw, 3.4em) clamp(1.6em, 4vw, 3em);
+          border: 1px solid rgba(201, 169, 110, 0.55);
+          border-radius: 1.4em;
+          background:
+            linear-gradient(180deg, rgba(255,255,255,0.55), rgba(245,237,224,0.35));
+          box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.6) inset,
+            0 30px 70px -46px rgba(122, 31, 31, 0.45);
+          backdrop-filter: blur(1px);
         }
+        /* Gold corner ticks — drawn with two thin lines per corner via a single
+           gradient-backed pseudo box, kept subtle so the frame stays refined. */
+        .about-text__corner {
+          position: absolute;
+          width: 1.4em;
+          height: 1.4em;
+          border-color: var(--color-gold);
+          opacity: 0.85;
+          pointer-events: none;
+        }
+        .about-text__corner--tl { top: 0.7em; left: 0.7em; border-top: 1.5px solid; border-left: 1.5px solid; border-top-left-radius: 0.5em; }
+        .about-text__corner--tr { top: 0.7em; right: 0.7em; border-top: 1.5px solid; border-right: 1.5px solid; border-top-right-radius: 0.5em; }
+        .about-text__corner--bl { bottom: 0.7em; left: 0.7em; border-bottom: 1.5px solid; border-left: 1.5px solid; border-bottom-left-radius: 0.5em; }
+        .about-text__corner--br { bottom: 0.7em; right: 0.7em; border-bottom: 1.5px solid; border-right: 1.5px solid; border-bottom-right-radius: 0.5em; }
 
         @media (max-width: 1100px) {
           .about-image { display: none; }
@@ -141,6 +168,8 @@ export default function AboutSection() {
           }
           .about-text {
             grid-column: 1;
+            max-width: 34em;
+            margin: 0 auto;
           }
         }
       `}</style>
@@ -158,6 +187,10 @@ export default function AboutSection() {
         ))}
 
         <div className="about-text">
+          <span className="about-text__corner about-text__corner--tl" aria-hidden="true" />
+          <span className="about-text__corner about-text__corner--tr" aria-hidden="true" />
+          <span className="about-text__corner about-text__corner--bl" aria-hidden="true" />
+          <span className="about-text__corner about-text__corner--br" aria-hidden="true" />
           <p
             className="font-script"
             style={{
@@ -195,7 +228,7 @@ export default function AboutSection() {
               marginRight: "auto",
             }}
           >
-            Founded in 2018, Aira Photography &amp; Agnitantra Events &amp;
+            Founded in 2018, Aira Photography and Agnitantra Events and
             Caterers brings creative artistry and full-service event management
             together —
             photography, videography, decor, catering, and coordination, handled

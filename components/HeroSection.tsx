@@ -199,7 +199,7 @@ export default function HeroSection() {
         {/* Main title */}
         <h1 className="hero-title">
           Agnitantra Events{" "}
-          <span className="hero-title__sub">&amp; Aira Photography</span>
+          <span className="hero-title__sub">and Aira Photography</span>
         </h1>
 
         {/* Divider ornament */}
@@ -283,7 +283,7 @@ export default function HeroSection() {
           <Link href="/events" className="btn-animate-chars">
             <div className="btn-animate-chars__bg" />
             <span className="btn-animate-chars__text">
-              <span data-button-animate-chars="">Events &amp; Catering</span>
+              <span data-button-animate-chars="">Events and Catering</span>
               <svg
                 width="14"
                 height="14"

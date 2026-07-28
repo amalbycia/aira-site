@@ -1363,7 +1363,7 @@ export default function SiteFooter({
 
         {/* ── Colophon ── */}
         <div className="footer-colophon font-nohemi">
-          <span>© {new Date().getFullYear()} Agnitantra Events &amp; Aira Photography</span>
+          <span>© {new Date().getFullYear()} Agnitantra Events and Aira Photography</span>
           <span aria-hidden="true">·</span>
           <span>Crafted with care</span>
         </div>
