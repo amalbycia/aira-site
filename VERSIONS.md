@@ -4,7 +4,7 @@ How to find, run, and switch between versions of this site. Every version is a
 git tag plus (for work in progress) a branch, so nothing is ever lost and any
 version can be brought back exactly as it was.
 
-**Currently checked out:** `redesign-v3` → **v3** (under review).
+**Currently checked out:** `master` → **v3** (live in production).
 
 ---
 
@@ -12,18 +12,18 @@ version can be brought back exactly as it was.
 
 | Version | Tag | Branch | Status | Design |
 |---|---|---|---|---|
-| **v1** | `v1-pre-redesign` | `master` | **Live in production** | Maroon + cream, Cormorant/Nohemi, damask hero, column-drift gallery |
+| **v1** | `v1-pre-redesign` | — | Retired (rollback target) | Maroon + cream, Cormorant/Nohemi, damask hero, column-drift gallery |
 | **v2** | `v2-redesign-wip` | `redesign-v2` | Built, needs visual review | "Warm Archive" — paper + forest green + gold, Cormorant/Hanken, editorial gallery |
-| **v3** | `v3-maroon-cinema` | `redesign-v3` | Built, needs visual review | "Maroon Cinema" — v1 palette, Nohemi-led awwwards look: diptych hero, counter preloader, filmstrip gallery, custom cursor |
+| **v3** | `v3-maroon-cinema` | `master` | **Live in production** | "Maroon Cinema" — v1 palette, Nohemi-led awwwards look: diptych hero, counter preloader, filmstrip gallery, custom cursor |
 
 ---
 
-## v1 — Current live site
+## v1 — Retired (rollback target)
 
-**Tag:** `v1-pre-redesign` · **Branch:** `master` · **Deploys to:** https://agnitantraevents.com
+**Tag:** `v1-pre-redesign` · **Deploys to:** —
 
-The design that has been in production since the SEO pass in July 2026. This is
-what visitors see today, and what `git push origin master` deploys.
+The design that was in production from the July 2026 SEO pass until v3 shipped on
+2026-08-15. Kept as the emergency rollback target (see "If a deploy goes wrong").
 
 - Palette: maroon `#7a1f1f` + cream `#f5ede0` + gold `#c9a96e`
 - Type: Cormorant Garamond, Nohemi, DM Sans, Alex Brush, Sometimes Times
@@ -92,12 +92,14 @@ git tag -n1
 # Switch to the live design (v1)
 git checkout master
 
-# Switch to the redesign (v2)
+# Switch to a redesign branch
 git checkout redesign-v2
+git checkout redesign-v3
 
 # Inspect a version without moving a branch (detached HEAD — look, don't commit)
 git checkout v1-pre-redesign
 git checkout v2-redesign-wip
+git checkout v3-maroon-cinema
 
 # Compare two versions
 git diff v1-pre-redesign v2-redesign-wip --stat
@@ -169,5 +171,15 @@ reserved for the single accent word.
   `pointer: fine` only; the native cursor is never hidden.
 - Film-grain overlay, alternating solid/hollow marquee type, hollow footer wordmark.
 
-**State:** build passes (17/17), lint/tsc clean, all pages 200 with CDN refs verified.
-Awaiting James's visual review.
+**Post-review polish** (approved 2026-08-15, commit `85552a0`)
+- Nav chrome runs cream while floating over a dark hero; unchanged ink-on-cream once
+  scrolled. Mobile menu button flips to ink while the cream panel is open.
+- Reviews are a full-bleed marquee of boxed quote cards — seamless half-track wrap,
+  pause on hover/focus, 5-line clamp, reduced-motion → native scrollable row.
+- Footer column links use the Osmo draw-in underline (in from the left, out to the
+  right via a transform-origin flip). The giant hollow wordmark became a back-to-top
+  button that floods with cream on hover (`FooterWordmark`).
+- Fixed: `not-found.tsx` still referenced v1 CSS variables that no longer exist.
+
+**State:** reviewed and approved by James. Build 17/17, tsc + lint clean, all pages 200
+with Bunny CDN refs verified. **Shipped to production 2026-08-15.**
