@@ -67,7 +67,10 @@ export default function Marquee() {
     <div ref={root} className={styles.wrap} aria-hidden="true">
       <div ref={trackRef} className={styles.track}>
         {[...WORDS, ...WORDS].map((w, i) => (
-          <span className={styles.item} key={`${w}-${i}`}>
+          <span
+            className={`${styles.item} ${i % 2 ? styles.itemOutline : ""}`}
+            key={`${w}-${i}`}
+          >
             {w}
             <span className={styles.dot}>✦</span>
           </span>

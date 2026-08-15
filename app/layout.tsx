@@ -1,37 +1,35 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { Alex_Brush, Cormorant_Garamond, Hanken_Grotesk } from "next/font/google";
+import { Cormorant_Garamond } from "next/font/google";
+import localFont from "next/font/local";
 import LenisProvider from "@/components/LenisProvider";
 import SiteNav from "@/components/SiteNav";
+import Cursor from "@/components/Cursor";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { organizationSchema, websiteSchema } from "@/lib/structuredData";
 import "./globals.css";
 
-/* Display face — high-contrast editorial serif. Italic is reserved for the
-   single accent word inside a headline. */
+/* Serif — reserved for the single italic accent word inside a headline. */
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
   display: "swap",
 });
 
-/* UI/body face — quiet grotesk that stays legible at small sizes on phones. */
-const hanken = Hanken_Grotesk({
-  variable: "--font-hanken",
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
+/* Display + UI face — the local grotesk that leads the whole v3 system.
+   Self-hosted (public/fonts/Nohemi), no external requests. */
+const nohemi = localFont({
+  variable: "--font-nohemi",
   display: "swap",
-});
-
-/* Kept for the occasional script flourish (used sparingly). */
-const alexBrush = Alex_Brush({
-  variable: "--font-alex-brush",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
+  src: [
+    { path: "../public/fonts/Nohemi/Nohemi-Light.woff2", weight: "300", style: "normal" },
+    { path: "../public/fonts/Nohemi/Nohemi-Regular.woff2", weight: "400", style: "normal" },
+    { path: "../public/fonts/Nohemi/Nohemi-Medium.woff2", weight: "500", style: "normal" },
+    { path: "../public/fonts/Nohemi/Nohemi-SemiBold.woff2", weight: "600", style: "normal" },
+  ],
 });
 
 export const metadata: Metadata = {
@@ -96,7 +94,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${hanken.variable} ${alexBrush.variable}`}
+      className={`${cormorant.variable} ${nohemi.variable}`}
     >
       <body>
         {/* Site-wide structured data: the business entity + WebSite node.
@@ -106,6 +104,7 @@ export default function RootLayout({
         <ClerkProvider afterSignOutUrl="/">
           <LenisProvider>
             <SiteNav />
+            <Cursor />
             {children}
           </LenisProvider>
         </ClerkProvider>

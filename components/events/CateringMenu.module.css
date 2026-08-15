@@ -60,8 +60,8 @@
   display: flex;
   align-items: baseline;
   gap: 0.75rem;
-  font-family: var(--font-display), serif;
-  font-size: var(--step-1);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: calc(var(--step-1) * 1.08);
   line-height: 1.5;
   color: var(--ink);
   padding-block: 0.35rem;

@@ -3,13 +3,64 @@
   min-height: 100svh;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 var(--gutter) clamp(3rem, 8vh, 6rem);
-  overflow: hidden;
-  isolation: isolate;
+  background: var(--forest-deep);
 }
 
-/* ── Media ───────────────────────────────────────────────────────────────── */
+/* ── Top line ────────────────────────────────────────────────────────────── */
+.topline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: calc(clamp(0.9rem, 2vh, 1.5rem) * 2 + 2.6rem) var(--gutter) 0.9rem;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.64rem;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(245, 237, 224, 0.65);
+  opacity: 0; /* entrance sets 1 */
+  transform: translateY(12px);
+}
+
+.toplineDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--gold);
+}
+
+/* ── Diptych ─────────────────────────────────────────────────────────────── */
+.diptych {
+  flex: 1;
+  display: flex;
+  gap: 2px; /* hairline seam between the two worlds */
+  padding: 0 2px 2px;
+  min-height: 0;
+}
+
+.panel {
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  isolation: isolate;
+  transition: flex-grow 0.65s var(--ease-expo);
+}
+
+/* The swell: hovered panel takes the room, sibling recedes. Flex-grow is
+   animatable and composits fine — no layout thrash beyond the two panels. */
+@media (hover: hover) and (pointer: fine) {
+  .diptych:has(.panel:hover) .panel {
+    flex-grow: 0.72;
+  }
+
+  .diptych .panel:hover {
+    flex-grow: 1.45;
+  }
+}
+
 .media {
   position: absolute;
   inset: 0;
@@ -17,7 +68,12 @@
 }
 
 .media img {
+  transition: transform 1s var(--ease-out);
   will-change: transform;
+}
+
+.panel:hover .media img {
+  transform: scale(1.045);
 }
 
 .scrim {
@@ -26,149 +82,153 @@
   background:
     linear-gradient(
       to top,
-      rgba(20, 22, 19, 0.78) 0%,
-      rgba(20, 22, 19, 0.42) 38%,
-      rgba(20, 22, 19, 0.16) 68%,
-      rgba(20, 22, 19, 0.3) 100%
+      rgba(43, 10, 10, 0.82) 0%,
+      rgba(43, 10, 10, 0.38) 46%,
+      rgba(43, 10, 10, 0.24) 100%
     );
+  transition: background-color 0.6s var(--ease-out), opacity 0.6s var(--ease-out);
 }
 
-/* ── Content ─────────────────────────────────────────────────────────────── */
-.content {
-  position: relative;
+.panel:hover .scrim {
+  opacity: 0.86;
+}
+
+/* ── Panel content ───────────────────────────────────────────────────────── */
+.panelBody {
   width: 100%;
-  max-width: var(--maxw);
-  margin-inline: auto;
+  padding: clamp(1.4rem, 4vw, 3rem);
   color: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.8rem, 2vh, 1.3rem);
 }
 
-.eyebrow {
+.kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
   font-family: var(--font-ui), sans-serif;
-  font-size: clamp(0.66rem, 0.62rem + 0.15vw, 0.74rem);
+  font-size: 0.64rem;
   font-weight: 400;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(244, 241, 234, 0.82);
-  margin: 0 0 clamp(1rem, 2vh, 1.6rem);
-  opacity: 0;
-  transform: translateY(12px);
-}
-
-.title {
-  font-size: var(--step-5);
-  line-height: 0.98;
-  color: var(--paper);
+  color: rgba(245, 237, 224, 0.72);
   margin: 0;
-  max-width: 16ch;
-  letter-spacing: -0.02em;
-}
-
-/* Each word sits in an overflow-hidden box so it rises from behind a mask. */
-.word {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: bottom;
-  /* A little breathing room so descenders/italics aren't clipped. */
-  padding-bottom: 0.06em;
-}
-
-.word > span {
-  display: inline-block;
-  transform: translateY(105%);
-}
-
-.accent {
-  font-style: italic;
-  color: #e8d9b0;
-}
-
-.lede {
-  font-size: var(--step-1);
-  line-height: 1.7;
-  font-weight: 300;
-  color: rgba(244, 241, 234, 0.9);
-  max-width: 46ch;
-  margin: clamp(1.2rem, 3vh, 2rem) 0 0;
   opacity: 0;
   transform: translateY(12px);
 }
 
-.ctas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.85rem;
-  margin-top: clamp(1.6rem, 4vh, 2.6rem);
-  opacity: 0;
-  transform: translateY(12px);
+.kickerIndex {
+  color: var(--gold-soft);
 }
 
-.cta {
-  min-height: 48px;
-}
-
-/* Outlined variant that reads on top of a photograph. */
-.ctaGhost {
-  background: transparent;
-  border-color: rgba(244, 241, 234, 0.55);
-  color: var(--paper);
-}
-
-.ctaGhost:hover {
-  background: rgba(244, 241, 234, 0.14);
-  border-color: var(--paper);
-}
-
-/* ── Scroll hint ─────────────────────────────────────────────────────────── */
-.scrollHint {
-  position: absolute;
-  right: var(--gutter);
-  bottom: clamp(3rem, 8vh, 6rem);
+.name {
   display: flex;
   flex-direction: column;
+  gap: 0.1em;
+  margin: 0;
+  color: var(--paper);
+}
+
+.nameMask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.04em;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 500;
+  font-size: clamp(2.6rem, 6.5vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+}
+
+.nameMask > span {
+  display: inline-block;
+  will-change: transform;
+}
+
+.serif {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.3rem, 2.6vw, 2.4rem);
+  line-height: 1.1;
+  color: var(--gold-soft);
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+/* ── CTA pill ────────────────────────────────────────────────────────────── */
+.cta {
+  display: inline-flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.65rem;
+  margin-top: 0.3rem;
+  padding: 0.85rem 1.5rem;
+  min-height: 46px;
+  border: 1px solid rgba(245, 237, 224, 0.55);
+  border-radius: 999px;
   font-family: var(--font-ui), sans-serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(244, 241, 234, 0.72);
+  color: var(--paper);
   opacity: 0;
   transform: translateY(12px);
-  writing-mode: vertical-rl;
+  transition:
+    background-color 0.4s var(--ease-out),
+    border-color 0.4s var(--ease-out),
+    color 0.4s var(--ease-out);
 }
 
-.scrollLine {
+.cta svg {
+  transition: transform 0.4s var(--ease-out);
+}
+
+.panel:hover .cta {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--forest);
+}
+
+.panel:hover .cta svg {
+  transform: translateX(4px);
+}
+
+/* ── A11y title ──────────────────────────────────────────────────────────── */
+.srTitle {
+  position: absolute;
   width: 1px;
-  height: clamp(34px, 6vh, 56px);
-  background: linear-gradient(
-    to bottom,
-    rgba(244, 241, 234, 0.7),
-    rgba(244, 241, 234, 0)
-  );
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-/* ── Mobile ──────────────────────────────────────────────────────────────── */
+/* ── Mobile: the diptych stacks ──────────────────────────────────────────── */
 @media (max-width: 900px) {
   .hero {
-    min-height: 92svh;
-    padding-bottom: clamp(2.5rem, 6vh, 4rem);
+    min-height: 100svh;
   }
 
-  .title {
-    max-width: 12ch;
-  }
-
-  .scrollHint {
-    display: none;
-  }
-
-  .ctas {
-    /* Full-width stacked buttons read better with a thumb. */
+  .diptych {
     flex-direction: column;
-    align-items: stretch;
   }
 
-  .cta {
-    justify-content: center;
+  .panel {
+    min-height: 44svh;
+  }
+
+  .panelBody {
+    padding: clamp(1.2rem, 5vw, 2rem);
+  }
+
+  .nameMask {
+    font-size: clamp(2.4rem, 11vw, 3.6rem);
+  }
+
+  .serif {
+    font-size: clamp(1.2rem, 5.5vw, 1.7rem);
   }
 }

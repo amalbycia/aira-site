@@ -1,7 +1,6 @@
 import Preloader from "@/components/Preloader";
 import Hero from "@/components/home/Hero";
 import Intro from "@/components/home/Intro";
-import BrandSplit from "@/components/home/BrandSplit";
 import Marquee from "@/components/home/Marquee";
 import Testimonials from "@/components/Testimonials";
 import SiteFooter from "@/components/SiteFooter";
@@ -21,7 +20,6 @@ export default async function Home() {
       <main>
         <Hero />
         <Intro />
-        <BrandSplit />
         <Marquee />
         <Testimonials
           reviews={reviews}

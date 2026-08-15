@@ -44,7 +44,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(244, 241, 234, 0.92);
+  background: rgba(245, 237, 224, 0.92);
   color: var(--forest);
   pointer-events: none;
   transition:
@@ -63,7 +63,7 @@
   transform: none;
   width: 42px;
   height: 42px;
-  background: rgba(26, 26, 23, 0.55);
+  background: rgba(31, 13, 13, 0.55);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   color: var(--paper);
@@ -86,8 +86,8 @@
   color: var(--paper);
   background: linear-gradient(
     to top,
-    rgba(20, 22, 19, 0.72),
-    rgba(20, 22, 19, 0)
+    rgba(43, 10, 10, 0.72),
+    rgba(43, 10, 10, 0)
   );
   pointer-events: none;
 }

@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import EditorialGallery from "./EditorialGallery";
+import FilmstripGallery from "./FilmstripGallery";
 import PhotoViewer from "./PhotoViewer";
 import type { GalleryPhoto } from "./types";
 
 /**
- * Client wrapper pairing the editorial gallery with the click-to-open
+ * Client wrapper pairing the filmstrip gallery with the click-to-open
  * PhotoViewer. Clicking any photo opens the fullscreen viewer at that photo,
  * where it can be swiped/dragged through. Keeps all viewer state on the client
  * so the page can stay a Server Component.
@@ -24,7 +24,7 @@ export default function GalleryWithLightbox({
 
   return (
     <>
-      <EditorialGallery
+      <FilmstripGallery
         eyebrow={eyebrow}
         heading={heading}
         photos={photos}

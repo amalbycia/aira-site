@@ -1,0 +1,44 @@
+.ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 300;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0; /* revealed on first pointer move */
+  transition:
+    width 0.32s var(--ease-out),
+    height 0.32s var(--ease-out),
+    margin 0.32s var(--ease-out),
+    border-color 0.32s var(--ease-out),
+    background-color 0.32s var(--ease-out);
+  will-change: transform;
+}
+
+.dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--gold);
+  transition: opacity 0.25s var(--ease-out);
+}
+
+/* Interactive swell — bigger, faintly filled, dot fades so the target reads. */
+.ring[data-hover="true"] {
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border-color: var(--gold-soft);
+  background: rgba(201, 169, 110, 0.1);
+}
+
+.ring[data-hover="true"] .dot {
+  opacity: 0;
+}

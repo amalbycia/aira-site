@@ -6,27 +6,24 @@ import { gsap } from "@/lib/gsap";
 import styles from "./Preloader.module.css";
 
 const SESSION_KEY = "aira-preloaded";
-/** Hard ceiling — the overlay always leaves by this point, whatever else happens. */
-const MAX_MS = 1200;
+/** Hard ceiling — the curtain always lifts by here, whatever else happens. */
+const MAX_MS = 1500;
 
 /**
- * First-visit overlay.
+ * First-visit overlay: a maroon curtain with the wordmark and a 000→100
+ * counter, then the whole sheet lifts to reveal the hero.
  *
- * Design follows the research (REDESIGN-PLAN.md §3): a preloader is only
- * defensible when it masks real work and never gates content. So this one:
- *   - runs once per session (sessionStorage), only where it's mounted (home)
- *   - is capped at 1200ms and resolves early once fonts + hero image are ready
- *   - sits ON TOP of a fully-rendered page rather than replacing it, so the
- *     content is present for crawlers and for anyone who skips it
- *   - is removed instantly under prefers-reduced-motion
- *
- * The wordmark is a placeholder until the client supplies the real logo.
+ * Same discipline as the v2 research established (see REDESIGN-PLAN.md §3):
+ *  - once per session (sessionStorage), only where mounted (home)
+ *  - capped at 1500ms; resolves early once fonts + the hero image are ready —
+ *    the counter is tied to real readiness, not fiction: it runs to ~90 on a
+ *    timer and only completes to 100 when the page actually is ready
+ *  - sits ON TOP of fully-rendered content (never gates it)
+ *  - decided in an effect after mount — reading sessionStorage during render
+ *    caused a hydration mismatch in v2, fixed then, kept fixed here
+ *  - reduced-motion → never shown at all
  */
 export default function Preloader() {
-  // The decision depends on sessionStorage + prefers-reduced-motion, neither of
-  // which exists on the server. Reading them during render would make the first
-  // client render disagree with the server HTML (hydration mismatch), so we
-  // start as "not showing" and decide in an effect after mount.
   const [active, setActive] = useState(false);
 
   useEffect(() => {
@@ -36,6 +33,7 @@ export default function Preloader() {
   }, []);
 
   const root = useRef<HTMLDivElement>(null);
+  const counterRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(
     () => {
@@ -43,7 +41,6 @@ export default function Preloader() {
 
       sessionStorage.setItem(SESSION_KEY, "1");
 
-      // Lenis must not scroll underneath the overlay.
       const lenis = (
         window as Window & { __lenis?: { stop: () => void; start: () => void } }
       ).__lenis;
@@ -54,53 +51,66 @@ export default function Preloader() {
         setActive(false);
       };
 
-      const tl = gsap.timeline({ onComplete: finish });
+      const counter = { v: 0 };
+      const setText = () => {
+        if (counterRef.current)
+          counterRef.current.textContent = String(Math.round(counter.v)).padStart(3, "0");
+      };
 
-      tl.to(`.${styles.wordmark}`, {
-        opacity: 1,
-        duration: 0.5,
+      // Phase 1 — run to 90 on a fixed clock (the "believable" part).
+      const toNinety = gsap.to(counter, {
+        v: 90,
+        duration: 0.85,
         ease: "power2.out",
-      })
-        // The rule drawing left→right is the progress signal.
-        .to(
-          `.${styles.rule}`,
-          { scaleX: 1, duration: 0.62, ease: "power2.inOut" },
-          0.12,
-        )
-        .to(
-          `.${styles.wordmark}`,
-          { opacity: 0, duration: 0.32, ease: "power2.in" },
-          "+=0.06",
-        )
-        // Lift the whole sheet away to reveal the hero already sitting there.
-        .to(
-          root.current,
-          { yPercent: -100, duration: 0.7, ease: "power3.inOut" },
-          "-=0.12",
-        );
+        onUpdate: setText,
+      });
 
-      // Resolve early when the real work is done: fonts settled + hero decoded.
+      // Phase 2 — the last 10 points are earned: they only run when fonts have
+      // settled and the hero image has loaded (or the hard cap fires).
+      let completed = false;
+      const complete = () => {
+        if (completed) return;
+        completed = true;
+
+        gsap
+          .timeline({ onComplete: finish })
+          .to(counter, {
+            v: 100,
+            duration: 0.3,
+            ease: "power1.inOut",
+            onUpdate: setText,
+          })
+          .to(
+            `.${styles.inner}`,
+            { opacity: 0, y: -16, duration: 0.34, ease: "power2.in" },
+            "+=0.08",
+          )
+          .to(
+            root.current,
+            { yPercent: -100, duration: 0.75, ease: "power3.inOut" },
+            "-=0.1",
+          );
+      };
+
       const ready = Promise.all([
         document.fonts?.ready ?? Promise.resolve(),
         new Promise<void>((res) => {
           const img = document.querySelector<HTMLImageElement>("[data-hero-img]");
-          if (!img) return res();
-          if (img.complete) return res();
+          if (!img || img.complete) return res();
           img.addEventListener("load", () => res(), { once: true });
           img.addEventListener("error", () => res(), { once: true });
         }),
       ]);
 
-      let settled = false;
-      const speedUp = () => {
-        if (settled) return;
-        settled = true;
-        // Don't cut mid-flight — just stop dawdling.
-        tl.timeScale(1.6);
-      };
-
-      ready.then(speedUp);
-      const cap = window.setTimeout(speedUp, MAX_MS);
+      // Never complete before phase 1 lands — the count must not jump backwards.
+      ready.then(() => {
+        if (toNinety.progress() === 1) complete();
+        else toNinety.eventCallback("onComplete", complete);
+      });
+      const cap = window.setTimeout(() => {
+        toNinety.progress(1);
+        complete();
+      }, MAX_MS);
 
       return () => {
         window.clearTimeout(cap);
@@ -114,11 +124,14 @@ export default function Preloader() {
 
   return (
     <div ref={root} className={styles.root} aria-hidden="true">
-      <div className={styles.wordmark}>
+      <div className={styles.inner}>
         <span className={styles.name}>AIRA</span>
-        <span className={styles.rule} />
         <span className={styles.sub}>Photography &amp; Events</span>
       </div>
+      <span ref={counterRef} className={styles.counter}>
+        000
+      </span>
+      <span className={styles.foot}>Changanassery · Kerala</span>
     </div>
   );
 }
