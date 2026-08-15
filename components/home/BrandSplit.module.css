@@ -1,0 +1,116 @@
+.head {
+  text-align: center;
+  margin-bottom: clamp(2.5rem, 6vh, 4.5rem);
+}
+
+.heading {
+  max-width: 18ch;
+  margin-inline: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+/* ── Card ────────────────────────────────────────────────────────────────── */
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  transition:
+    transform 0.5s var(--ease-out),
+    box-shadow 0.5s var(--ease-out);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 44px -28px rgba(26, 26, 23, 0.4);
+}
+
+.media {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--paper-deep);
+}
+
+.media img {
+  transition: transform 0.9s var(--ease-out);
+}
+
+.card:hover .media img {
+  transform: scale(1.04);
+}
+
+.body {
+  padding: clamp(1.4rem, 3vw, 2.2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  flex: 1;
+}
+
+.cardEyebrow {
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0;
+}
+
+.cardTitle {
+  font-size: var(--step-2);
+  color: var(--ink);
+}
+
+.cardBlurb {
+  font-size: var(--step-0);
+  line-height: 1.7;
+  color: var(--ink-soft);
+  max-width: 34ch;
+}
+
+.cardLink {
+  margin-top: auto;
+  padding-top: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--forest);
+}
+
+.cardLink svg {
+  transition: transform 0.42s var(--ease-out);
+}
+
+.card:hover .cardLink svg {
+  transform: translateX(5px);
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .media {
+    aspect-ratio: 3 / 2;
+  }
+
+  /* Hover transforms are meaningless on touch and can feel sticky. */
+  .card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}

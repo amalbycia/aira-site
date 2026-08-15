@@ -2,16 +2,13 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import GalleryWithLightbox from "@/components/media/GalleryWithLightbox";
 import ReelsStrip from "@/components/media/ReelsStrip";
-import TestimonialMarquee from "@/components/events/TestimonialMarquee";
+import Testimonials from "@/components/Testimonials";
 import LocationBlock from "@/components/LocationBlock";
 import SiteFooter from "@/components/SiteFooter";
 import { getPage } from "@/lib/cms/getPage";
 import { getReviews } from "@/lib/cms/getContent";
 import JsonLd from "@/components/JsonLd";
-import {
-  breadcrumbSchema,
-  imageGallerySchema,
-} from "@/lib/structuredData";
+import { breadcrumbSchema, imageGallerySchema } from "@/lib/structuredData";
 import { PHOTOGRAPHY_PHOTOS, PHOTOGRAPHY_REELS } from "./clusters";
 
 export const metadata: Metadata = {
@@ -36,13 +33,13 @@ export const metadata: Metadata = {
   },
 };
 
-// Re-fetch from Sanity at most once a minute, so the client's new uploads
-// appear without a redeploy (ISR). Lower for snappier edits, raise to cache harder.
+// Re-fetch at most once a minute, so the client's new uploads appear without a
+// redeploy (ISR). Lower for snappier edits, raise to cache harder.
 export const revalidate = 60;
 
 export default async function PhotographyPage() {
-  // Pull the gallery from Sanity; fall back to placeholders until the client
-  // has uploaded photos in /studio (or if Sanity is unreachable).
+  // Pull the gallery from Neon; fall back to placeholders until the client has
+  // uploaded photos in /manage (or if the DB is unreachable).
   const [page, reviews] = await Promise.all([
     getPage("photography"),
     getReviews("photography"),
@@ -72,38 +69,33 @@ export default async function PhotographyPage() {
   return (
     <>
       <JsonLd data={schema} />
-      <main style={{ position: "relative", zIndex: 1 }}>
+      <main>
         <PageHero
-          eyebrow="captured in light"
+          eyebrow="Captured in light"
           title="Aira Photography"
           subtitle="Weddings, portraits and the moments between — told in stills and film, with nine years behind the lens."
+          image="/images/about-4.webp"
+          imageAlt="A wedding moment captured by Aira Photography"
         />
 
         <GalleryWithLightbox
-          eyebrow="the gallery"
-          heading="Stories, Frame by Frame"
+          eyebrow="The gallery"
+          heading="Stories, frame by frame"
           photos={photos}
-          columns={4}
         />
 
-        <ReelsStrip
-          eyebrow="in motion"
-          heading="Films and Reels"
-          reels={reels}
-        />
+        <ReelsStrip eyebrow="In motion" heading="Films and reels" reels={reels} />
 
-        <TestimonialMarquee
+        <Testimonials
           reviews={reviews}
-          eyebrow="kind words"
-          heading="What Couples Say"
           googleRating={4.9}
           googleReviewCount={148}
           googleUrl="https://www.google.com/maps?cid=10454241291312957415"
         />
 
         <LocationBlock
-          eyebrow="find us"
-          heading="Where We Shoot"
+          eyebrow="Find us"
+          heading="Where we shoot"
           lines={locationLines}
         />
       </main>

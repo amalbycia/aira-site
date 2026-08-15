@@ -1,135 +1,298 @@
 @import "tailwindcss";
 
-/* ─── Osmo Scaling System ─────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   AIRA — REDESIGN v2 · "Warm Archive"
+   Ink on warm paper, deep botanical green accent, muted gold detail.
+   Type: Cormorant Garamond (display) + Hanken Grotesk (UI/body).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 :root {
-  --size-unit: 16;
-  --size-container-ideal: 1440;
-  --size-container-min: 992px;
-  --size-container-max: 1920px;
-  --size-container: clamp(
-    var(--size-container-min),
-    100vw,
-    var(--size-container-max)
-  );
-  --size-font: calc(
-    var(--size-container) / (var(--size-container-ideal) / var(--size-unit))
-  );
-}
+  /* ── Palette ───────────────────────────────────────────────────────────── */
+  --paper: #f4f1ea;
+  --paper-deep: #eae5da;
+  --paper-warm: #efeae0;
+  --ink: #1a1a17;
+  --ink-soft: #5a564e;
+  --ink-faint: #8b857a;
+  --forest: #2e4034;
+  --forest-deep: #223026;
+  --forest-soft: #3d5344;
+  --gold: #a98a4b;
+  --gold-soft: #c4a76b;
+  --line: rgba(26, 26, 23, 0.14);
+  --line-strong: rgba(26, 26, 23, 0.28);
+  --line-invert: rgba(244, 241, 234, 0.22);
 
-@media (max-width: 991px) {
-  :root {
-    --size-container-ideal: 834;
-    --size-container-min: 768px;
-    --size-container-max: 991px;
-  }
-}
-
-@media (max-width: 767px) {
-  :root {
-    --size-container-ideal: 550;
-    --size-container-min: 480px;
-    --size-container-max: 767px;
-  }
-}
-
-@media (max-width: 479px) {
-  :root {
-    --size-container-ideal: 390;
-    --size-container-min: 320px;
-    --size-container-max: 479px;
-  }
-}
-
-/* ─── Design Tokens ───────────────────────────────────────────────────────── */
-:root {
-  /* Colors */
-  --color-primary: #7a1f1f;
-  --color-primary-dark: #5a1616;
-  --color-primary-light: #9a3030;
-  --color-cream: #f5ede0;
-  --color-cream-dark: #e8d9c4;
-  --color-gold: #c9a96e;
-  --color-gold-light: #dfc090;
-  --color-ink: #1a0a0a;
-  --color-ink-muted: #4a2a2a;
-  --color-white: #ffffff;
-
-  /* Typography */
-  --font-script: var(--font-alex-brush);
+  /* ── Type ──────────────────────────────────────────────────────────────── */
   --font-display: var(--font-cormorant);
-  --font-body: var(--font-dm-sans);
+  --font-ui: var(--font-hanken);
+  --font-script: var(--font-alex-brush);
 
-  /* Spacing scale (em-based so it scales with Osmo) */
-  --space-xs: 0.5em;
-  --space-sm: 1em;
-  --space-md: 2em;
-  --space-lg: 4em;
-  --space-xl: 6em;
-  --space-2xl: 10em;
+  /* Fluid scale */
+  --step--1: clamp(0.82rem, 0.78rem + 0.2vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.09rem);
+  --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.45rem);
+  --step-2: clamp(1.5rem, 1.3rem + 1vw, 2.1rem);
+  --step-3: clamp(2rem, 1.6rem + 2vw, 3.2rem);
+  --step-4: clamp(2.6rem, 1.9rem + 3.4vw, 5rem);
+  --step-5: clamp(3.2rem, 2rem + 5.6vw, 7.5rem);
+
+  /* ── Space ─────────────────────────────────────────────────────────────── */
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --section-y: clamp(4.5rem, 10vh, 9.5rem);
+  --measure: 62ch;
+  --maxw: 1280px;
+
+  /* ── Motion ────────────────────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.42s;
 }
 
-/* ─── Base ────────────────────────────────────────────────────────────────── */
+/* ── Reset / base ────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
-  font-size: var(--size-font);
-  scroll-behavior: auto; /* Lenis handles smooth scroll */
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto; /* Lenis owns smooth scroll */
 }
 
 body {
-  background-color: var(--color-cream);
-  color: var(--color-ink);
-  font-family: var(--font-body), sans-serif;
+  margin: 0;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: var(--step-0);
+  font-weight: 300;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
   margin: 0;
-  padding: 0;
+  text-wrap: balance;
 }
 
-/* ─── Typography Utilities ────────────────────────────────────────────────── */
-.font-script {
-  font-family: var(--font-script), cursive;
+p {
+  margin: 0;
+  text-wrap: pretty;
 }
 
-.font-display {
-  font-family: var(--font-display), serif;
+a {
+  color: inherit;
+  text-decoration: none;
 }
 
-.font-body {
-  font-family: var(--font-body), sans-serif;
+button {
+  font: inherit;
+  color: inherit;
 }
 
-.font-nohemi {
-  font-family: var(--font-nohemi), sans-serif;
+::selection {
+  background: var(--forest);
+  color: var(--paper);
 }
 
-.font-sometimes-times {
-  font-family: var(--font-sometimes-times), serif;
+/* ── Layout helpers ──────────────────────────────────────────────────────── */
+.shell {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
 }
 
-/* ─── Lenis ───────────────────────────────────────────────────────────────── */
-html.lenis,
-html.lenis body {
-  height: auto;
+.section {
+  padding-block: var(--section-y);
+  position: relative;
 }
 
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
+.section--deep {
+  background: var(--paper-deep);
 }
 
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
+.section--forest {
+  background: var(--forest);
+  color: var(--paper);
 }
 
-.lenis.lenis-stopped {
-  overflow: hidden;
+.section--forest h1,
+.section--forest h2,
+.section--forest h3 {
+  color: var(--paper);
 }
 
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
+/* ── Typographic primitives ──────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-ui), sans-serif;
+  font-size: clamp(0.68rem, 0.64rem + 0.15vw, 0.76rem);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0 0 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.eyebrow::before {
+  content: "";
+  width: clamp(18px, 3vw, 34px);
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+  flex: none;
+}
+
+.eyebrow--center {
+  justify-content: center;
+}
+
+.display {
+  font-size: var(--step-3);
+}
+
+.display--lg {
+  font-size: var(--step-4);
+}
+
+/* The single italic accent word inside an otherwise roman headline. */
+.accent {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.lede {
+  font-size: var(--step-1);
+  line-height: 1.75;
+  color: var(--ink-soft);
+  font-weight: 300;
+  max-width: var(--measure);
+}
+
+.section--forest .lede {
+  color: rgba(244, 241, 234, 0.78);
+}
+
+.rule {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+  margin: 0;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.btn {
+  --btn-bg: var(--forest);
+  --btn-fg: var(--paper);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.95rem 1.7rem;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-ui), sans-serif;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background-color var(--dur) var(--ease-out),
+    color var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
+  /* 44px minimum touch target */
+  min-height: 44px;
+}
+
+.btn:hover {
+  background: var(--forest-deep);
+  transform: translateY(-2px);
+}
+
+.btn__arrow {
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.btn:hover .btn__arrow {
+  transform: translateX(4px);
+}
+
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.btn--ghost:hover {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--paper);
+}
+
+.btn--light {
+  --btn-bg: var(--paper);
+  --btn-fg: var(--forest);
+}
+
+.btn--light:hover {
+  --btn-bg: #fff;
+}
+
+/* ── Reveal primitive (GSAP sets the final state; CSS is the pre-state) ──── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  will-change: opacity, transform;
+}
+
+/* If JS never runs, content must still be visible. */
+.no-js [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Focus ───────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

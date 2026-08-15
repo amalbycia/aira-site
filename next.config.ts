@@ -44,6 +44,8 @@ const nextConfig: NextConfig = {
     ];
   },
   images: {
+    // Quality values used across the site (Next 16 requires these declared).
+    qualities: [75, 80, 82],
     remotePatterns: [
       // Sanity CDN — serves all images uploaded via Sanity Studio
       {

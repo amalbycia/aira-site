@@ -1,0 +1,51 @@
+.head {
+  margin-bottom: clamp(1.8rem, 4vh, 3rem);
+}
+
+.railWrap {
+  width: 100%;
+}
+
+.rail {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--gutter);
+  display: flex;
+  gap: clamp(0.75rem, 1.6vw, 1.25rem);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  /* Centre the row on wide screens while still allowing overflow scroll. */
+  justify-content: flex-start;
+  max-width: var(--maxw);
+  margin-inline: auto;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  flex: 0 0 auto;
+  width: clamp(210px, 22vw, 280px);
+  aspect-ratio: 9 / 16;
+  scroll-snap-align: center;
+  overflow: hidden;
+}
+
+@media (min-width: 1100px) {
+  /* Enough room for the whole set — centre it and drop the scroll. */
+  .rail {
+    justify-content: center;
+    overflow-x: visible;
+  }
+}
+
+@media (max-width: 640px) {
+  .item {
+    /* Show a sliver of the next reel so the swipe is discoverable. */
+    width: 74vw;
+    max-width: 300px;
+  }
+}

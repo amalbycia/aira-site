@@ -28,11 +28,13 @@ export default function AboutPage() {
           { name: "About", path: "/about" },
         ])}
       />
-      <main style={{ position: "relative", zIndex: 1 }}>
+      <main>
         <PageHero
-          eyebrow="our story"
-          title="One Team, Every Detail"
+          eyebrow="Our story"
+          title="One team, every detail"
           subtitle="Founded in 2018 by Amal Sebastian Kalarickal — bringing creative artistry and full-service event management together under one roof."
+          image="/images/hero-tile-3.webp"
+          imageAlt="The Aira Photography and Agnitantra Events team at work"
         />
 
         <AboutStory />

@@ -1,0 +1,33 @@
+.wrap {
+  overflow: hidden;
+  border-block: 1px solid var(--line);
+  padding-block: clamp(1.1rem, 2.6vh, 1.8rem);
+  background: var(--paper);
+  user-select: none;
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: max-content;
+  will-change: transform;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(1.2rem, 3vw, 2.4rem);
+  padding-right: clamp(1.2rem, 3vw, 2.4rem);
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.4rem, 1rem + 1.8vw, 2.6rem);
+  line-height: 1;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.dot {
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.5em;
+  color: var(--gold);
+}

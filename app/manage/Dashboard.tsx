@@ -7,19 +7,21 @@ import type {
   ReelRow,
   ReviewRow,
   MenuCategoryRow,
+  PageContentRow,
   PageBrand,
 } from "@/lib/cms/admin";
 import PhotosTab from "./tabs/PhotosTab";
 import ReelsTab from "./tabs/ReelsTab";
 import ReviewsTab from "./tabs/ReviewsTab";
 import MenuTab from "./tabs/MenuTab";
+import PageContentTab from "./tabs/PageContentTab";
 
 // The console is organized BY PAGE (Photography vs Events), not by content type.
 // Each page owns its own photos and reels; Events additionally owns the catering
 // menu and the reviews. User accounts live in the Clerk dashboard; socials,
 // contact, location and About copy are hardcoded — so there is no Settings tab.
 type Brand = PageBrand;
-type Section = "photos" | "reels" | "menu" | "reviews";
+type Section = "photos" | "reels" | "menu" | "reviews" | "content";
 
 // Which sections each page exposes, in order. Both pages have their own
 // Reviews now (edited independently); only Events has the catering menu.
@@ -28,12 +30,14 @@ const SECTIONS: Record<Brand, { id: Section; label: string }[]> = {
     { id: "photos", label: "Photos" },
     { id: "reels", label: "Reels & Videos" },
     { id: "reviews", label: "Reviews" },
+    { id: "content", label: "Page Content" },
   ],
   events: [
     { id: "photos", label: "Photos" },
     { id: "reels", label: "Reels & Videos" },
     { id: "menu", label: "Events Menu" },
     { id: "reviews", label: "Reviews" },
+    { id: "content", label: "Page Content" },
   ],
 };
 
@@ -42,12 +46,14 @@ export default function Dashboard({
   initialReels,
   initialReviews,
   initialMenu,
+  initialContent,
   currentEmail,
 }: {
   initialPhotos: { photography: PhotoRow[]; events: PhotoRow[] };
   initialReels: { photography: ReelRow[]; events: ReelRow[] };
   initialReviews: { photography: ReviewRow[]; events: ReviewRow[] };
   initialMenu: MenuCategoryRow[];
+  initialContent: { photography: PageContentRow | null; events: PageContentRow | null };
   currentEmail: string | null;
 }) {
   const [brand, setBrand] = useState<Brand>("photography");
@@ -145,6 +151,14 @@ export default function Dashboard({
           key={`reviews-${brand}`}
           page={brand}
           initial={initialReviews[brand]}
+          onToast={showToast}
+        />
+      )}
+      {section === "content" && (
+        <PageContentTab
+          key={`content-${brand}`}
+          page={brand}
+          initial={initialContent[brand]}
           onToast={showToast}
         />
       )}

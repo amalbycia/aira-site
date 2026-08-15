@@ -315,3 +315,86 @@ export async function updateSettings(s: SettingsRow): Promise<void> {
       updated_at = now()
   `;
 }
+
+// ── Page content (owner-editable copy per page) ──────────────────────────────
+
+/**
+ * Editable copy for a brand page. Every field is nullable — when null the site
+ * falls back to its built-in default, so a blank field never blanks the page.
+ */
+export type PageContentRow = {
+  hero_eyebrow: string | null;
+  hero_title: string | null;
+  hero_subtitle: string | null;
+  intro_eyebrow: string | null;
+  intro_heading: string | null;
+  intro_body: string | null;
+  services_heading: string | null;
+  menu_heading: string | null;
+  gallery_heading: string | null;
+  reels_heading: string | null;
+  cta_label: string | null;
+  cta_href: string | null;
+  stat_1_value: string | null;
+  stat_1_label: string | null;
+  stat_2_value: string | null;
+  stat_2_label: string | null;
+  stat_3_value: string | null;
+  stat_3_label: string | null;
+};
+
+export async function getPageContent(
+  page: PageBrand,
+): Promise<PageContentRow | null> {
+  const rows = (await sql`
+    select hero_eyebrow, hero_title, hero_subtitle,
+           intro_eyebrow, intro_heading, intro_body,
+           services_heading, menu_heading, gallery_heading, reels_heading,
+           cta_label, cta_href,
+           stat_1_value, stat_1_label,
+           stat_2_value, stat_2_label,
+           stat_3_value, stat_3_label
+    from pages where slug = ${page}
+  `) as PageContentRow[];
+  return rows[0] ?? null;
+}
+
+export async function updatePageContent(
+  page: PageBrand,
+  c: PageContentRow,
+): Promise<void> {
+  await sql`
+    insert into pages (slug, hero_eyebrow, hero_title, hero_subtitle,
+      intro_eyebrow, intro_heading, intro_body,
+      services_heading, menu_heading, gallery_heading, reels_heading,
+      cta_label, cta_href,
+      stat_1_value, stat_1_label, stat_2_value, stat_2_label,
+      stat_3_value, stat_3_label)
+    values (${page}, ${c.hero_eyebrow}, ${c.hero_title}, ${c.hero_subtitle},
+      ${c.intro_eyebrow}, ${c.intro_heading}, ${c.intro_body},
+      ${c.services_heading}, ${c.menu_heading}, ${c.gallery_heading}, ${c.reels_heading},
+      ${c.cta_label}, ${c.cta_href},
+      ${c.stat_1_value}, ${c.stat_1_label}, ${c.stat_2_value}, ${c.stat_2_label},
+      ${c.stat_3_value}, ${c.stat_3_label})
+    on conflict (slug) do update set
+      hero_eyebrow = excluded.hero_eyebrow,
+      hero_title = excluded.hero_title,
+      hero_subtitle = excluded.hero_subtitle,
+      intro_eyebrow = excluded.intro_eyebrow,
+      intro_heading = excluded.intro_heading,
+      intro_body = excluded.intro_body,
+      services_heading = excluded.services_heading,
+      menu_heading = excluded.menu_heading,
+      gallery_heading = excluded.gallery_heading,
+      reels_heading = excluded.reels_heading,
+      cta_label = excluded.cta_label,
+      cta_href = excluded.cta_href,
+      stat_1_value = excluded.stat_1_value,
+      stat_1_label = excluded.stat_1_label,
+      stat_2_value = excluded.stat_2_value,
+      stat_2_label = excluded.stat_2_label,
+      stat_3_value = excluded.stat_3_value,
+      stat_3_label = excluded.stat_3_label,
+      updated_at = now()
+  `;
+}

@@ -1,64 +1,44 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { Alex_Brush, Cormorant_Garamond, DM_Sans } from "next/font/google";
-import localFont from "next/font/local";
+import { Alex_Brush, Cormorant_Garamond, Hanken_Grotesk } from "next/font/google";
 import LenisProvider from "@/components/LenisProvider";
-import SideNav from "@/components/SideNav";
-import PageTransition from "@/components/PageTransition";
+import SiteNav from "@/components/SiteNav";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { organizationSchema, websiteSchema } from "@/lib/structuredData";
 import "./globals.css";
 
-const alexBrush = Alex_Brush({
-  variable: "--font-alex-brush",
-  subsets: ["latin"],
-  weight: "400",
-});
-
+/* Display face — high-contrast editorial serif. Italic is reserved for the
+   single accent word inside a headline. */
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   style: ["normal", "italic"],
+  display: "swap",
 });
 
-const dmSans = DM_Sans({
-  variable: "--font-dm-sans",
+/* UI/body face — quiet grotesk that stays legible at small sizes on phones. */
+const hanken = Hanken_Grotesk({
+  variable: "--font-hanken",
   subsets: ["latin"],
   weight: ["300", "400", "500"],
+  display: "swap",
 });
 
-const sometimesTimes = localFont({
-  variable: "--font-sometimes-times",
-  src: [
-    {
-      path: "../public/fonts/SometimesTimes/SometimesTimes-Regular.woff2",
-      weight: "400",
-      style: "normal",
-    },
-  ],
-});
-
-const nohemi = localFont({
-  variable: "--font-nohemi",
-  src: [
-    { path: "../public/fonts/Nohemi/Nohemi-Thin.woff2", weight: "100", style: "normal" },
-    { path: "../public/fonts/Nohemi/Nohemi-ExtraLight.woff2", weight: "200", style: "normal" },
-    { path: "../public/fonts/Nohemi/Nohemi-Light.woff2", weight: "300", style: "normal" },
-    { path: "../public/fonts/Nohemi/Nohemi-Regular.woff2", weight: "400", style: "normal" },
-    { path: "../public/fonts/Nohemi/Nohemi-Medium.woff2", weight: "500", style: "normal" },
-    { path: "../public/fonts/Nohemi/Nohemi-SemiBold.woff2", weight: "600", style: "normal" },
-    { path: "../public/fonts/Nohemi/Nohemi-Bold.woff2", weight: "700", style: "normal" },
-    { path: "../public/fonts/Nohemi/Nohemi-ExtraBold.woff2", weight: "800", style: "normal" },
-    { path: "../public/fonts/Nohemi/Nohemi-Black.woff2", weight: "900", style: "normal" },
-  ],
+/* Kept for the occasional script flourish (used sparingly). */
+const alexBrush = Alex_Brush({
+  variable: "--font-alex-brush",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Aira Photography and Agnitantra Events — Weddings and Celebrations in Kerala",
+    default:
+      "Aira Photography and Agnitantra Events — Weddings and Celebrations in Kerala",
     template: "%s · Aira Photography and Agnitantra Events",
   },
   description:
@@ -85,7 +65,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Aira Photography and Agnitantra Events",
-    description: "Wedding photography and full-service event management across Kerala.",
+    description:
+      "Wedding photography and full-service event management across Kerala.",
   },
   robots: {
     index: true,
@@ -115,7 +96,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${alexBrush.variable} ${cormorant.variable} ${dmSans.variable} ${nohemi.variable} ${sometimesTimes.variable}`}
+      className={`${cormorant.variable} ${hanken.variable} ${alexBrush.variable}`}
     >
       <body>
         {/* Site-wide structured data: the business entity + WebSite node.
@@ -124,9 +105,8 @@ export default function RootLayout({
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <ClerkProvider afterSignOutUrl="/">
           <LenisProvider>
-            <SideNav />
+            <SiteNav />
             {children}
-            <PageTransition />
           </LenisProvider>
         </ClerkProvider>
       </body>

@@ -1,0 +1,45 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* The overlay sits above a fully-rendered page — it never replaces content. */
+}
+
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  opacity: 0;
+}
+
+.name {
+  font-family: var(--font-display), serif;
+  font-size: clamp(2rem, 8vw, 3.4rem);
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.rule {
+  display: block;
+  width: clamp(120px, 30vw, 260px);
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.sub {
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}

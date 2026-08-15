@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import CateringMenu from "@/components/events/CateringMenu";
 import ServicesList from "@/components/events/ServicesList";
-import GallerySection from "@/components/media/GallerySection";
-import ColumnDriftGallery from "@/components/media/ColumnDriftGallery";
+import GalleryWithLightbox from "@/components/media/GalleryWithLightbox";
 import ReelsStrip from "@/components/media/ReelsStrip";
-import TestimonialMarquee from "@/components/events/TestimonialMarquee";
+import Testimonials from "@/components/Testimonials";
 import LocationBlock from "@/components/LocationBlock";
 import SiteFooter from "@/components/SiteFooter";
+import StatStrip from "@/components/StatStrip";
 import { getPage } from "@/lib/cms/getPage";
 import { getReviews, getMenu } from "@/lib/cms/getContent";
 import JsonLd from "@/components/JsonLd";
@@ -16,7 +16,7 @@ import {
   imageGallerySchema,
   faqSchema,
 } from "@/lib/structuredData";
-import { EVENTS_CLUSTERS } from "./clusters";
+import { EVENTS_PHOTOS } from "./clusters";
 
 export const metadata: Metadata = {
   title: "Event Management and Catering in Kerala — Agnitantra Events",
@@ -60,8 +60,7 @@ const EVENTS_FAQ = [
   },
 ];
 
-// Re-fetch from Sanity at most once a minute so client uploads appear without a
-// redeploy (ISR), matching the Photography page.
+// Re-fetch at most once a minute so client edits appear without a redeploy (ISR).
 export const revalidate = 60;
 
 export default async function EventsPage() {
@@ -71,7 +70,11 @@ export default async function EventsPage() {
     getMenu(),
   ]);
 
-  const hasLiveGallery = page.gallery.length > 0;
+  // Owner-editable copy from /manage → Events → Page Content. Every value falls
+  // back to the built-in wording when the field is blank.
+  const c = page.content;
+
+  const photos = page.gallery.length > 0 ? page.gallery : EVENTS_PHOTOS;
   const hasLiveReels = page.reels.length > 0;
 
   // Structured data: breadcrumb, FAQ (rich results + AI answers), and an
@@ -83,7 +86,7 @@ export default async function EventsPage() {
     ]),
     faqSchema(EVENTS_FAQ),
     imageGallerySchema(
-      page.gallery.map((p) => ({ src: p.src, alt: p.alt })),
+      photos.map((p) => ({ src: p.src, alt: p.alt })),
       { name: "Agnitantra Events — Celebrations", pagePath: "/events" },
     ),
   ].filter(Boolean) as Record<string, unknown>[];
@@ -97,37 +100,45 @@ export default async function EventsPage() {
   return (
     <>
       <JsonLd data={schema} />
-      <main style={{ position: "relative", zIndex: 1 }}>
+      <main>
         <PageHero
-          eyebrow="every celebration, in full"
-          title="Agnitantra Events and Caterers"
-          subtitle="Decor, stage, catering, sound, makeup and more — one team handling every detail so your family can simply enjoy the day."
+          eyebrow={c.heroEyebrow ?? "Every celebration, in full"}
+          title={c.heroTitle ?? "Agnitantra Events and Caterers"}
+          subtitle={
+            c.heroSubtitle ??
+            "Decor, stage, catering, sound, makeup and more — one team handling every detail so your family can simply enjoy the day."
+          }
+          image="/images/hero-tile-1.webp"
+          imageAlt="A celebration produced by Agnitantra Events and Caterers"
         />
 
-        <CateringMenu categories={menu} />
+        {c.stats.length > 0 ? <StatStrip stats={c.stats} /> : null}
 
-        <ServicesList />
+        <ServicesList
+          eyebrow="What we do"
+          heading={c.servicesHeading ?? "Everything, under one roof."}
+        />
 
-        {hasLiveGallery ? (
-          <ColumnDriftGallery
-            eyebrow="moments"
-            heading="Events We've Made"
-            photos={page.gallery}
-            columns={4}
-          />
-        ) : (
-          <GallerySection
-            eyebrow="moments"
-            heading="Events We've Made"
-            clusters={EVENTS_CLUSTERS}
-          />
-        )}
+        <GalleryWithLightbox
+          eyebrow="Moments"
+          heading={c.galleryHeading ?? "Celebrations we've made"}
+          photos={photos}
+        />
 
         {hasLiveReels ? (
-          <ReelsStrip eyebrow="in motion" heading="Films and Reels" reels={page.reels} />
+          <ReelsStrip
+            eyebrow="In motion"
+            heading={c.reelsHeading ?? "Films and reels"}
+            reels={page.reels}
+          />
         ) : null}
 
-        <TestimonialMarquee
+        <CateringMenu
+          categories={menu}
+          heading={c.menuHeading ?? "A menu worth staying for."}
+        />
+
+        <Testimonials
           reviews={reviews}
           googleRating={4.9}
           googleReviewCount={148}
@@ -135,8 +146,8 @@ export default async function EventsPage() {
         />
 
         <LocationBlock
-          eyebrow="find us"
-          heading="Where We Work"
+          eyebrow="Find us"
+          heading="Where we work"
           lines={locationLines}
         />
       </main>

@@ -38,11 +38,16 @@ export default function PhotoViewer({
 
   const last = photos.length - 1;
 
+  // Sync the centred photo when the viewer is (re)opened. Guarding on the
+  // previous value means we only setState on an actual open, not on every
+  // render pass — otherwise this cascades renders while dragging.
+  const prevOpenIndex = useRef<number | null>(null);
   useEffect(() => {
-    if (openIndex !== null) {
+    if (openIndex !== null && prevOpenIndex.current !== openIndex) {
       setIndex(openIndex);
       setDrag(0);
     }
+    prevOpenIndex.current = openIndex;
   }, [openIndex]);
 
   const goPrev = useCallback(() => {

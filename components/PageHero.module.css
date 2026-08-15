@@ -1,0 +1,90 @@
+.hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  isolation: isolate;
+  /* Clears the fixed nav bar. */
+  padding-top: clamp(7rem, 16vh, 11rem);
+  padding-bottom: clamp(2.5rem, 7vh, 5rem);
+}
+
+/* Typographic variant (no photo) — sits on paper. */
+.hero[data-has-image="false"] {
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Photographic variant — text sits over the image. */
+.hero[data-has-image="true"] {
+  min-height: 62svh;
+  color: var(--paper);
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(20, 22, 19, 0.74) 0%,
+    rgba(20, 22, 19, 0.38) 45%,
+    rgba(20, 22, 19, 0.22) 100%
+  );
+}
+
+.content {
+  width: 100%;
+}
+
+.eyebrow {
+  font-family: var(--font-ui), sans-serif;
+  font-size: clamp(0.66rem, 0.62rem + 0.15vw, 0.74rem);
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin: 0 0 1rem;
+  color: var(--gold);
+}
+
+.hero[data-has-image="true"] .eyebrow {
+  color: #e8d9b0;
+}
+
+.title {
+  font-size: var(--step-4);
+  line-height: 1.02;
+  max-width: 18ch;
+  margin: 0;
+}
+
+.hero[data-has-image="true"] .title {
+  color: var(--paper);
+}
+
+.subtitle {
+  font-size: var(--step-1);
+  line-height: 1.7;
+  font-weight: 300;
+  color: var(--ink-soft);
+  max-width: 52ch;
+  margin: clamp(1rem, 2.4vh, 1.6rem) 0 0;
+}
+
+.hero[data-has-image="true"] .subtitle {
+  color: rgba(244, 241, 234, 0.88);
+}
+
+@media (max-width: 640px) {
+  .hero[data-has-image="true"] {
+    min-height: 54svh;
+  }
+
+  .title {
+    max-width: 14ch;
+  }
+}

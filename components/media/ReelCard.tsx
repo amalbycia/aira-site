@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import type Hls from "hls.js";
 import type { ReelItem } from "./types";
+import PlayPauseToggle from "./PlayPauseToggle";
+import styles from "./ReelCard.module.css";
 
 /**
  * Self-hosted reel player (Bunny Stream). Shows the poster with a play button;
@@ -12,6 +14,10 @@ import type { ReelItem } from "./types";
  *
  * Only one reel plays at a time site-wide: starting one pauses any other
  * (tracked via a module-level ref) so audio never overlaps.
+ *
+ * The playback logic here is carried over unchanged from the pre-redesign
+ * player — it's proven against Bunny's HLS. Only the visual shell changed, and
+ * the play affordance is now the Osmo morphing toggle.
  */
 
 // The reel currently playing — used to pause the previous one when a new one
@@ -115,11 +121,16 @@ export default function ReelCard({ reel }: { reel: ReelItem }) {
 
   return (
     <div
-      className="reel-card"
+      className={styles.card}
       onClick={hasVideo ? toggle : undefined}
       role={hasVideo ? "button" : undefined}
       tabIndex={hasVideo ? 0 : undefined}
-      aria-label={hasVideo ? `Play reel: ${reel.alt}` : reel.alt}
+      aria-label={
+        hasVideo
+          ? `${playing ? "Pause" : "Play"} reel: ${reel.alt}`
+          : reel.alt
+      }
+      data-has-video={hasVideo}
       onKeyDown={
         hasVideo
           ? (e) => {
@@ -131,77 +142,11 @@ export default function ReelCard({ reel }: { reel: ReelItem }) {
           : undefined
       }
     >
-      <style>{`
-        .reel-card {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          border-radius: inherit;
-          overflow: hidden;
-          background: var(--color-primary-dark, #2a1414);
-          cursor: ${hasVideo ? "pointer" : "default"};
-        }
-        .reel-card__media {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          display: block;
-        }
-        .reel-card__poster {
-          position: absolute;
-          inset: 0;
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: opacity 0.35s ease;
-        }
-        .reel-card__poster[data-hidden="true"] { opacity: 0; pointer-events: none; }
-        .reel-card__play {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 3.4em;
-          height: 3.4em;
-          border-radius: 999px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgba(20, 8, 8, 0.55);
-          backdrop-filter: blur(4px);
-          border: 1px solid rgba(201, 169, 110, 0.7);
-          color: var(--color-cream, #f5eddf);
-          transition: opacity 0.3s ease, transform 0.3s ease, background 0.3s ease;
-          pointer-events: none;
-        }
-        .reel-card:hover .reel-card__play { transform: translate(-50%, -50%) scale(1.08); }
-        .reel-card__play[data-playing="true"] { opacity: 0; }
-        .reel-card__play svg { width: 1.4em; height: 1.4em; margin-left: 0.15em; }
-        .reel-card__sound {
-          position: absolute;
-          right: 0.7em;
-          bottom: 0.7em;
-          width: 2.2em;
-          height: 2.2em;
-          border-radius: 999px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgba(20, 8, 8, 0.6);
-          border: 1px solid rgba(201, 169, 110, 0.55);
-          color: var(--color-cream, #f5eddf);
-          opacity: 0;
-          transition: opacity 0.3s ease;
-        }
-        .reel-card__sound[data-visible="true"] { opacity: 1; }
-        .reel-card__sound svg { width: 1.1em; height: 1.1em; }
-      `}</style>
-
       {hasVideo ? (
         <>
           <video
             ref={videoRef}
-            className="reel-card__media"
+            className={styles.media}
             poster={reel.poster}
             playsInline
             preload="none"
@@ -212,7 +157,7 @@ export default function ReelCard({ reel }: { reel: ReelItem }) {
           {/* Poster overlay — hidden once playback has started */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            className="reel-card__poster"
+            className={styles.poster}
             src={reel.poster}
             alt={reel.alt}
             loading="lazy"
@@ -221,25 +166,18 @@ export default function ReelCard({ reel }: { reel: ReelItem }) {
         </>
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
-        <img className="reel-card__media" src={reel.poster} alt={reel.alt} loading="lazy" />
+        <img className={styles.media} src={reel.poster} alt={reel.alt} loading="lazy" />
       )}
 
-      {/* Play affordance — hidden while playing */}
-      <span className="reel-card__play" data-playing={playing} aria-hidden="true">
-        <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 2.5L15 9L4 15.5V2.5Z" fill="currentColor" />
-        </svg>
-      </span>
+      {hasVideo ? (
+        <span className={styles.control} data-playing={playing}>
+          <PlayPauseToggle playing={playing} size={22} />
+        </span>
+      ) : null}
 
-      {/* Sound-on indicator once playing (reassures audio is live; click card to pause) */}
-      <span className="reel-card__sound" data-visible={playing} aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor" stroke="none" />
-          <path d="M15.5 8.5a5 5 0 010 7M18.5 6a8 8 0 010 12" />
-        </svg>
-      </span>
-
-      {reel.caption ? <span className="reel-card__caption">{reel.caption}</span> : null}
+      {reel.caption ? (
+        <span className={styles.caption}>{reel.caption}</span>
+      ) : null}
     </div>
   );
 }

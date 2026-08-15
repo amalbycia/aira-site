@@ -1,0 +1,107 @@
+.section {
+  overflow: hidden;
+}
+
+.head {
+  margin-bottom: clamp(1.8rem, 4vh, 3rem);
+}
+
+/* ── Grid ────────────────────────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.6rem, 1.4vw, 1.15rem);
+  align-items: start;
+}
+
+.item {
+  margin: 0;
+  opacity: 0;
+  transform: translateY(28px);
+  will-change: opacity, transform;
+}
+
+.frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--paper-deep);
+  overflow: hidden;
+  cursor: zoom-in;
+  border-radius: 2px;
+}
+
+.frame img {
+  transition: transform 0.85s var(--ease-out);
+}
+
+.frame:hover img {
+  transform: scale(1.035);
+}
+
+/* Tile rhythm — the layout interest lives here, not in scroll motion. */
+.item[data-shape="t"] .frame {
+  aspect-ratio: 3 / 4;
+}
+
+.item[data-shape="s"] .frame {
+  aspect-ratio: 1 / 1;
+}
+
+.item[data-shape="w"] .frame {
+  aspect-ratio: 4 / 3;
+}
+
+/* Offset every other column slightly for an editorial, non-gridlocked feel. */
+.item:nth-child(3n + 2) {
+  margin-top: clamp(1rem, 4vw, 3.5rem);
+}
+
+.caption {
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  padding-top: 0.6rem;
+}
+
+/* ── Tablet ──────────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .item:nth-child(3n + 2) {
+    margin-top: 0;
+  }
+
+  .item:nth-child(2n) {
+    margin-top: clamp(0.8rem, 3vw, 2rem);
+  }
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .item:nth-child(2n) {
+    margin-top: 0;
+  }
+
+  /* One consistent, generous shape on phones — mixed ratios in a single column
+     read as inconsistency rather than rhythm. */
+  .item[data-shape="t"] .frame,
+  .item[data-shape="s"] .frame,
+  .item[data-shape="w"] .frame {
+    aspect-ratio: 4 / 5;
+  }
+
+  .frame:hover img {
+    transform: none;
+  }
+}
