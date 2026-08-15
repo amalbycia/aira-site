@@ -281,3 +281,61 @@
     transform: none;
   }
 }
+
+/* ── Over the hero (unscrolled) ──────────────────────────────────────────
+   Every v3 page opens on a dark surface (maroon diptych / photo hero), so
+   until the page scrolls and the cream bar appears, the chrome runs light.
+   Scrolled state below keeps the ink-on-cream look exactly as before. */
+.bar:not(.barScrolled) .link {
+  color: rgba(245, 237, 224, 0.72);
+}
+
+.bar:not(.barScrolled) .link:hover,
+.bar:not(.barScrolled) .linkActive {
+  color: var(--paper);
+}
+
+.bar:not(.barScrolled) .wordmarkMain {
+  color: var(--paper);
+}
+
+.bar:not(.barScrolled) .wordmarkSub {
+  color: rgba(245, 237, 224, 0.58);
+}
+
+.bar:not(.barScrolled) .enquire {
+  color: var(--paper);
+  border-color: rgba(245, 237, 224, 0.5);
+}
+
+.bar:not(.barScrolled) .enquire:hover {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--forest);
+}
+
+.bar:not(.barScrolled) .menuBtnLabel {
+  color: var(--paper);
+}
+
+.bar:not(.barScrolled) .burger span {
+  background: var(--paper);
+}
+
+/* Mobile panel open = cream sheet fills the screen under the bar, so the
+   bar's controls must be ink regardless of scroll position. */
+.bar[data-nav-open="true"] .menuBtnLabel {
+  color: var(--ink);
+}
+
+.bar[data-nav-open="true"] .burger span {
+  background: var(--ink);
+}
+
+.bar[data-nav-open="true"] .wordmarkMain {
+  color: var(--ink);
+}
+
+.bar[data-nav-open="true"] .wordmarkSub {
+  color: var(--ink-faint);
+}

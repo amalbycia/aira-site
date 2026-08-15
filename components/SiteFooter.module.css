@@ -103,6 +103,8 @@
 }
 
 .colLink {
+  position: relative;
+  align-self: flex-start;
   font-family: var(--font-ui), sans-serif;
   font-size: 0.95rem;
   font-weight: 300;
@@ -115,8 +117,26 @@
 
 .colLink:hover {
   color: var(--paper);
-  text-decoration: underline;
-  text-underline-offset: 4px;
+}
+
+/* Osmo-style underline: draws in from the left on hover, exits to the right
+   on leave — the transform-origin flips between the two states. */
+.colLink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.5s var(--ease-expo);
+}
+
+.colLink:hover::after {
+  transform: scaleX(1);
+  transform-origin: left center;
 }
 
 .colMuted {
@@ -124,26 +144,6 @@
   font-size: 0.85rem;
   color: rgba(245, 237, 224, 0.5);
   margin: 0.2rem 0 0;
-}
-
-/* ── Wordmark ────────────────────────────────────────────────────────────── */
-.wordmarkRow {
-  margin-top: clamp(3rem, 8vh, 5.5rem);
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.wordmark {
-  font-family: var(--font-display), serif;
-  font-size: clamp(4rem, 19vw, 16rem);
-  line-height: 0.85;
-  letter-spacing: 0.16em;
-  text-indent: 0.16em;
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(245, 237, 224, 0.22);
-  white-space: nowrap;
-  user-select: none;
 }
 
 /* ── Legal ───────────────────────────────────────────────────────────────── */

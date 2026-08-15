@@ -1,4 +1,5 @@
 import Reveal from "@/components/Reveal";
+import ReviewMarquee from "@/components/ReviewMarquee";
 import type { ReviewItem } from "@/lib/cms/getContent";
 import styles from "./Testimonials.module.css";
 
@@ -46,7 +47,7 @@ export default function Testimonials({
   googleUrl?: string;
 }) {
   const list = reviews && reviews.length > 0 ? reviews : PLACEHOLDER_REVIEWS;
-  const shown = list.slice(0, 6);
+  const shown = list.slice(0, 12);
 
   return (
     <section className="section section--forest">
@@ -92,30 +93,19 @@ export default function Testimonials({
           </div>
         ) : null}
 
-        <ul className={styles.grid}>
-          {shown.map((r, i) => (
-            <li className={styles.card} key={`${r.reviewerName}-${i}`} data-reveal>
-              <Stars rating={r.rating} small />
-              <blockquote className={styles.quote}>{r.reviewText}</blockquote>
-              <footer className={styles.byline}>
-                <span className={styles.name}>{r.reviewerName}</span>
-                {r.date ? <span className={styles.date}>{r.date}</span> : null}
-              </footer>
-            </li>
-          ))}
-        </ul>
+
       </Reveal>
+
+      {/* Full-bleed review marquee — outside .shell so cards run edge to edge. */}
+      <ReviewMarquee reviews={shown} />
     </section>
   );
 }
 
-function Stars({ rating, small }: { rating: number; small?: boolean }) {
+function Stars({ rating }: { rating: number }) {
   const full = Math.round(rating);
   return (
-    <span
-      className={small ? styles.starsSmall : styles.stars}
-      aria-label={`${rating} out of 5`}
-    >
+    <span className={styles.stars} aria-label={`${rating} out of 5`}>
       {Array.from({ length: 5 }, (_, i) => (
         <svg key={i} viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path

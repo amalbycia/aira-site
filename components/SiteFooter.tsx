@@ -1,4 +1,5 @@
 import Link from "next/link";
+import FooterWordmark from "@/components/FooterWordmark";
 import styles from "./SiteFooter.module.css";
 
 /* ── Contact details — carried over verbatim from the previous site ──────── */
@@ -150,10 +151,7 @@ export default function SiteFooter({
           </div>
         </div>
 
-        {/* ── Wordmark + legal ───────────────────────────────────────────── */}
-        <div className={styles.wordmarkRow} aria-hidden="true">
-          <span className={styles.wordmark}>AIRA</span>
-        </div>
+        <FooterWordmark />
 
         <div className={styles.legal}>
           <p>

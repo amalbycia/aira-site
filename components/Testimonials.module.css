@@ -59,8 +59,7 @@
 }
 
 /* ── Stars ───────────────────────────────────────────────────────────────── */
-.stars,
-.starsSmall {
+.stars {
   display: inline-flex;
   gap: 0.22rem;
   color: #dfc090;
@@ -71,74 +70,12 @@
   height: 20px;
 }
 
-.starsSmall svg {
-  width: 14px;
-  height: 14px;
-}
-
-/* ── Grid ────────────────────────────────────────────────────────────────── */
-.grid {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: clamp(1rem, 2.4vw, 2rem);
-}
-
-.card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  padding: clamp(1.3rem, 2.6vw, 2rem);
-  border: 1px solid var(--line-invert);
-  background: rgba(245, 237, 224, 0.04);
-}
-
-.quote {
-  margin: 0;
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: var(--step-1);
-  line-height: 1.55;
-  color: rgba(245, 237, 224, 0.94);
-}
-
-.byline {
-  margin-top: auto;
-  padding-top: 0.6rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.name {
-  font-family: var(--font-ui), sans-serif;
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--paper);
-}
-
-.date {
-  font-family: var(--font-ui), sans-serif;
-  font-size: 0.7rem;
-  color: rgba(245, 237, 224, 0.55);
-}
-
 /* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-}
 
 @media (max-width: 640px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .ratingHero {
+    .ratingHero {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.9rem;
