@@ -1,0 +1,83 @@
+.head {
+  margin-bottom: clamp(2rem, 5vh, 3.4rem);
+}
+
+.heading {
+  max-width: 18ch;
+}
+
+/* ── Rating hero ─────────────────────────────────────────────────────────── */
+.ratingHero {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.2rem, 3vw, 2.4rem);
+  padding: clamp(1.4rem, 3vw, 2.2rem) 0;
+  margin-bottom: clamp(2rem, 5vh, 3.2rem);
+  border-block: 1px solid var(--line-invert);
+}
+
+.ratingValue {
+  font-family: var(--font-display), serif;
+  font-size: clamp(3.4rem, 2.4rem + 4.5vw, 6.5rem);
+  line-height: 0.9;
+  color: var(--paper);
+}
+
+.ratingMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ratingCount {
+  font-family: var(--font-ui), sans-serif;
+  font-size: var(--step-0);
+  color: rgba(245, 237, 224, 0.8);
+  margin: 0;
+}
+
+.ratingLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #dfc090;
+  align-self: flex-start;
+  padding-block: 0.3rem;
+}
+
+.ratingLink svg {
+  transition: transform 0.4s var(--ease-out);
+}
+
+.ratingLink:hover svg {
+  transform: translateX(4px);
+}
+
+/* ── Stars ───────────────────────────────────────────────────────────────── */
+.stars {
+  display: inline-flex;
+  gap: 0.22rem;
+  color: #dfc090;
+}
+
+.stars svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  }
+
+@media (max-width: 640px) {
+    .ratingHero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+}

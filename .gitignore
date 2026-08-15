@@ -57,3 +57,7 @@ scripts/verify-page-transition.mjs
 public/images/hero-bg.ORIGINAL.jpg
 dev.log
 shot-temp.mjs
+
+# local screenshot/verification output
+.screens/
+.firecrawl/

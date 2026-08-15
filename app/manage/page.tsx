@@ -1,6 +1,12 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import Dashboard from "./Dashboard";
-import { listPhotos, listReels, listReviews, listMenu } from "@/lib/cms/admin";
+import {
+  listPhotos,
+  listReels,
+  listReviews,
+  listMenu,
+  getPageContent,
+} from "@/lib/cms/admin";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +28,8 @@ export default async function ManagePage() {
     photographyReviews,
     eventsReviews,
     menu,
+    photographyContent,
+    eventsContent,
     user,
   ] = await Promise.all([
     listPhotos("photography"),
@@ -31,6 +39,8 @@ export default async function ManagePage() {
     listReviews("photography"),
     listReviews("events"),
     listMenu(),
+    getPageContent("photography"),
+    getPageContent("events"),
     currentUser(),
   ]);
 
@@ -45,6 +55,10 @@ export default async function ManagePage() {
       initialReels={{ photography: photographyReels, events: eventsReels }}
       initialReviews={{ photography: photographyReviews, events: eventsReviews }}
       initialMenu={menu}
+      initialContent={{
+        photography: photographyContent,
+        events: eventsContent,
+      }}
       currentEmail={currentEmail}
     />
   );

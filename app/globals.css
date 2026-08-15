@@ -1,135 +1,336 @@
 @import "tailwindcss";
 
-/* ─── Osmo Scaling System ─────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   AIRA — REDESIGN v3 · "Maroon Cinema"
+   The live site's palette (maroon · cream · gold) rebuilt as an awwwards-grade
+   system: grotesk-led display type (Nohemi), Cormorant italic reserved for the
+   single accent word, film-grain surface, restrained motion.
+
+   Token NAMES are kept from v2 so every component module re-skins from here.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 :root {
-  --size-unit: 16;
-  --size-container-ideal: 1440;
-  --size-container-min: 992px;
-  --size-container-max: 1920px;
-  --size-container: clamp(
-    var(--size-container-min),
-    100vw,
-    var(--size-container-max)
-  );
-  --size-font: calc(
-    var(--size-container) / (var(--size-container-ideal) / var(--size-unit))
-  );
+  /* ── Palette (same hues as the live v1 site) ───────────────────────────── */
+  --paper: #f5ede0;
+  --paper-deep: #eee3d0;
+  --paper-warm: #e8d9c4;
+  --ink: #1f0d0d;
+  --ink-soft: #5a3535;
+  --ink-faint: #96756a;
+  --forest: #7a1f1f; /* maroon — name kept so v2 modules re-skin untouched */
+  --forest-deep: #5a1616;
+  --forest-soft: #9a3030;
+  --gold: #c9a96e;
+  --gold-soft: #dfc090;
+  --line: rgba(31, 13, 13, 0.14);
+  --line-strong: rgba(31, 13, 13, 0.3);
+  --line-invert: rgba(245, 237, 224, 0.22);
+
+  /* ── Type ──────────────────────────────────────────────────────────────── */
+  --font-display: var(--font-nohemi);
+  --font-ui: var(--font-nohemi);
+  --font-serif: var(--font-cormorant);
+
+  /* Fluid scale — display end runs larger than v2: the type IS the design. */
+  --step--1: clamp(0.8rem, 0.76rem + 0.2vw, 0.88rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.08rem);
+  --step-1: clamp(1.18rem, 1.08rem + 0.5vw, 1.42rem);
+  --step-2: clamp(1.5rem, 1.28rem + 1.1vw, 2.2rem);
+  --step-3: clamp(2rem, 1.55rem + 2.2vw, 3.4rem);
+  --step-4: clamp(2.7rem, 1.9rem + 4vw, 5.6rem);
+  --step-5: clamp(3.4rem, 2rem + 7vw, 9rem);
+
+  /* ── Space ─────────────────────────────────────────────────────────────── */
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --section-y: clamp(4.5rem, 10vh, 9.5rem);
+  --measure: 62ch;
+  --maxw: 1360px;
+
+  /* ── Motion ────────────────────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 0.42s;
 }
 
-@media (max-width: 991px) {
-  :root {
-    --size-container-ideal: 834;
-    --size-container-min: 768px;
-    --size-container-max: 991px;
-  }
+/* ── Reset / base ────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-@media (max-width: 767px) {
-  :root {
-    --size-container-ideal: 550;
-    --size-container-min: 480px;
-    --size-container-max: 767px;
-  }
-}
-
-@media (max-width: 479px) {
-  :root {
-    --size-container-ideal: 390;
-    --size-container-min: 320px;
-    --size-container-max: 479px;
-  }
-}
-
-/* ─── Design Tokens ───────────────────────────────────────────────────────── */
-:root {
-  /* Colors */
-  --color-primary: #7a1f1f;
-  --color-primary-dark: #5a1616;
-  --color-primary-light: #9a3030;
-  --color-cream: #f5ede0;
-  --color-cream-dark: #e8d9c4;
-  --color-gold: #c9a96e;
-  --color-gold-light: #dfc090;
-  --color-ink: #1a0a0a;
-  --color-ink-muted: #4a2a2a;
-  --color-white: #ffffff;
-
-  /* Typography */
-  --font-script: var(--font-alex-brush);
-  --font-display: var(--font-cormorant);
-  --font-body: var(--font-dm-sans);
-
-  /* Spacing scale (em-based so it scales with Osmo) */
-  --space-xs: 0.5em;
-  --space-sm: 1em;
-  --space-md: 2em;
-  --space-lg: 4em;
-  --space-xl: 6em;
-  --space-2xl: 10em;
-}
-
-/* ─── Base ────────────────────────────────────────────────────────────────── */
 html {
-  font-size: var(--size-font);
-  scroll-behavior: auto; /* Lenis handles smooth scroll */
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto; /* Lenis owns smooth scroll */
 }
 
 body {
-  background-color: var(--color-cream);
-  color: var(--color-ink);
-  font-family: var(--font-body), sans-serif;
+  margin: 0;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui), system-ui, sans-serif;
+  font-size: var(--step-0);
+  font-weight: 300;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* ─── Typography Utilities ────────────────────────────────────────────────── */
-.font-script {
-  font-family: var(--font-script), cursive;
-}
-
-.font-display {
-  font-family: var(--font-display), serif;
-}
-
-.font-body {
-  font-family: var(--font-body), sans-serif;
-}
-
-.font-nohemi {
-  font-family: var(--font-nohemi), sans-serif;
-}
-
-.font-sometimes-times {
-  font-family: var(--font-sometimes-times), serif;
-}
-
-/* ─── Lenis ───────────────────────────────────────────────────────────────── */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-.lenis.lenis-smooth iframe {
+/* Film grain — one fixed overlay, pure CSS noise via an SVG data URI. Pointer
+   events off, ~4% opacity: felt, not seen. Static (no animation) by design. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 999;
   pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--forest);
+  color: var(--paper);
+}
+
+/* ── Layout helpers ──────────────────────────────────────────────────────── */
+.shell {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--section-y);
+  position: relative;
+}
+
+.section--deep {
+  background: var(--paper-deep);
+}
+
+.section--forest {
+  background: var(--forest);
+  color: var(--paper);
+}
+
+.section--forest h1,
+.section--forest h2,
+.section--forest h3 {
+  color: var(--paper);
+}
+
+/* ── Typographic primitives ──────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-ui), sans-serif;
+  font-size: clamp(0.66rem, 0.62rem + 0.15vw, 0.74rem);
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--forest);
+  margin: 0 0 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.eyebrow::before {
+  content: "";
+  width: clamp(18px, 3vw, 34px);
+  height: 1px;
+  background: var(--gold);
+  flex: none;
+}
+
+.eyebrow--center {
+  justify-content: center;
+}
+
+.section--forest .eyebrow {
+  color: var(--gold-soft);
+}
+
+.display {
+  font-size: var(--step-3);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+
+.display--lg {
+  font-size: var(--step-4);
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+}
+
+/* The single serif-italic accent word inside a grotesk headline — the one
+   typographic flourish, used at most once per headline. */
+.accent {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--forest);
+  font-size: 1.06em;
+}
+
+.section--forest .accent {
+  color: var(--gold-soft);
+}
+
+/* Hollow display type — used by the marquee and oversized backdrops. */
+.outline {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--ink);
+}
+
+.lede {
+  font-size: var(--step-1);
+  line-height: 1.75;
+  color: var(--ink-soft);
+  font-weight: 300;
+  max-width: var(--measure);
+}
+
+.section--forest .lede {
+  color: rgba(245, 237, 224, 0.8);
+}
+
+.rule {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+  margin: 0;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────── */
+.btn {
+  --btn-bg: var(--forest);
+  --btn-fg: var(--paper);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.95rem 1.7rem;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-ui), sans-serif;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background-color var(--dur) var(--ease-out),
+    color var(--dur) var(--ease-out),
+    border-color var(--dur) var(--ease-out),
+    transform var(--dur) var(--ease-out);
+  min-height: 44px; /* touch target floor */
+}
+
+.btn:hover {
+  background: var(--forest-deep);
+  transform: translateY(-2px);
+}
+
+.btn__arrow {
+  transition: transform var(--dur) var(--ease-out);
+}
+
+.btn:hover .btn__arrow {
+  transform: translateX(4px);
+}
+
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--ink);
+  border-color: var(--line-strong);
+}
+
+.btn--ghost:hover {
+  --btn-bg: var(--ink);
+  --btn-fg: var(--paper);
+}
+
+.btn--light {
+  --btn-bg: var(--paper);
+  --btn-fg: var(--forest);
+}
+
+.btn--light:hover {
+  --btn-bg: #fff;
+}
+
+/* ── Reveal primitive (GSAP sets the final state; CSS is the pre-state) ──── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  will-change: opacity, transform;
+}
+
+.no-js [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── Focus ───────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* ── Reduced motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }

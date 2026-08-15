@@ -1,0 +1,59 @@
+.row {
+  margin-top: clamp(3rem, 8vh, 5.5rem);
+  padding-top: clamp(1.5rem, 4vh, 2.5rem);
+  border-top: 1px solid var(--line-invert);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  overflow: hidden;
+}
+
+.wordmark {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 500;
+  font-size: clamp(4rem, 19vw, 15rem);
+  line-height: 0.85;
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  white-space: nowrap;
+  user-select: none;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(245, 237, 224, 0.28);
+  transition:
+    color 0.7s var(--ease-out),
+    -webkit-text-stroke-color 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
+}
+
+/* Hover floods the hollow letters with cream and lifts them a breath. */
+.wordmark:hover {
+  color: rgba(245, 237, 224, 0.92);
+  -webkit-text-stroke-color: rgba(245, 237, 224, 0.92);
+  transform: translateY(-4px);
+}
+
+.wordmark:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 6px;
+}
+
+.caption {
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(245, 237, 224, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordmark:hover {
+    transform: none;
+  }
+}

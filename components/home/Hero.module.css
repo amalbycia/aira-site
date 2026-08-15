@@ -1,0 +1,234 @@
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--forest-deep);
+}
+
+/* ── Top line ────────────────────────────────────────────────────────────── */
+.topline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: calc(clamp(0.9rem, 2vh, 1.5rem) * 2 + 2.6rem) var(--gutter) 0.9rem;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.64rem;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(245, 237, 224, 0.65);
+  opacity: 0; /* entrance sets 1 */
+  transform: translateY(12px);
+}
+
+.toplineDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--gold);
+}
+
+/* ── Diptych ─────────────────────────────────────────────────────────────── */
+.diptych {
+  flex: 1;
+  display: flex;
+  gap: 2px; /* hairline seam between the two worlds */
+  padding: 0 2px 2px;
+  min-height: 0;
+}
+
+.panel {
+  position: relative;
+  flex: 1 1 0;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  isolation: isolate;
+  transition: flex-grow 0.65s var(--ease-expo);
+}
+
+/* The swell: hovered panel takes the room, sibling recedes. Flex-grow is
+   animatable and composits fine — no layout thrash beyond the two panels. */
+@media (hover: hover) and (pointer: fine) {
+  .diptych:has(.panel:hover) .panel {
+    flex-grow: 0.72;
+  }
+
+  .diptych .panel:hover {
+    flex-grow: 1.45;
+  }
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.media img {
+  transition: transform 1s var(--ease-out);
+  will-change: transform;
+}
+
+.panel:hover .media img {
+  transform: scale(1.045);
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to top,
+      rgba(43, 10, 10, 0.82) 0%,
+      rgba(43, 10, 10, 0.38) 46%,
+      rgba(43, 10, 10, 0.24) 100%
+    );
+  transition: background-color 0.6s var(--ease-out), opacity 0.6s var(--ease-out);
+}
+
+.panel:hover .scrim {
+  opacity: 0.86;
+}
+
+/* ── Panel content ───────────────────────────────────────────────────────── */
+.panelBody {
+  width: 100%;
+  padding: clamp(1.4rem, 4vw, 3rem);
+  color: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: clamp(0.8rem, 2vh, 1.3rem);
+}
+
+.kicker {
+  display: flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.64rem;
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(245, 237, 224, 0.72);
+  margin: 0;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.kickerIndex {
+  color: var(--gold-soft);
+}
+
+.name {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1em;
+  margin: 0;
+  color: var(--paper);
+}
+
+.nameMask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.04em;
+  font-family: var(--font-display), sans-serif;
+  font-weight: 500;
+  font-size: clamp(2.6rem, 6.5vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+}
+
+.nameMask > span {
+  display: inline-block;
+  will-change: transform;
+}
+
+.serif {
+  font-family: var(--font-serif), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.3rem, 2.6vw, 2.4rem);
+  line-height: 1.1;
+  color: var(--gold-soft);
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+/* ── CTA pill ────────────────────────────────────────────────────────────── */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.3rem;
+  padding: 0.85rem 1.5rem;
+  min-height: 46px;
+  border: 1px solid rgba(245, 237, 224, 0.55);
+  border-radius: 999px;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--paper);
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    background-color 0.4s var(--ease-out),
+    border-color 0.4s var(--ease-out),
+    color 0.4s var(--ease-out);
+}
+
+.cta svg {
+  transition: transform 0.4s var(--ease-out);
+}
+
+.panel:hover .cta {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--forest);
+}
+
+.panel:hover .cta svg {
+  transform: translateX(4px);
+}
+
+/* ── A11y title ──────────────────────────────────────────────────────────── */
+.srTitle {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ── Mobile: the diptych stacks ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .hero {
+    min-height: 100svh;
+  }
+
+  .diptych {
+    flex-direction: column;
+  }
+
+  .panel {
+    min-height: 44svh;
+  }
+
+  .panelBody {
+    padding: clamp(1.2rem, 5vw, 2rem);
+  }
+
+  .nameMask {
+    font-size: clamp(2.4rem, 11vw, 3.6rem);
+  }
+
+  .serif {
+    font-size: clamp(1.2rem, 5.5vw, 1.7rem);
+  }
+}

@@ -1,0 +1,93 @@
+.head {
+  margin-bottom: clamp(1.6rem, 4vh, 2.6rem);
+}
+
+.heading {
+  max-width: 16ch;
+}
+
+/* ── Tabs ────────────────────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-bottom: clamp(1.4rem, 3vh, 2.2rem);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: clamp(1.6rem, 4vh, 2.4rem);
+}
+
+.tab {
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.76rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  cursor: pointer;
+  min-height: 44px;
+  transition:
+    background-color 0.34s var(--ease-out),
+    color 0.34s var(--ease-out),
+    border-color 0.34s var(--ease-out);
+}
+
+.tab:hover {
+  border-color: var(--forest);
+  color: var(--ink);
+}
+
+.tab[data-active="true"] {
+  background: var(--forest);
+  border-color: var(--forest);
+  color: var(--paper);
+}
+
+/* ── Dishes ──────────────────────────────────────────────────────────────── */
+.dishes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem clamp(1.5rem, 5vw, 4rem);
+}
+
+.dish {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: calc(var(--step-1) * 1.08);
+  line-height: 1.5;
+  color: var(--ink);
+  padding-block: 0.35rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.dishDot {
+  flex: none;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--gold);
+  transform: translateY(-0.35em);
+}
+
+.note {
+  margin-top: clamp(1.6rem, 4vh, 2.4rem);
+  font-size: var(--step-0);
+  line-height: 1.7;
+  color: var(--ink-soft);
+  max-width: 52ch;
+}
+
+@media (max-width: 720px) {
+  .dishes {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}

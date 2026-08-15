@@ -1,0 +1,62 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 400; /* above the cursor (300) and nav (100) */
+  background: var(--forest-deep);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* An overlay above fully-rendered content — it never replaces the page. */
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.name {
+  font-family: var(--font-display), sans-serif;
+  font-weight: 500;
+  font-size: clamp(2.2rem, 9vw, 4rem);
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  line-height: 1;
+}
+
+.sub {
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-soft);
+}
+
+/* The counter lives bottom-right, oversized and hollow — quietly cinematic. */
+.counter {
+  position: absolute;
+  right: clamp(1.2rem, 4vw, 3rem);
+  bottom: clamp(0.8rem, 3vh, 2rem);
+  font-family: var(--font-display), sans-serif;
+  font-weight: 500;
+  font-size: clamp(3.4rem, 12vw, 8rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(245, 237, 224, 0.55);
+  font-variant-numeric: tabular-nums;
+  user-select: none;
+}
+
+.foot {
+  position: absolute;
+  left: clamp(1.2rem, 4vw, 3rem);
+  bottom: clamp(1.4rem, 4vh, 2.6rem);
+  font-family: var(--font-ui), sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(245, 237, 224, 0.5);
+}
