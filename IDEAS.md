@@ -1,33 +1,91 @@
-# Ideas — Future Iteration
+# IDEAS — raw dump
 
-## Live visual editor (dev-only overlay tool)
+James's scratchpad. No structure required, no polish, nothing here is a
+commitment. Dump first, sort later.
 
-Problem: explaining element positions/sizes in words is slow and lossy; sketches get
-misread. Want a way to directly manipulate the live localhost site and hand off exact
-values.
+**Rules of this file**
+- Claude does NOT act on anything in here. It is read-only context.
+- Something only gets built when James says build it.
+- Half-thoughts, single words and contradictions are all fine — they're the point.
+- When an idea gets built, move it to §Shipped with the commit sha.
 
-Scoped plan (from 2026-06-17 discussion):
+---
 
-**Part 1 — Visual editor (build this first, moderate difficulty)**
-- Dev-only overlay component, only mounts when `NODE_ENV=development` or behind
-  `?edit=1` — never ships to prod
-- Click any element → highlight outline + floating panel showing computed box model
-  (width/height/margin/padding/position) via `getBoundingClientRect()` +
-  `getComputedStyle()`
-- Drag → live `transform: translate()`; corner handles → live width/height resize
-- "Export" button → dumps clean JSON: `{ selector, property, oldValue, newValue }`
-  for everything touched
-- Paste that JSON to the agent → it maps selectors back to real JSX/CSS in the
-  component files and applies the changes for real
-- Built with vanilla DOM APIs + React state, scoped to this site only
+## Aira Photography — `/photography`
 
-**Part 2 — Sketch-to-wireframe (lower priority, skip heavy build)**
-- True hand-drawn-sketch → structured layout recognition is a real CV problem, not
-  worth building
-- Pasting sketch/screenshot images directly into chat already works today (agent can
-  read them) — no new tooling needed for this part
-- If a drawing surface is wanted, just use a basic canvas page or an existing tool
-  (e.g. Excalidraw) and screenshot/paste — don't build a recognition pipeline
+### Palette
 
-Decision: revisit Part 1 once the actual site (home page, footer, photography/events
-pages) is further along. Not blocking current work.
+
+### Type
+
+
+### Mood / references
+
+
+### Sections
+
+
+### Motion
+
+
+### Notes
+
+
+
+---
+
+## Agnitantra Events — `/events`
+
+### Palette
+
+
+### Type
+
+
+### Mood / references
+
+
+### Sections
+
+
+### Motion
+
+
+### Notes
+
+
+
+---
+
+## The connection
+
+*How the two brands link, and what the home page becomes. Deliberately deferred
+until both pages exist.*
+
+
+
+---
+
+## Parked
+
+*Good ideas, wrong moment. Not dead — just not now.*
+
+
+
+---
+
+## Rejected
+
+*Tried or considered and killed. Kept so we don't circle back to them.*
+
+- **v1 two-button hero** — bare maroon splash, `Our Photography` /
+  `Events and Catering` side by side. The client's literal spec; didn't work.
+  Forked before earning it, showed zero photography, and made one company look
+  like two.
+
+---
+
+## Shipped
+
+*Built and living in the codebase.*
+
