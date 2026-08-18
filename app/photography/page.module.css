@@ -1,0 +1,11 @@
+/* v4 clean slate — Aira Photography. Palette to be set by James. */
+
+.slate {
+  background: var(--paper);
+}
+
+.section {
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--paper);
+}
