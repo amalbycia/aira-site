@@ -3,8 +3,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond } from "next/font/google";
 import localFont from "next/font/local";
 import LenisProvider from "@/components/LenisProvider";
-import SiteNav from "@/components/SiteNav";
-import Cursor from "@/components/Cursor";
+import SiteChrome from "@/components/SiteChrome";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, SITE_NAME } from "@/lib/site";
 import { organizationSchema, websiteSchema } from "@/lib/structuredData";
@@ -103,8 +102,7 @@ export default function RootLayout({
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <ClerkProvider afterSignOutUrl="/">
           <LenisProvider>
-            <SiteNav />
-            <Cursor />
+            <SiteChrome />
             {children}
           </LenisProvider>
         </ClerkProvider>

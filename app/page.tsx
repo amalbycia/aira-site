@@ -3,29 +3,21 @@ import styles from "./page.module.css";
 /* ─────────────────────────────────────────────────────────────────────────────
    v4 clean slate.
 
-   Four empty full-height cream sections, nothing else. The v3 home page
-   (Preloader / Hero / Intro / Marquee / Testimonials / SiteFooter) still
-   lives untouched in components/ and on the v3-maroon-cinema tag — this file
-   is the only thing that changed, so restoring it is a one-file revert.
+   Four empty full-height cream sections. No nav, no cursor, no grain, no
+   content — chrome is gated off this route in components/SiteChrome.tsx.
 
-   Sections are numbered placeholders; each gets its real design dropped in
-   as James supplies it.
+   The v3 home page (Preloader / Hero / Intro / Marquee / Testimonials /
+   SiteFooter) still lives untouched in components/ and on the v3-maroon-cinema
+   tag; restoring it is a one-file checkout.
    ───────────────────────────────────────────────────────────────────────── */
-
-const SECTIONS = [1, 2, 3, 4];
 
 export default function Home() {
   return (
     <main className={styles.slate}>
-      {SECTIONS.map((n) => (
-        <section key={n} className={styles.section} id={`section-${n}`}>
-          <div className="shell">
-            <span className={styles.marker}>
-              {String(n).padStart(2, "0")}
-            </span>
-          </div>
-        </section>
-      ))}
+      <section className={styles.section} id="section-1" />
+      <section className={styles.section} id="section-2" />
+      <section className={styles.section} id="section-3" />
+      <section className={styles.section} id="section-4" />
     </main>
   );
 }
