@@ -1,0 +1,28 @@
+/* v4 clean slate — plain cream sections, no styling opinions yet. */
+
+.slate {
+  background: var(--paper);
+}
+
+.section {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+
+.section:last-child {
+  border-bottom: 0;
+}
+
+/* Faint index so the four bands are distinguishable while empty.
+   Delete once real content lands. */
+.marker {
+  font-family: var(--font-ui);
+  font-size: var(--step--1);
+  letter-spacing: 0.18em;
+  color: var(--ink-faint);
+  opacity: 0.5;
+}

@@ -1,34 +1,31 @@
-import Preloader from "@/components/Preloader";
-import Hero from "@/components/home/Hero";
-import Intro from "@/components/home/Intro";
-import Marquee from "@/components/home/Marquee";
-import Testimonials from "@/components/Testimonials";
-import SiteFooter from "@/components/SiteFooter";
-import { getReviews } from "@/lib/cms/getContent";
+import styles from "./page.module.css";
 
-// Re-read reviews at most once a minute so admin edits appear without a
-// redeploy (ISR), matching the other pages.
-export const revalidate = 60;
+/* ─────────────────────────────────────────────────────────────────────────────
+   v4 clean slate.
 
-export default async function Home() {
-  // The home page shows the events reviews (the larger, Google-backed set).
-  const reviews = await getReviews("events");
+   Four empty full-height cream sections, nothing else. The v3 home page
+   (Preloader / Hero / Intro / Marquee / Testimonials / SiteFooter) still
+   lives untouched in components/ and on the v3-maroon-cinema tag — this file
+   is the only thing that changed, so restoring it is a one-file revert.
 
+   Sections are numbered placeholders; each gets its real design dropped in
+   as James supplies it.
+   ───────────────────────────────────────────────────────────────────────── */
+
+const SECTIONS = [1, 2, 3, 4];
+
+export default function Home() {
   return (
-    <>
-      <Preloader />
-      <main>
-        <Hero />
-        <Intro />
-        <Marquee />
-        <Testimonials
-          reviews={reviews}
-          googleRating={4.9}
-          googleReviewCount={148}
-          googleUrl="https://www.google.com/maps?cid=10454241291312957415"
-        />
-      </main>
-      <SiteFooter />
-    </>
+    <main className={styles.slate}>
+      {SECTIONS.map((n) => (
+        <section key={n} className={styles.section} id={`section-${n}`}>
+          <div className="shell">
+            <span className={styles.marker}>
+              {String(n).padStart(2, "0")}
+            </span>
+          </div>
+        </section>
+      ))}
+    </main>
   );
 }
