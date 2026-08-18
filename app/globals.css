@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* v4 isolation layer — scoped to html[data-bare="true"], see app/v4.css.
+   Must sit at the top: CSS @import is only valid before other rules. */
+@import "./v4.css";
+
 /* ═══════════════════════════════════════════════════════════════════════════
    AIRA — REDESIGN v3 · "Maroon Cinema"
    The live site's palette (maroon · cream · gold) rebuilt as an awwwards-grade

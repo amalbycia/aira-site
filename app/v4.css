@@ -1,0 +1,76 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   V4 ISOLATION LAYER
+
+   v4 is a from-scratch redesign. Nothing is inherited from the v3 system.
+
+   Everything here is scoped to html[data-bare="true"] — the flag set by
+   components/SiteChrome.tsx on v4 routes only. v3 routes never match these
+   selectors, so the live site is untouched by this file.
+
+   Two jobs:
+     1. Neutralise the v3 base layer (tokens, body, headings, links) so no
+        maroon/cream/Nohemi opinion reaches a v4 page.
+     2. Hold the v4 design tokens, once James specifies them.
+
+   Deleting this file + its import in globals.css fully reverts the isolation.
+   See V4-REDESIGN.md.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Neutralise v3 ─────────────────────────────────────────────────────── */
+
+html[data-bare="true"] body {
+  /* v3 sets: --paper bg, --ink text, Nohemi, weight 300, line-height 1.65.
+     Reset to browser defaults; v4 opts back in deliberately. */
+  background-color: #fff;
+  color: #000;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: normal;
+}
+
+html[data-bare="true"] h1,
+html[data-bare="true"] h2,
+html[data-bare="true"] h3,
+html[data-bare="true"] h4 {
+  /* v3 forces Nohemi 500, line-height 1.02, letter-spacing -0.02em, balance. */
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+  text-wrap: initial;
+}
+
+html[data-bare="true"] p {
+  text-wrap: initial;
+}
+
+html[data-bare="true"] {
+  /* Fonts: v3 loads Cormorant + Nohemi as CSS vars on <html>. The layout is a
+     server component and cannot gate them by route, so they are unset here
+     instead. The font FILES still load site-wide (v3 routes need them); v4
+     simply cannot reference them by token. */
+  --font-cormorant: system-ui;
+  --font-nohemi: system-ui;
+  --font-display: system-ui;
+  --font-ui: system-ui;
+  --font-serif: system-ui;
+}
+
+html[data-bare="true"] ::selection {
+  /* v3 paints selection maroon-on-cream. */
+  background: Highlight;
+  color: HighlightText;
+}
+
+/* Kept from the v3 reset because they are neutral, not stylistic:
+   box-sizing, margin:0, img/svg display:block, a colour:inherit,
+   button font:inherit. These carry no design opinion. */
+
+/* ── 2. v4 design tokens ──────────────────────────────────────────────────── */
+
+html[data-bare="true"] {
+  /* Palette, type scale, spacing and motion go here — awaiting James.
+     Declared on the scoped root so v3's :root tokens never apply on v4 routes
+     and v4 tokens never apply on v3 routes. */
+}

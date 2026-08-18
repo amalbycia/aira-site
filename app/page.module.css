@@ -1,11 +1,11 @@
-/* v4 clean slate — plain cream sections, no styling opinions yet. */
+/* v4 clean slate — no styling opinions yet. Palette to be set by James. */
 
 .slate {
-  background: var(--paper);
+  background: #fff;
 }
 
 .section {
   min-height: 100vh;
   min-height: 100svh;
-  background: var(--paper);
+  background: #fff;
 }
