@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import JsonLd from "@/components/JsonLd";
 import { breadcrumbSchema } from "@/lib/structuredData";
 import styles from "./page.module.css";
@@ -53,10 +54,40 @@ export default function PhotographyPage() {
     <>
       <JsonLd data={schema} />
       <main className={styles.slate}>
-        <section className={styles.section} id="section-1" />
-        <section className={styles.section} id="section-2" />
-        <section className={styles.section} id="section-3" />
-        <section className={styles.section} id="section-4" />
+        <section className={styles.section} id="section-1">
+          <span className={styles.marker} aria-hidden="true">
+            01
+          </span>
+        </section>
+
+        {/* Roses peek: a zero-height anchor on the 1/2 seam. The image is
+            pulled up by half its height so it straddles both sections. */}
+        <div className={styles.peekAnchor} aria-hidden="true">
+          <Image
+            src="/images/v4-roses.png"
+            alt=""
+            width={736}
+            height={1308}
+            className={styles.peek}
+            priority
+          />
+        </div>
+
+        <section className={styles.section} id="section-2">
+          <span className={styles.marker} aria-hidden="true">
+            02
+          </span>
+        </section>
+        <section className={styles.section} id="section-3">
+          <span className={styles.marker} aria-hidden="true">
+            03
+          </span>
+        </section>
+        <section className={styles.section} id="section-4">
+          <span className={styles.marker} aria-hidden="true">
+            04
+          </span>
+        </section>
       </main>
     </>
   );

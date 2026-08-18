@@ -10,4 +10,51 @@
   min-height: 100vh;
   min-height: 100svh;
   background: #fff;
+
+  /* Section number sits in the corner while we build. */
+  position: relative;
+  isolation: isolate;
+}
+
+/* Temporary build marker — numbers each section so James can see the
+   boundaries. Delete when the real design lands. */
+.marker {
+  position: absolute;
+  top: var(--gutter-v4);
+  left: var(--gutter-v4);
+  z-index: 3;
+  color: #000;
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  user-select: none;
+}
+
+/* ── Roses peek — straddles the section 1 / section 2 boundary ─────────────
+
+   The wrapper is a zero-height positioning anchor sitting exactly on the seam.
+   The image is centred on it and pulled up by half its own height, so half the
+   roses sit in section 1 and half in section 2 — peeking between the two.
+
+   z-index 2 keeps it above both section backgrounds; pointer-events off so it
+   never eats a click.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.peekAnchor {
+  position: relative;
+  height: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.peek {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -50%);
+  width: clamp(180px, 42vw, 460px);
+  height: auto;
+  user-select: none;
 }
