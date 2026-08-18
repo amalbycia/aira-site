@@ -67,7 +67,97 @@ html[data-bare="true"] ::selection {
    box-sizing, margin:0, img/svg display:block, a colour:inherit,
    button font:inherit. These carry no design opinion. */
 
-/* ── 2. v4 design tokens ──────────────────────────────────────────────────── */
+/* ── 2. Mobile constraints — mobile-first, non-negotiable ─────────────────────
+
+   Every v4 section is built for phone and desktop at the same time. The rules
+   below are defaults so no individual component has to re-solve them.
+
+   BREAKPOINTS — one set, mobile-first (min-width). Do not invent others.
+     (base)    0px+      phone      — the default; write this first
+     --bp-sm   480px+    large phone
+     --bp-md   768px+    tablet
+     --bp-lg   1024px+   laptop
+     --bp-xl   1440px+   large desktop
+
+   CSS variables cannot be used in @media queries, so the px values are written
+   literally in media blocks. The tokens exist so JS and docs agree with CSS.
+
+   VIEWPORT HEIGHT — never bare `100vh` on mobile: it ignores the browser
+   chrome, so a "full height" section overflows behind Safari/Chrome's bars.
+   Use `100svh` (smallest) for full-screen sections that must always fit, or
+   `100dvh` (dynamic) when it should grow as the bars retract. Always ship a
+   `100vh` line first as the fallback.
+
+   TOUCH TARGETS — anything tappable is >= 44x44px (WCAG 2.5.5 / iOS HIG).
+
+   NO HORIZONTAL SCROLL — the page never scrolls sideways. Wide content
+   (tables, galleries, marquees) scrolls inside its own overflow-x container.
+
+   IMAGES/MEDIA — never exceed their container.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+html[data-bare="true"] {
+  /* Breakpoints — mirror of the literals used in @media blocks. */
+  --bp-sm: 480px;
+  --bp-md: 768px;
+  --bp-lg: 1024px;
+  --bp-xl: 1440px;
+
+  /* Fluid gutter: 20px on phone, up to 64px on large desktop. */
+  --gutter-v4: clamp(1.25rem, 4vw, 4rem);
+
+  /* Minimum tappable size. */
+  --tap: 44px;
+}
+
+/* The page must never scroll sideways. */
+html[data-bare="true"],
+html[data-bare="true"] body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Media never overflows its container. */
+html[data-bare="true"] img,
+html[data-bare="true"] picture,
+html[data-bare="true"] video,
+html[data-bare="true"] canvas,
+html[data-bare="true"] svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Long words and URLs wrap instead of forcing the page wide. */
+html[data-bare="true"] body {
+  overflow-wrap: break-word;
+}
+
+/* Tappable elements meet the 44px minimum on touch devices. Pointer-coarse
+   only, so desktop links keep their natural size. */
+@media (pointer: coarse) {
+  html[data-bare="true"] a,
+  html[data-bare="true"] button,
+  html[data-bare="true"] [role="button"],
+  html[data-bare="true"] input,
+  html[data-bare="true"] select,
+  html[data-bare="true"] textarea {
+    min-height: var(--tap);
+  }
+}
+
+/* Respect reduced-motion. v4 animation must degrade, not vanish mid-state. */
+@media (prefers-reduced-motion: reduce) {
+  html[data-bare="true"] *,
+  html[data-bare="true"] *::before,
+  html[data-bare="true"] *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── 3. v4 design tokens ──────────────────────────────────────────────────── */
 
 html[data-bare="true"] {
   /* Palette, type scale, spacing and motion go here — awaiting James.

@@ -111,6 +111,49 @@ design places photos.
 
 ---
 
+## 3a. Mobile — mandatory, not an afterthought
+
+**Every v4 section is built for phone and desktop simultaneously.** Mobile is
+not a pass done afterwards. Defaults live in `app/v4.css` §2 so no component
+re-solves them.
+
+### Breakpoints — one set, mobile-first. Do not invent others.
+
+| Token | Width | Target |
+|---|---|---|
+| (base) | `0px+` | phone — **write this first** |
+| `--bp-sm` | `480px+` | large phone |
+| `--bp-md` | `768px+` | tablet |
+| `--bp-lg` | `1024px+` | laptop |
+| `--bp-xl` | `1440px+` | large desktop |
+
+Always `min-width` (mobile-first). CSS variables are not valid inside `@media`,
+so media blocks use the px literals; the tokens keep JS and docs in agreement.
+
+### Enforced defaults
+
+- **Viewport height** — never bare `100vh` on mobile; it ignores browser chrome
+  and overflows. Use `100svh` for sections that must always fit, `100dvh` when
+  it should grow as bars retract. Ship the `100vh` line first as fallback.
+- **No horizontal scroll** — the page never scrolls sideways. Wide content
+  (galleries, marquees, tables) scrolls inside its own `overflow-x` container.
+- **Touch targets** ≥ `44x44px` under `@media (pointer: coarse)` — WCAG 2.5.5 /
+  iOS HIG. Desktop links keep their natural size.
+- **Media** never exceeds its container (`max-width: 100%`, `height: auto`).
+- **Long words / URLs** wrap rather than forcing the page wide.
+- **Reduced motion** respected — animation degrades, never strands mid-state.
+- **Fluid gutter** `--gutter-v4`: 20px phone → 64px large desktop.
+
+### Rule for building
+
+If a component differs *meaningfully* by viewport — not just spacing — split it
+into `components/desktop/X.tsx` and `components/mobile/X.tsx` per
+`SITE-MASTER.md` §15. Otherwise one responsive component.
+
+v3's breakpoints (640/900/1024, applied inconsistently) are **not** inherited.
+
+---
+
 ## 4. Current state
 
 | Route | State |
@@ -133,7 +176,7 @@ app/page.tsx                     home clean slate
 app/page.module.css              new
 app/photography/page.tsx         Aira clean slate
 app/photography/page.module.css  new
-app/v4.css                       new — isolation layer
+app/v4.css                       new — isolation layer + mobile constraints
 components/SiteChrome.tsx        new — route gate
 V4-REDESIGN.md                   new — this file
 ```

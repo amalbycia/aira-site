@@ -5,6 +5,8 @@
 }
 
 .section {
+  /* 100vh is the fallback; svh is the smallest viewport, so a full-height
+     section always fits under mobile browser chrome. See app/v4.css §2. */
   min-height: 100vh;
   min-height: 100svh;
   background: #fff;
