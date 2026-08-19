@@ -1,0 +1,77 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SECTION 01 — HERO (WIREFRAME)
+
+   Wireframe only: system font, no real images and no final type. Structure and
+   arrangement are what is being reviewed here.
+
+   Layout: the wordmark alone.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.hero {
+  position: relative;
+  /* Above the section's paper texture layer (z-index 0). */
+  z-index: 1;
+  padding: clamp(0.9rem, 1.6vw, 1.5rem) var(--gutter-v4) clamp(3rem, 6vw, 5.5rem);
+  /* Centred in the section rather than sitting at the top. min-height matches
+     the section's own full-viewport height, minus this element's padding. */
+  min-height: calc(100svh - clamp(3.9rem, 7.6vw, 7rem));
+  display: flex;
+  flex-direction: column;
+  /* stretch, not center: a centred flex column shrink-wraps its children,
+     which would stop the full-bleed filmstrip from spanning the viewport. The
+     wordmark centres itself via text-align + margin auto instead. */
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+/* ── Wordmark ─────────────────────────────────────────────────────────────── */
+
+/* Selector doubled (.wordmark.wordmark) on purpose: app/v4.css §1 resets
+   h1-h4 to font-family: inherit under html[data-bare="true"], and that
+   selector outranks a single class — which is why the wordmark kept rendering
+   in the fallback face. Doubling the class wins without an !important. */
+.wordmark.wordmark {
+  margin: 0 auto;
+  text-align: center;
+  font-family: var(--font-script-v4);
+  /* Roundhand draws much smaller on the body than a serif at the same
+     font-size — the flourishes eat the em box — so the scale is stepped up to
+     keep the wordmark reading at the size it did in Playfair. */
+  font-size: clamp(1.9rem, 5.6vw, 4.6rem);
+  /* Pinyon ships a single weight; 400 is its only real one. */
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  color: #9e1b32;
+}
+
+/* ── Mobile ───────────────────────────────────────────────────────────────────
+
+   The desktop clamp floors at 1.9rem (30px), and that floor is reached at
+   543px — i.e. exactly where phones sit. The result is a wordmark that stops
+   scaling and reads timid on the screens that need it most.
+
+   "Aira Photography" in Pinyon is ~6.7em wide, so on a 390px phone with the
+   1.25rem gutter (350px usable) it still fits comfortably at 48px. The mobile
+   clamp is raised to use that room.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .hero {
+    /* Content sits at the TOP of the section, not centred in it — the section
+       is full-height but the hero only claims what it needs, so the wordmark
+       and the strip both ride up. */
+    min-height: auto;
+    justify-content: flex-start;
+    padding-top: clamp(1.25rem, 5vw, 2rem);
+    padding-bottom: 0;
+    /* Gap holds the strip clear of the wordmark: up, but not crowding it. */
+    gap: clamp(2.25rem, 9vw, 3.5rem);
+  }
+
+  .wordmark.wordmark {
+    /* Floors at 2.5rem (40px) instead of 1.9rem, and keeps scaling with the
+       viewport up to the breakpoint. */
+    font-size: clamp(2.5rem, 12.5vw, 3.6rem);
+  }
+}

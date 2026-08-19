@@ -1,7 +1,107 @@
 /* v4 clean slate — Aira Photography. Palette to be set by James. */
 
 .slate {
-  background: #fff;
+  background: #ebe1cd;
+  position: relative;
+  /* Base texture for the WHOLE sheet, including the strip the roses divider
+     occupies between sections. Without this the divider — a sibling of the
+     sections, so it carries no .paper layer of its own — leaves an untextured
+     band at the seam with a hard edge where section 02's texture starts. */
+  isolation: isolate;
+}
+
+.slate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/images/v4-paper.webp");
+  background-size: 140% auto;
+  background-position: center top;
+  background-repeat: repeat;
+  filter: sepia(1) saturate(1.6) hue-rotate(-12deg) brightness(1.06);
+  mix-blend-mode: multiply;
+  opacity: 0.3;
+}
+
+/* ── Paper texture ───────────────────────────────────────────────────────────
+
+   Real crumpled kraft paper (Texturelabs_Paper_332L), because the creases —
+   long branching fold lines with bright ridges and soft shadows — are
+   photographic. SVG turbulence can produce grain but cannot produce a crease,
+   which is why the generated version read as "nothing there".
+
+   The asset is greyscale and multiplied over the beige rather than carrying
+   its own colour: the sheet stays #ebe1cd and the texture only darkens it.
+   That also halves the file size and means the palette can change later
+   without re-exporting the texture.
+
+   AVOIDING A VISIBLE REPEAT — three things, together:
+
+     1. no-repeat, cover     one copy per section, scaled past the viewport, so
+                             the tile edge is never on screen and there is no
+                             grid of repeats to spot
+     2. a rotation per       each section turns the sheet to a different angle,
+        section              so the creases run in a different direction
+     3. a scale + flip       varying zoom and mirroring means no two sections
+        per section          show the same region of the sheet at the same size
+
+   The source is centre-cropped square, so it can rotate to any angle and still
+   cover the section without exposing a corner.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.paper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.paper::before {
+  content: "";
+  position: absolute;
+  /* Oversized so rotation never swings an edge into view: a square rotated 45°
+     needs ~1.42x its side to still cover the box. 200% is comfortably past it. */
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: url("/images/v4-paper.webp");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* Multiply with a GREYSCALE layer desaturates the beige — grey pixels drag
+     the warm cast out and the page reads grey. Tinting the texture warm first
+     fixes it: sepia() makes it a warm brown, then the hue/saturate pair lands
+     it on the sheet's own beige, so multiplying darkens the creases without
+     draining the colour. */
+  filter: sepia(1) saturate(1.6) hue-rotate(-12deg) brightness(1.06);
+  mix-blend-mode: multiply;
+  /* Lower than the base layer: this only ADDS rotated variation on top of the
+     continuous sheet, so the two together must not out-darken the divider
+     strip, which shows the base layer alone. */
+  opacity: 0.16;
+}
+
+/* Per-section variation. Each section gets its own angle, zoom and flip, so the
+   same source never reads twice. Angles are deliberately not multiples of 90°. */
+
+.paper1::before {
+  transform: rotate(0deg) scale(1.15);
+}
+
+.paper2::before {
+  transform: rotate(137deg) scale(1.35) scaleX(-1);
+}
+
+.paper3::before {
+  transform: rotate(64deg) scale(1.2) scaleY(-1);
+}
+
+.paper4::before {
+  transform: rotate(213deg) scale(1.45);
 }
 
 .section {
@@ -9,7 +109,9 @@
      section always fits under mobile browser chrome. See app/v4.css §2. */
   min-height: 100vh;
   min-height: 100svh;
-  background: #fff;
+  /* Transparent, not beige: the sheet and its grain come from .slate, so the
+     texture runs unbroken through every section boundary. */
+  background: transparent;
 
   /* Section number sits in the corner while we build. */
   position: relative;
@@ -22,39 +124,12 @@
   position: absolute;
   top: var(--gutter-v4);
   left: var(--gutter-v4);
-  z-index: 3;
+  z-index: 1;
   color: #000;
   font-size: clamp(2.5rem, 8vw, 5rem);
   font-weight: 700;
   line-height: 1;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
-  user-select: none;
-}
-
-/* ── Roses peek — straddles the section 1 / section 2 boundary ─────────────
-
-   The wrapper is a zero-height positioning anchor sitting exactly on the seam.
-   The image is centred on it and pulled up by half its own height, so half the
-   roses sit in section 1 and half in section 2 — peeking between the two.
-
-   z-index 2 keeps it above both section backgrounds; pointer-events off so it
-   never eats a click.
-   ───────────────────────────────────────────────────────────────────────── */
-
-.peekAnchor {
-  position: relative;
-  height: 0;
-  z-index: 2;
-  pointer-events: none;
-}
-
-.peek {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translate(-50%, -50%);
-  width: clamp(180px, 42vw, 460px);
-  height: auto;
   user-select: none;
 }

@@ -162,5 +162,11 @@ html[data-bare="true"] body {
 html[data-bare="true"] {
   /* Palette, type scale, spacing and motion go here — awaiting James.
      Declared on the scoped root so v3's :root tokens never apply on v4 routes
-     and v4 tokens never apply on v3 routes. */
+     and v4 tokens never apply on v3 routes.
+
+     FONTS: §1 unsets v3's tokens above, but the v4 faces are loaded by the
+     same layout and must be re-declared here or they resolve to nothing. */
+  --font-script-v4: var(--font-pinyon), Georgia, cursive;
+  --font-serif-v4: var(--font-playfair), Georgia, "Times New Roman", serif;
 }
+

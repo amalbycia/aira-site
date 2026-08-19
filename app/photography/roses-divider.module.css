@@ -1,0 +1,65 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ROSES DIVIDER — the seam between sections 01 and 02.
+
+   Sits between the two sections and spans the viewport end to end. The source
+   artwork's garland reaches both edges of its canvas, so a plain 100% width
+   fills the seam with no gaps at the sides.
+
+   The page has a gutter (--gutter-v4) but this deliberately ignores it: the
+   band is full-bleed, edge to edge, as asked.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.divider {
+  position: relative;
+  width: 100%;
+  /* Full-bleed even if an ancestor ever gains horizontal padding. */
+  line-height: 0;
+  /* Above the flat section backgrounds so the transparent PNG reads against
+     them rather than being covered. */
+  z-index: 2;
+  /* Pulled up onto the end of section 01. */
+  margin-top: clamp(-15rem, -25vw, -7rem);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ── Mobile ───────────────────────────────────────────────────────────────── */
+
+/* At 100% width the garland scales down with the viewport, so on a phone it
+   collapses into a thin strip. Widening it past the viewport keeps the roses
+   at a readable size — the overflow is cropped left and right, which is fine
+   because the garland is a continuous band with no focal point to lose.
+
+   Desktop is untouched: these rules only exist below --bp-md. */
+
+@media (max-width: 767px) {
+  .divider {
+    /* Clip the overhang instead of letting it force horizontal scroll. */
+    overflow: hidden;
+    /* Retune the pull-up: the desktop -30vw was set against a band that is now
+       taller, so the same value would swallow it. */
+    margin-top: clamp(-42rem, -85vw, -19rem);
+  }
+
+  .image {
+    width: 235%;
+    max-width: none;
+    /* Centred by transform rather than a negative margin — the margin was
+       measured against the container, not the scaled image, which pushed it
+       off to the left. translateX(-50%) off a 50% left edge is exact at any
+       width. */
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 480px) {
+  .image {
+    width: 275%;
+  }
+}

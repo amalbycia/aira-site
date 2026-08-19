@@ -1,6 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { Cormorant_Garamond } from "next/font/google";
+import { Cormorant_Garamond, Playfair_Display, Pinyon_Script } from "next/font/google";
 import localFont from "next/font/local";
 import LenisProvider from "@/components/LenisProvider";
 import SiteChrome from "@/components/SiteChrome";
@@ -15,6 +15,32 @@ const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   style: ["normal", "italic"],
+  display: "swap",
+});
+
+/* ── v4 display faces ────────────────────────────────────────────────────────
+   Editorial lockup: a high-contrast Didone for the body of the wordmark, with
+   a formal roundhand script supplying the majestic swash capitals (the A of
+   AIRA, the P of PHOTOGRAPHY).
+
+   Both are self-hosted by next/font at build time — no runtime request to
+   Google, which keeps the site's no-external-requests property intact. */
+
+/* Didone — the wordmark's base letters. Variable weight, italic available. */
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+/* Formal English roundhand — used ONLY for the flourished initials. Its caps
+   carry the long swash entry/exit strokes the reference leans on. */
+const pinyon = Pinyon_Script({
+  variable: "--font-pinyon",
+  subsets: ["latin"],
+  weight: ["400"],
   display: "swap",
 });
 
@@ -93,7 +119,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${nohemi.variable}`}
+      className={`${cormorant.variable} ${nohemi.variable} ${playfair.variable} ${pinyon.variable}`}
     >
       <body>
         {/* Site-wide structured data: the business entity + WebSite node.

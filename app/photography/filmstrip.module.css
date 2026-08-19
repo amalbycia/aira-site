@@ -1,0 +1,171 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   FILMSTRIP — the full-bleed image row in section 01.
+
+   One row of photos spanning the viewport edge to edge, the outer two cut off
+   by the screen edge so the row reads as a slice of something longer.
+
+   Full-bleed inside a guttered page: the strip breaks out of the padded
+   container with a 100vw width and a negative half-viewport offset, rather
+   than the page dropping its gutter.
+
+   Each tile carries its own width, aspect ratio and vertical offset. The
+   offsets are what stop the row reading as a tidy grid — in the reference no
+   two neighbouring tiles share a top edge.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.strip {
+  /* Break out of the page gutter to true full-bleed. */
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  /* The row is taller than its tiles because of the vertical offsets; this
+     clips nothing vertically, only the horizontal overhang. */
+  overflow: hidden;
+}
+
+.track {
+  display: flex;
+  align-items: flex-start;
+  /* Tight, even spacing — the variation comes from size and offset, not gaps. */
+  gap: clamp(0.5rem, 1.1vw, 1rem);
+  /* Pull the first tile off the left edge and let the last run past the right,
+     so both are cut rather than sitting neatly inside the viewport. */
+  margin-left: clamp(-9rem, -11vw, -4rem);
+  padding-right: clamp(4rem, 11vw, 9rem);
+}
+
+.tile {
+  /* Wireframe block — same grey as the rest of the v4 placeholders. */
+  flex: 0 0 auto;
+  background: #d9d4cc;
+  display: grid;
+  place-items: center;
+  color: #7d7468;
+  font-size: clamp(0.6rem, 0.85vw, 0.75rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+/* ── Tiles ───────────────────────────────────────────────────────────────────
+
+   Widths are % of the viewport so the row keeps its proportions at any width.
+   margin-top is the vertical offset; no two adjacent tiles share one.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.tile1 {
+  width: 15vw;
+  aspect-ratio: 3 / 4;
+  margin-top: 0;
+}
+
+.tile2 {
+  width: 9vw;
+  aspect-ratio: 4 / 5;
+  margin-top: 2.5vw;
+}
+
+.tile3 {
+  width: 19vw;
+  aspect-ratio: 5 / 6;
+  margin-top: 1vw;
+}
+
+.tile4 {
+  /* The tallest — the row's anchor, as in the reference. */
+  width: 25vw;
+  aspect-ratio: 4 / 5;
+  margin-top: 3.5vw;
+}
+
+.tile5 {
+  width: 26vw;
+  aspect-ratio: 16 / 11;
+  margin-top: 1.5vw;
+}
+
+.tile6 {
+  width: 11vw;
+  aspect-ratio: 3 / 4;
+  margin-top: 4vw;
+}
+
+.tile7 {
+  width: 16vw;
+  aspect-ratio: 5 / 7;
+  margin-top: 0.5vw;
+}
+
+/* ── Mobile ───────────────────────────────────────────────────────────────────
+
+   Same layout as desktop: ONE row, same proportions, bleeding off both edges.
+   Only the scale changes.
+
+   Because the desktop widths are already in vw, they reproduce the desktop
+   composition exactly at any width — the row is 121vw of tiles either way, so
+   the bleed and the relationships between tiles are identical. Left alone
+   though, the smallest tile lands at 35px on a 390px phone, which is too small
+   to read as a photograph.
+
+   So every tile is scaled by the same factor (~1.35x). Scaling uniformly is
+   the point: it enlarges the tiles without altering a single proportion, so
+   the phone shows the desktop arrangement, just bigger relative to the screen.
+   The extra width goes into more bleed at the edges, which the desktop layout
+   already does deliberately.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .track {
+    /* Lead-in scaled to match: proportionally the same cut on the first tile
+       as desktop, not a fixed rem value that would over-crop a narrow screen. */
+    margin-left: -11vw;
+    padding-right: 11vw;
+    gap: 1.4vw;
+  }
+
+  .tile {
+    /* The desktop clamp floors at 0.6rem, which overflows a 47px tile. */
+    font-size: 0.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* Uniform 1.35x of the desktop widths — proportions untouched. Vertical
+     offsets are scaled by the same factor so the row keeps its scatter rather
+     than flattening into a straight line. */
+
+  .tile1 {
+    width: 20.3vw;
+    margin-top: 0;
+  }
+
+  .tile2 {
+    width: 12.2vw;
+    margin-top: 3.4vw;
+  }
+
+  .tile3 {
+    width: 25.7vw;
+    margin-top: 1.4vw;
+  }
+
+  .tile4 {
+    width: 33.8vw;
+    margin-top: 4.7vw;
+  }
+
+  .tile5 {
+    width: 35.1vw;
+    margin-top: 2vw;
+  }
+
+  .tile6 {
+    width: 14.9vw;
+    margin-top: 5.4vw;
+  }
+
+  .tile7 {
+    width: 21.6vw;
+    margin-top: 0.7vw;
+  }
+}
