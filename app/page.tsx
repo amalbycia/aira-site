@@ -1,23 +1,20 @@
-import styles from "./page.module.css";
+/* Site root — currently the v4 photography page.
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   v4 clean slate.
+   TEMPORARY, for client review: James asked for the v4 photography design to
+   be the only page on the live domain while he shows it to the client. The v3
+   home, /events and /about are removed from the build for the same reason.
 
-   Four empty full-height cream sections. No nav, no cursor, no grain, no
-   content — chrome is gated off this route in components/SiteChrome.tsx.
+   Everything v3 is intact in git — restoring the previous site is a checkout:
+     git checkout master -- app/page.tsx app/events app/about
+   The v3 home page components (Preloader / Hero / Intro / Marquee /
+   Testimonials / SiteFooter) are untouched in components/.
 
-   The v3 home page (Preloader / Hero / Intro / Marquee / Testimonials /
-   SiteFooter) still lives untouched in components/ and on the v3-maroon-cinema
-   tag; restoring it is a one-file checkout.
-   ───────────────────────────────────────────────────────────────────────── */
+   The root re-exports the /photography page rather than duplicating it, so
+   there is exactly one copy of the design to maintain and the two routes can
+   never drift apart. */
+export { default, metadata } from "./photography/page";
 
-export default function Home() {
-  return (
-    <main className={styles.slate}>
-      <section className={styles.section} id="section-1" />
-      <section className={styles.section} id="section-2" />
-      <section className={styles.section} id="section-3" />
-      <section className={styles.section} id="section-4" />
-    </main>
-  );
-}
+/* Declared literally, not re-exported: Next must parse route segment config
+   statically at compile time and rejects a re-exported `revalidate`. Value
+   matches /photography. */
+export const revalidate = 60;
