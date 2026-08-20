@@ -44,6 +44,20 @@ const pinyon = Pinyon_Script({
   display: "swap",
 });
 
+/* Calypso — v4 display face for section headings, supplied by James.
+   Single weight/style TTF, self-hosted. */
+const calypso = localFont({
+  variable: "--font-calypso",
+  display: "swap",
+  src: [
+    {
+      path: "../public/fonts/Calypso/Calypso.ttf",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+});
+
 /* Display + UI face — the local grotesk that leads the whole v3 system.
    Self-hosted (public/fonts/Nohemi), no external requests. */
 const nohemi = localFont({
@@ -119,7 +133,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${nohemi.variable} ${playfair.variable} ${pinyon.variable}`}
+      className={`${cormorant.variable} ${nohemi.variable} ${playfair.variable} ${pinyon.variable} ${calypso.variable}`}
     >
       <body>
         {/* Site-wide structured data: the business entity + WebSite node.

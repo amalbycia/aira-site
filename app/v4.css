@@ -168,5 +168,89 @@ html[data-bare="true"] {
      same layout and must be re-declared here or they resolve to nothing. */
   --font-script-v4: var(--font-pinyon), Georgia, cursive;
   --font-serif-v4: var(--font-playfair), Georgia, "Times New Roman", serif;
+  /* Calypso — James's display face for section headings. */
+  --font-display-v4: var(--font-calypso), Georgia, serif;
+
+  /* Editorial palette — the crimson matches the hero wordmark exactly. */
+  --ink-v4: #33261c;
+  --crimson-v4: #9e1b32;
+  --maroon-v4: #4f0f1c;
+}
+
+/* ── Preload gate ─────────────────────────────────────────────────────────────
+
+   While the preloader is up, html carries data-loading="true" (set by an
+   inline script in app/photography/page.tsx BEFORE first paint, so there is
+   no window in which the page shows through). Two effects:
+
+     1. scroll is locked — the visitor cannot scroll a page they cannot see,
+        and the position is not lost behind the overlay
+     2. the page content is held invisible, so nothing peeks past the sheet
+        at any point, including on a slow connection where hydration lags
+
+   PhotoMotion removes the attribute as the sheet lifts. It is also cleared
+   by a failsafe timer in the same inline script, so a JS error can never
+   leave the page permanently blank. */
+
+html[data-bare="true"][data-loading="true"],
+html[data-bare="true"][data-loading="true"] body {
+  overflow: hidden;
+  /* Belt and braces for iOS, which ignores overflow:hidden on html. */
+  touch-action: none;
+}
+
+html[data-bare="true"][data-loading="true"] main {
+  visibility: hidden;
+}
+
+/* Reduced motion: no preloader animation runs, so never hide anything. */
+@media (prefers-reduced-motion: reduce) {
+  html[data-bare="true"][data-loading="true"],
+  html[data-bare="true"][data-loading="true"] body {
+    overflow: visible;
+    touch-action: auto;
+  }
+
+  html[data-bare="true"][data-loading="true"] main {
+    visibility: visible;
+  }
+}
+
+/* ── Draw-random-underline (Osmo) ─────────────────────────────────────────────
+   Shared plumbing for the hand-drawn hover underline. Any element carrying
+   data-draw-line gets a child [data-draw-line-box]; on hover, JS injects one
+   of six squiggle SVGs into the box and draws its stroke in with DrawSVG.
+   See components/v4/photography/DrawUnderline.tsx.
+
+   The box is absolutely positioned so adding the effect never shifts layout —
+   each element decides where its own underline sits via inline-safe custom
+   props (bottom offset + inset). Stroke colour rides on currentColor.
+
+   GEOMETRY: the squiggle paths run the full height of their 310x40 viewBox
+   (y ~5 to ~35) and preserveAspectRatio is none, so the stroke fills the
+   whole box. The box must therefore sit ENTIRELY BELOW the text — a
+   --draw-bottom that overlaps the line box draws the squiggle through the
+   letters, not under them. Negative values move it down, away from the text. */
+
+html[data-bare="true"] [data-draw-line] {
+  position: relative;
+}
+
+html[data-bare="true"] [data-draw-line-box] {
+  position: absolute;
+  left: var(--draw-inset, 0);
+  right: var(--draw-inset, 0);
+  /* Negative = below the element's box. */
+  bottom: var(--draw-bottom, -0.5em);
+  height: 0.4em;
+  pointer-events: none;
+  color: var(--draw-color, currentColor);
+}
+
+html[data-bare="true"] [data-draw-line-box] svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: visible !important;
 }
 

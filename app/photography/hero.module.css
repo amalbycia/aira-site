@@ -24,6 +24,59 @@
   justify-content: flex-start;
 }
 
+/* ── Masthead nav ─────────────────────────────────────────────────────────────
+
+   Links flank the wordmark on its own line, pinned to the gutters. The nav is
+   absolutely positioned over the masthead so adding it moves NOTHING — the
+   wordmark keeps exactly the position it had before the nav existed. ────────── */
+
+.masthead {
+  position: relative;
+}
+
+.nav {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* The overlay spans the full wordmark line; only the links themselves
+     should catch the pointer. */
+  pointer-events: none;
+}
+
+.navGroup {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.25rem, 2.8vw, 3rem);
+  pointer-events: auto;
+}
+
+.navLink {
+  position: relative;
+  font-family: var(--font-serif-v4);
+  font-size: clamp(0.68rem, 0.92vw, 0.84rem);
+  letter-spacing: 0.26em;
+  text-transform: lowercase;
+  color: var(--ink-v4);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: color 180ms ease;
+}
+
+/* Hover feedback is the drawn squiggle underline (data-draw-line, see
+   DrawUnderline.tsx) plus the crimson shift — no generic effects. */
+.navLink {
+  /* Below the baseline — see the geometry note in app/v4.css. */
+  --draw-bottom: -0.45em;
+  --draw-color: var(--crimson-v4);
+}
+
+.navLink:hover {
+  color: var(--crimson-v4);
+}
+
 /* ── Wordmark ─────────────────────────────────────────────────────────────── */
 
 /* Selector doubled (.wordmark.wordmark) on purpose: app/v4.css §1 resets
@@ -73,5 +126,24 @@
     /* Floors at 2.5rem (40px) instead of 1.9rem, and keeps scaling with the
        viewport up to the breakpoint. */
     font-size: clamp(2.5rem, 12.5vw, 3.6rem);
+  }
+
+  /* No room beside the wordmark on a phone — the nav drops to a centred row
+     BELOW it (order 2 beats the h1's default 0 in the flex column). */
+  .masthead {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav {
+    position: static;
+    order: 2;
+    justify-content: center;
+    gap: clamp(1.75rem, 7vw, 2.5rem);
+    margin-top: 0.9rem;
+  }
+
+  .navLink {
+    font-size: 0.72rem;
   }
 }

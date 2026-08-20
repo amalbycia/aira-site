@@ -41,8 +41,9 @@
     /* Clip the overhang instead of letting it force horizontal scroll. */
     overflow: hidden;
     /* Retune the pull-up: the desktop -30vw was set against a band that is now
-       taller, so the same value would swallow it. */
-    margin-top: clamp(-42rem, -85vw, -19rem);
+       taller, so the same value would swallow it. Nudged up a touch further so
+       the hero section reads shorter on a phone — mobile only. */
+    margin-top: clamp(-45rem, -92vw, -20.5rem);
   }
 
   .image {

@@ -1,0 +1,63 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   FOOTER ROSES — the garland border above the footer.
+
+   Full-bleed band in NORMAL FLOW. It deliberately does not use the hero
+   divider's negative-margin pull-up: the footer holds the contact details,
+   and a garland pulled down over them would cover a phone number. The band
+   takes its own height, and the footer starts below it.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.band {
+  position: relative;
+  width: 100%;
+  /* Kills the inline-image descender gap under the img. */
+  line-height: 0;
+  /* Above the sheet's paper texture, below nothing else — it has the strip
+     to itself. */
+  z-index: 2;
+  /* 1px down onto the maroon: hides the hairline the browser can leave
+     between the image's bottom edge and the footer at fractional zooms.
+     This is the ONLY overlap — it eats 1px of flat maroon, never content. */
+  margin-bottom: -1px;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────────
+
+   At 100% width the garland scales down with the viewport and collapses into
+   a thin strip on a phone. Widening it past the viewport keeps the roses at
+   a readable size; the overflow is cropped left and right, which is fine
+   because the garland is a continuous band with no focal point to lose.
+
+   Centred with left: 50% + translateX(-50%) rather than a negative margin —
+   a margin resolves against the CONTAINER, not the scaled image, which
+   pushes it off-centre (the bug the hero divider hit).
+
+   Desktop is untouched: these rules only exist below --bp-md.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .band {
+    /* Contain the overhang instead of letting it force horizontal scroll. */
+    overflow: hidden;
+  }
+
+  .image {
+    width: 165%;
+    max-width: none;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 480px) {
+  .image {
+    width: 200%;
+  }
+}

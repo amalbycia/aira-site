@@ -1,0 +1,55 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PRELOADER — see components/v4/photography/PhotoMotion.tsx.
+
+   Maroon sheet over the whole page: bracketed eyebrow top-centre, the script
+   wordmark centred (its write-in clip is set from JS), a Calypso counter
+   pinned to the lower-right corner like a folio number.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--maroon-v4);
+  color: #ecdfc9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Paint the sheet BEFORE React hydrates. Without this the overlay only
+     exists once the client component mounts, so the page is visible for a
+     beat first — the "peek through" the preloader is meant to prevent. The
+     server sends this markup, so the maroon is up from the first paint. */
+  will-change: transform;
+}
+
+.eyebrow {
+  position: absolute;
+  top: clamp(1.5rem, 4vw, 3rem);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-serif-v4);
+  font-size: clamp(0.68rem, 0.95vw, 0.85rem);
+  letter-spacing: 0.28em;
+  text-transform: lowercase;
+  opacity: 0.7;
+}
+
+.word {
+  font-family: var(--font-script-v4);
+  font-size: clamp(2.4rem, 7vw, 5.5rem);
+  line-height: 1.1;
+  text-align: center;
+  padding: 0 var(--gutter-v4);
+}
+
+.count {
+  position: absolute;
+  right: clamp(1.5rem, 4vw, 3.5rem);
+  bottom: clamp(1.25rem, 3.5vw, 2.75rem);
+  font-family: var(--font-display-v4);
+  font-size: clamp(2.75rem, 7vw, 5.5rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.9;
+}

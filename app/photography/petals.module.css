@@ -1,0 +1,166 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PETAL FIELD — rose petals falling across sections 02–03.
+
+   See components/v4/photography/PetalField.tsx. The field wraps both
+   sections so a petal can fall the whole distance rather than being clipped
+   at a section boundary.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.field {
+  position: relative;
+}
+
+/* The petal layer spans the whole field and sits behind the sections'
+   content. overflow: hidden stops a petal that has fallen past the bottom
+   from extending the page or triggering horizontal scroll. */
+.layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.petal {
+  position: absolute;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  /* GSAP writes rotation + y into this element's transform; see
+     PhotoMotion.tsx §4. Never add a CSS transform here. */
+}
+
+/* POSITIONS — top is a % of the FIELD (both sections), so the nine petals
+   spread over the full scroll rather than clustering in one screen.
+
+   SIZES — mostly small (2–3.5vw). Only p1 and p5 are medium: they are the
+   two the eye lands on, the rest are scattered detail.
+
+   Left/right values keep every petal clear of the centre column where the
+   copy sits, so none of them ever sit behind a paragraph. */
+
+.p1 {
+  width: clamp(3.75rem, 6vw, 6rem);
+  top: 2%;
+  right: clamp(1rem, 6vw, 7rem);
+  opacity: 0.95;
+}
+
+.p2 {
+  width: clamp(2rem, 3.2vw, 3.2rem);
+  top: 7%;
+  left: clamp(1rem, 5vw, 5.5rem);
+  opacity: 0.85;
+}
+
+.p3 {
+  width: clamp(2.25rem, 3.6vw, 3.6rem);
+  top: 16%;
+  left: 38%;
+  opacity: 0.88;
+}
+
+.p4 {
+  width: clamp(1.9rem, 3vw, 3rem);
+  top: 24%;
+  right: clamp(0.5rem, 3vw, 3.5rem);
+  opacity: 0.92;
+}
+
+.p5 {
+  width: clamp(3.25rem, 5.2vw, 5.2rem);
+  top: 33%;
+  left: clamp(-1rem, 1.5vw, 2.5rem);
+  opacity: 0.92;
+}
+
+.p6 {
+  width: clamp(1.6rem, 2.4vw, 2.4rem);
+  top: 44%;
+  left: 62%;
+  opacity: 0.75;
+}
+
+.p7 {
+  width: clamp(2.1rem, 3.4vw, 3.4rem);
+  top: 55%;
+  left: clamp(3rem, 12vw, 13rem);
+  opacity: 0.85;
+}
+
+.p8 {
+  width: clamp(2.4rem, 3.8vw, 3.8rem);
+  top: 68%;
+  right: clamp(2rem, 9vw, 10rem);
+  opacity: 0.86;
+}
+
+.p9 {
+  width: clamp(1.8rem, 2.8vw, 2.8rem);
+  top: 82%;
+  left: clamp(2rem, 8vw, 9rem);
+  opacity: 0.78;
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────────
+
+   A phone is one narrow column with no side margins to scatter into, so the
+   petals shrink hard and hug the two edges. Anything that would land over
+   the centre column is pushed to an edge instead — they must never sit
+   behind a line of text on a small screen.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .petal {
+    /* Slightly held back on a phone: the same petal covers far more of a
+       390px screen than a 1440px one. */
+    opacity: 0.8;
+  }
+
+  .p1 {
+    width: 3.25rem;
+    right: -0.75rem;
+  }
+
+  .p2 {
+    width: 1.75rem;
+    left: -0.5rem;
+  }
+
+  .p3 {
+    width: 2rem;
+    left: auto;
+    right: 0.5rem;
+  }
+
+  .p4 {
+    width: 1.6rem;
+    right: -0.4rem;
+  }
+
+  .p5 {
+    width: 2.75rem;
+    left: -0.9rem;
+  }
+
+  .p6 {
+    width: 1.4rem;
+    left: auto;
+    right: 1.25rem;
+  }
+
+  .p7 {
+    width: 1.8rem;
+    left: -0.5rem;
+  }
+
+  .p8 {
+    width: 2rem;
+    right: -0.6rem;
+  }
+
+  .p9 {
+    width: 1.5rem;
+    left: 0.5rem;
+  }
+}

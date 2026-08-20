@@ -1,0 +1,208 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   SECTION 03 — SELECTED WORKS
+
+   Five frames on a 12-column grid, each with its own column span, aspect
+   ratio and vertical push — the collage reads as pinned photographs, not a
+   gallery grid. Captions are tiny numbered italics, as in the reference's
+   detail clusters.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.works {
+  position: relative;
+  z-index: 1;
+  padding: clamp(4.5rem, 9vw, 8rem) var(--gutter-v4) clamp(4rem, 8vw, 7rem);
+}
+
+/* Doubled selector — beats app/v4.css §1's h2 reset. */
+.heading.heading {
+  font-family: var(--font-display-v4);
+  font-size: clamp(1.35rem, 3.1vw, 2.5rem);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--crimson-v4);
+  line-height: 1.1;
+  /* The heading steps in from the left — sections must not all open from the
+     same edge. */
+  margin-left: clamp(0rem, 12vw, 14rem);
+}
+
+.headingNum {
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+.subline {
+  margin-top: clamp(0.6rem, 1.2vw, 1rem);
+  margin-left: clamp(0rem, 12vw, 14rem);
+  font-family: var(--font-serif-v4);
+  font-size: clamp(0.72rem, 1vw, 0.9rem);
+  letter-spacing: 0.2em;
+  color: var(--ink-v4);
+}
+
+/* ── Collage ─────────────────────────────────────────────────────────────── */
+
+.collage {
+  margin-top: clamp(2.75rem, 5.5vw, 5rem);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  column-gap: clamp(0.75rem, 1.6vw, 1.5rem);
+  row-gap: clamp(2.5rem, 4.5vw, 4rem);
+  align-items: start;
+}
+
+.piece {
+  min-width: 0;
+}
+
+.frame {
+  width: 100%;
+  background: #d9d4cc;
+  display: grid;
+  place-items: center;
+  color: #7d7468;
+  font-size: clamp(0.55rem, 0.8vw, 0.7rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+
+.caption {
+  margin-top: 0.6rem;
+  font-family: var(--font-serif-v4);
+  font-style: italic;
+  font-size: clamp(0.7rem, 0.9vw, 0.82rem);
+  letter-spacing: 0.08em;
+  color: var(--ink-v4);
+}
+
+/* Placements — no two neighbours share a top edge. */
+
+.w1 {
+  grid-column: 1 / 7;
+}
+
+.w1 .frame {
+  aspect-ratio: 16 / 11;
+}
+
+.w2 {
+  grid-column: 9 / 13;
+  margin-top: clamp(2rem, 5vw, 4.5rem);
+}
+
+.w2 .frame {
+  aspect-ratio: 3 / 4;
+}
+
+.w3 {
+  grid-column: 3 / 6;
+  margin-top: clamp(-1.5rem, -2vw, -1rem);
+}
+
+.w3 .frame {
+  aspect-ratio: 1 / 1;
+}
+
+.w4 {
+  grid-column: 6 / 9;
+  margin-top: clamp(1.5rem, 3.5vw, 3rem);
+}
+
+.w4 .frame {
+  aspect-ratio: 4 / 5;
+}
+
+.w5 {
+  grid-column: 9 / 13;
+  margin-top: clamp(-3rem, -4vw, -2rem);
+}
+
+.w5 .frame {
+  aspect-ratio: 5 / 4;
+}
+
+/* ── Gallery link ────────────────────────────────────────────────────────── */
+
+.moreLine {
+  margin-top: clamp(3rem, 5.5vw, 5rem);
+  text-align: right;
+}
+
+.moreBtn {
+  font-family: var(--font-serif-v4);
+  font-size: clamp(0.72rem, 1vw, 0.9rem);
+  letter-spacing: 0.26em;
+  text-transform: lowercase;
+  color: var(--crimson-v4);
+  background: transparent;
+  border: 1px solid currentColor;
+  padding: 0.95em 2.4em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9em;
+  /* Hover feedback is the drawn squiggle underline (data-draw-line) — the
+     underline sits inside the border, under the label. */
+  --draw-inset: 1.6em;
+  --draw-bottom: 0.3em;
+}
+
+.moreArrow {
+  font-family: inherit;
+  letter-spacing: 0;
+  transition: transform 220ms ease;
+}
+
+.moreBtn:hover .moreArrow {
+  transform: translateX(0.3em);
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────────
+
+   The collage becomes a two-track scrapbook: pieces alternate edges and
+   widths so the stagger survives the narrow screen, rather than flattening
+   into a centred single column.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .heading.heading,
+  .subline {
+    margin-left: 0;
+  }
+
+  .collage {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .w1 {
+    width: 82%;
+    margin-top: 0;
+  }
+
+  .w2 {
+    width: 62%;
+    align-self: flex-end;
+    margin-top: -1.5rem;
+  }
+
+  .w3 {
+    width: 52%;
+    margin-left: 8%;
+    margin-top: 0;
+  }
+
+  .w4 {
+    width: 58%;
+    align-self: flex-end;
+    margin-top: -2rem;
+  }
+
+  .w5 {
+    width: 76%;
+    margin-top: 0;
+  }
+}

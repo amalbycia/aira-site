@@ -9,7 +9,27 @@ import Filmstrip from "./Filmstrip";
 export default function Hero() {
   return (
     <div className={styles.hero}>
-      <h1 className={styles.wordmark}>Aira Photography</h1>
+      <header className={styles.masthead} data-hero-mast>
+        <nav className={styles.nav} aria-label="Primary">
+          <span className={styles.navGroup}>
+            <a href="#about" className={styles.navLink} data-draw-line>
+              about
+              <span data-draw-line-box aria-hidden="true" />
+            </a>
+            <a href="#works" className={styles.navLink} data-draw-line>
+              works
+              <span data-draw-line-box aria-hidden="true" />
+            </a>
+          </span>
+          <span className={styles.navGroup}>
+            <a href="#contact" className={styles.navLink} data-draw-line>
+              contact
+              <span data-draw-line-box aria-hidden="true" />
+            </a>
+          </span>
+        </nav>
+        <h1 className={styles.wordmark}>Aira Photography</h1>
+      </header>
 
       <Filmstrip />
     </div>

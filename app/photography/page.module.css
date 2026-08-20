@@ -113,23 +113,8 @@
      texture runs unbroken through every section boundary. */
   background: transparent;
 
-  /* Section number sits in the corner while we build. */
   position: relative;
   isolation: isolate;
-}
-
-/* Temporary build marker — numbers each section so James can see the
-   boundaries. Delete when the real design lands. */
-.marker {
-  position: absolute;
-  top: var(--gutter-v4);
-  left: var(--gutter-v4);
-  z-index: 1;
-  color: #000;
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  font-weight: 700;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-  user-select: none;
+  /* Anchor targets (#about, #works) land clear of the seam, not under it. */
+  scroll-margin-top: 1.5rem;
 }

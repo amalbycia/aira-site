@@ -1,0 +1,211 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   FOOTER — CONTACT
+
+   Deep maroon band closing the cream sheet. Structure:
+
+     [ contact ] eyebrow
+     script wordmark
+     tagline
+     CTA button row        — whatsapp (primary) / call / write
+     hairline
+     four columns          — studio / enquiries / elsewhere / navigate
+     legal line
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.footer {
+  position: relative;
+  z-index: 1;
+  background: var(--maroon-v4);
+  color: #ecdfc9;
+  padding: clamp(3.5rem, 6.5vw, 6rem) var(--gutter-v4) clamp(2rem, 3.5vw, 3rem);
+}
+
+.inner {
+  max-width: 78rem;
+  margin: 0 auto;
+}
+
+/* ── Head block ──────────────────────────────────────────────────────────── */
+
+.eyebrow {
+  font-family: var(--font-serif-v4);
+  font-size: clamp(0.7rem, 0.95vw, 0.85rem);
+  letter-spacing: 0.28em;
+  text-transform: lowercase;
+  text-align: center;
+  opacity: 0.75;
+}
+
+.script {
+  margin-top: clamp(0.75rem, 1.5vw, 1.25rem);
+  text-align: center;
+  font-family: var(--font-script-v4);
+  font-size: clamp(2.2rem, 5vw, 4rem);
+  line-height: 1;
+  color: #ecdfc9;
+}
+
+.tagline {
+  margin-top: clamp(1rem, 1.8vw, 1.5rem);
+  text-align: center;
+  font-family: var(--font-serif-v4);
+  font-style: italic;
+  font-size: clamp(0.85rem, 1.15vw, 1.05rem);
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+
+/* ── CTA buttons ─────────────────────────────────────────────────────────── */
+
+.ctaRow {
+  margin-top: clamp(2rem, 3.5vw, 3rem);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.cta {
+  font-family: var(--font-serif-v4);
+  font-size: clamp(0.7rem, 0.95vw, 0.85rem);
+  letter-spacing: 0.26em;
+  text-transform: lowercase;
+  color: #ecdfc9;
+  text-decoration: none;
+  border: 1px solid rgba(236, 223, 201, 0.55);
+  padding: 0.95em 2.4em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Hover feedback is the drawn squiggle underline (data-draw-line). */
+  --draw-inset: 1.6em;
+  --draw-bottom: 0.3em;
+}
+
+/* WhatsApp — the footer's loudest element: solid cream on maroon, larger,
+   its underline drawn in maroon. */
+.ctaPrimary {
+  background: #ecdfc9;
+  border-color: #ecdfc9;
+  color: var(--maroon-v4);
+  font-size: clamp(0.78rem, 1.05vw, 0.95rem);
+  padding: 1.05em 3em;
+}
+
+.rule {
+  margin: clamp(3rem, 5.5vw, 5rem) auto 0;
+  height: 1px;
+  background: rgba(236, 223, 201, 0.25);
+}
+
+/* ── Columns ─────────────────────────────────────────────────────────────── */
+
+.columns {
+  margin-top: clamp(2.5rem, 4.5vw, 4rem);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(2rem, 4vw, 4rem);
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+/* Doubled selector — beats app/v4.css §1's h3 reset. */
+.colTitle.colTitle {
+  font-family: var(--font-serif-v4);
+  font-size: clamp(0.68rem, 0.9vw, 0.8rem);
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: lowercase;
+  color: #c9a06a;
+  margin-bottom: 0.5rem;
+}
+
+.line,
+.lineLink {
+  font-family: var(--font-serif-v4);
+  font-size: clamp(0.85rem, 1.1vw, 1rem);
+  line-height: 1.6;
+  color: #ecdfc9;
+  text-decoration: none;
+}
+
+.lineLink {
+  display: inline-flex;
+  align-items: center;
+  /* Hover feedback is the drawn squiggle underline (data-draw-line). */
+  --draw-bottom: -0.4em;
+}
+
+/* ── Social buttons ──────────────────────────────────────────────────────── */
+
+.socialRow {
+  display: flex;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+}
+
+.social {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(236, 223, 201, 0.55);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif-v4);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  color: #ecdfc9;
+  text-decoration: none;
+  transition: background-color 220ms ease, color 220ms ease,
+    border-color 220ms ease;
+}
+
+.social:hover {
+  background: #ecdfc9;
+  border-color: #ecdfc9;
+  color: var(--maroon-v4);
+}
+
+/* ── Legal line ──────────────────────────────────────────────────────────── */
+
+.legal {
+  margin-top: clamp(3rem, 5.5vw, 5rem);
+  padding-top: clamp(1.25rem, 2vw, 1.75rem);
+  border-top: 1px solid rgba(236, 223, 201, 0.25);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--font-serif-v4);
+  font-size: clamp(0.68rem, 0.9vw, 0.8rem);
+  letter-spacing: 0.12em;
+  opacity: 0.75;
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .ctaRow {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 20rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .columns {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.25rem 1.5rem;
+  }
+
+  .legal {
+    flex-direction: column;
+    gap: 0.4rem;
+    text-align: center;
+  }
+}

@@ -12,8 +12,10 @@ import styles from "@/app/photography/roses-divider.module.css";
    alpha channel, which would put a solid box behind the garland. Serving the
    webp as-is keeps the transparency guaranteed rather than negotiated.
 
-   priority is off: this sits below the hero fold, so it should not compete
-   with the hero for bandwidth. */
+   priority: this is the first artwork the visitor sees when the preloader
+   lifts, and the preloader gives it ~3s of covered time to arrive. Without
+   priority it is discovered late and can pop in after the reveal. Nothing
+   above it competes — the hero is type and placeholder boxes, no images. */
 
 export default function RosesDivider() {
   return (
@@ -26,6 +28,7 @@ export default function RosesDivider() {
         height={856}
         sizes="100vw"
         unoptimized
+        priority
       />
     </div>
   );

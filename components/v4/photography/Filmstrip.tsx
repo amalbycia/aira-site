@@ -18,7 +18,11 @@ export default function Filmstrip() {
     <div className={styles.strip} aria-hidden="true">
       <div className={styles.track}>
         {TILES.map((n) => (
-          <div key={n} className={`${styles.tile} ${styles[`tile${n}`]}`}>
+          <div
+            key={n}
+            className={`${styles.tile} ${styles[`tile${n}`]}`}
+            data-hero-tile
+          >
             {String(n).padStart(2, "0")}
           </div>
         ))}
