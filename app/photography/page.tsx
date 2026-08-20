@@ -10,6 +10,7 @@ import FooterRoses from "@/components/v4/photography/FooterRoses";
 import Footer from "@/components/v4/photography/Footer";
 import PhotoMotion from "@/components/v4/photography/PhotoMotion";
 import DrawUnderline from "@/components/v4/photography/DrawUnderline";
+import { getPage } from "@/lib/cms/getPage";
 import { breadcrumbSchema } from "@/lib/structuredData";
 import styles from "./page.module.css";
 
@@ -51,7 +52,25 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PhotographyPage() {
+// Re-fetch at most once a minute so photos added in /manage appear without a
+// redeploy (ISR) — same convention as /events. Without this the page is fully
+// prerendered at build time and a newly uploaded photograph never shows up.
+export const revalidate = 60;
+
+export default async function PhotographyPage() {
+  /* Real photographs from Neon — Bunny Storage CDN URLs. Returns an empty
+     gallery if the DB is unconfigured or unreachable, and every section falls
+     back to its wireframe frames, so the page never breaks on a bad query.
+
+     The slices below hand each section its OWN photographs. They must not
+     overlap: the same face appearing in the hero strip and again in Works
+     reads as a mistake rather than a collage. Order comes from sort_order in
+     /manage, so Amal controls which photo lands where by reordering there. */
+  const { gallery } = await getPage("photography");
+  const heroPhotos = gallery.slice(0, 7);
+  const aboutPhotos = gallery.slice(7, 9);
+  const worksPhotos = gallery.slice(9, 14);
+
   const schema = [
     breadcrumbSchema([
       { name: "Home", path: "/" },
@@ -84,20 +103,12 @@ setTimeout(function(){d.removeAttribute('data-loading')},6000);
           browser only discovers it after the stylesheet resolves. Preloading
           it during the preloader's ~3s means the sheet is already textured
           when it is revealed, instead of flashing flat beige first. */}
-      <link
-        rel="preload"
-        as="image"
-        href="/images/v4-paper.webp"
-        type="image/webp"
-      />
+      <link rel="preload" as="image" href="/images/v4-paper.webp" type="image/webp" />
       <JsonLd data={schema} />
       <main className={styles.slate}>
         <section className={styles.section} id="section-1">
-          <div
-            className={`${styles.paper} ${styles.paper1}`}
-            aria-hidden="true"
-          />
-          <Hero />
+          <div className={`${styles.paper} ${styles.paper1}`} aria-hidden="true" />
+          <Hero photos={heroPhotos} />
         </section>
 
         <RosesDivider />
@@ -106,27 +117,18 @@ setTimeout(function(){d.removeAttribute('data-loading')},6000);
             pair — inside either one they would be clipped at its boundary. */}
         <PetalField>
           <section className={styles.section} id="about">
-            <div
-              className={`${styles.paper} ${styles.paper2}`}
-              aria-hidden="true"
-            />
-            <About />
+            <div className={`${styles.paper} ${styles.paper2}`} aria-hidden="true" />
+            <About photos={aboutPhotos} />
           </section>
 
           <section className={styles.section} id="works">
-            <div
-              className={`${styles.paper} ${styles.paper3}`}
-              aria-hidden="true"
-            />
-            <Works />
+            <div className={`${styles.paper} ${styles.paper3}`} aria-hidden="true" />
+            <Works photos={worksPhotos} />
           </section>
         </PetalField>
 
         <section className={styles.section} id="reviews">
-          <div
-            className={`${styles.paper} ${styles.paper4}`}
-            aria-hidden="true"
-          />
+          <div className={`${styles.paper} ${styles.paper4}`} aria-hidden="true" />
           <Reviews />
         </section>
 

@@ -1,12 +1,14 @@
+import type { GalleryPhoto } from "@/components/media/types";
 import styles from "@/app/photography/hero.module.css";
 import Filmstrip from "./Filmstrip";
 
-/* Section 01 — hero. WIREFRAME ONLY.
+/* Section 01 — hero.
 
-   Wireframe type, no real images. The arrangement is what is under review;
-   James supplies the real palette and photography. */
+   Masthead + nav over the full-bleed filmstrip. Photos are passed straight
+   through to Filmstrip, which falls back to wireframe tiles when the gallery
+   is empty. */
 
-export default function Hero() {
+export default function Hero({ photos }: { photos: GalleryPhoto[] }) {
   return (
     <div className={styles.hero}>
       <header className={styles.masthead} data-hero-mast>
@@ -31,7 +33,7 @@ export default function Hero() {
         <h1 className={styles.wordmark}>Aira Photography</h1>
       </header>
 
-      <Filmstrip />
+      <Filmstrip photos={photos} />
     </div>
   );
 }

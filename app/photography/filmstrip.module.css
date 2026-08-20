@@ -36,7 +36,7 @@
 }
 
 .tile {
-  /* Wireframe block — same grey as the rest of the v4 placeholders. */
+  /* Kept as the empty state, and as the tone behind a still-loading photo. */
   flex: 0 0 auto;
   background: #d9d4cc;
   display: grid;
@@ -46,6 +46,16 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+  /* Anchor for the fill Image. Each tile's width/aspect-ratio is unchanged,
+     so the scattered row keeps its exact composition with photos in it. */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Cropped to the tile's aspect-ratio rather than fitted, so tiles of seven
+   different shapes all read as one strip. */
+.photo {
+  object-fit: cover;
 }
 
 /* ── Tiles ───────────────────────────────────────────────────────────────────
