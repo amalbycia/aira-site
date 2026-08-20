@@ -192,8 +192,16 @@
 
 @media (max-width: 767px) {
   .lead::before {
-    /* On a phone the hanging mark would fall into the gutter — tuck it. */
-    left: -0.15em;
+    /* On a phone there is no room to hang the mark outside the measure, so
+       tucking it inline put it straight on top of the first line. Sit it
+       ABOVE the text instead: left-aligned with the copy, lifted clear on its
+       own, and smaller so it reads as an opening flourish rather than a
+       character competing with the first word. */
+    position: static;
+    display: block;
+    font-size: 2.6rem;
+    line-height: 0.8;
+    margin-bottom: 0.1em;
   }
 
   .smallRight {
