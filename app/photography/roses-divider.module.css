@@ -44,7 +44,7 @@
        explore pill: the button sits below the strip and the garland has to
        clear it, so this is tuned to land the band under the button rather
        than over it. Less pull-up = band sits lower. */
-    margin-top: clamp(-9rem, -14vw, -3.5rem);
+    margin-top: clamp(-7.5rem, -11.5vw, -3rem);
   }
 
   .image {

@@ -125,9 +125,13 @@
   .explore {
     display: flex;
     justify-content: center;
-    /* Sits close under the filmstrip — the garland below is pulled up to
-       land beneath the button, not over it (roses-divider.module.css). */
-    margin-top: 0.5rem;
+    /* Pulled up into the filmstrip's lower gap. Negative because the strip's
+       tiles carry their own vertical offsets, so the row's box bottom sits
+       below the shortest tile — a positive margin measures from that box, not
+       from the artwork, and reads as a bigger gap than it looks. The garland
+       below is pulled up to land beneath this button, not over it
+       (roses-divider.module.css). */
+    margin-top: -1.25rem;
   }
 
   .exploreBtn {
