@@ -1,0 +1,249 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   /GALLERY — the full photograph archive.
+
+   A responsive grid whose density is switchable. Changing density re-flows
+   the grid and GSAP Flip animates every tile from its old box to its new one,
+   after the Codrops technique:
+   tympanus.net/codrops/2026/01/20/animating-responsive-grid-layout-transitions-with-gsap-flip/
+
+   The layout mechanism is the tutorial's: a data attribute on the container
+   selects a column count in CSS, and Flip does the rest. The dressing (paper
+   ground, crimson, script wordmark) is this site's.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.page {
+  position: relative;
+  min-height: 100svh;
+  background: #ebe1cd;
+  isolation: isolate;
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+}
+
+/* Same paper ground as /photography, so the two pages read as one sheet. */
+.page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("/images/v4-paper.webp");
+  background-size: 140% auto;
+  background-position: center top;
+  background-repeat: repeat;
+  filter: sepia(1) saturate(1.6) hue-rotate(-12deg) brightness(1.06);
+  mix-blend-mode: multiply;
+  opacity: 0.3;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  padding: clamp(2rem, 4vw, 3.5rem) var(--gutter-v4) 0;
+}
+
+/* ── Masthead ────────────────────────────────────────────────────────────── */
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.back {
+  font-family: var(--font-serif-v4);
+  font-size: clamp(0.68rem, 0.92vw, 0.84rem);
+  letter-spacing: 0.26em;
+  text-transform: lowercase;
+  color: var(--ink-v4);
+  text-decoration: none;
+  position: relative;
+  --draw-bottom: -0.35em;
+}
+
+/* Doubled selector — beats app/v4.css §1's h1 reset without !important. */
+.title.title {
+  font-family: var(--font-script-v4);
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  font-weight: 400;
+  color: var(--crimson-v4);
+  line-height: 1;
+  margin: 0;
+}
+
+.count {
+  font-family: var(--font-serif-v4);
+  font-style: italic;
+  font-size: clamp(0.72rem, 1vw, 0.9rem);
+  letter-spacing: 0.14em;
+  color: var(--ink-v4);
+}
+
+/* ── Density switch ──────────────────────────────────────────────────────── */
+
+.controls {
+  margin-top: clamp(1.75rem, 3.5vw, 2.75rem);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.controlsLabel {
+  font-family: var(--font-serif-v4);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: lowercase;
+  color: var(--ink-v4);
+  opacity: 0.7;
+  margin-right: 0.4rem;
+}
+
+.sizeBtn {
+  font-family: var(--font-serif-v4);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: lowercase;
+  color: var(--ink-v4);
+  background: transparent;
+  border: 1px solid rgba(51, 38, 28, 0.28);
+  border-radius: 999px;
+  padding: 0.6em 1.4em;
+  /* 44px touch target on coarse pointers — app/v4.css §2. */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition:
+    color 220ms ease,
+    border-color 220ms ease,
+    background-color 220ms ease;
+}
+
+.sizeBtn:hover {
+  border-color: var(--crimson-v4);
+  color: var(--crimson-v4);
+}
+
+.sizeBtnActive {
+  background: var(--crimson-v4);
+  border-color: var(--crimson-v4);
+  color: #ebe1cd;
+}
+
+.sizeBtnActive:hover {
+  color: #ebe1cd;
+}
+
+/* ── Grid ────────────────────────────────────────────────────────────────────
+
+   The density attribute drives the column count, exactly as in the tutorial.
+   Each tile spans a fixed number of columns, so the same markup re-flows into
+   a different composition per density and Flip animates between them.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.grid {
+  margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+  display: grid;
+  gap: clamp(0.6rem, 1.4vw, 1.25rem);
+}
+
+.grid[data-density="airy"] {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid[data-density="regular"] {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.grid[data-density="dense"] {
+  grid-template-columns: repeat(8, 1fr);
+}
+
+.item {
+  position: relative;
+  min-width: 0;
+  grid-column: span 2;
+  /* Flip reads and writes transforms on these; a stacking context of their
+     own keeps the animating tiles from z-fighting the paper layer. */
+  will-change: transform;
+}
+
+/* Every fourth tile runs wide, so the grid has a rhythm rather than being a
+   uniform contact sheet. The pattern changes meaning at each density because
+   the column count changes underneath it — which is what makes the Flip
+   transition worth watching. */
+.itemWide {
+  grid-column: span 4;
+}
+
+.frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  /* Tone behind a loading photo, so it fades up out of the paper. */
+  background: #d9d4cc;
+}
+
+.itemWide .frame {
+  aspect-ratio: 16 / 10;
+}
+
+.photo {
+  object-fit: cover;
+  transition: transform 600ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.item:hover .photo {
+  transform: scale(1.04);
+}
+
+.num {
+  margin-top: 0.5rem;
+  font-family: var(--font-serif-v4);
+  font-style: italic;
+  font-size: clamp(0.62rem, 0.8vw, 0.72rem);
+  letter-spacing: 0.1em;
+  color: var(--ink-v4);
+  opacity: 0.75;
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+
+.empty {
+  margin-top: 3rem;
+  font-family: var(--font-serif-v4);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--ink-v4);
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────────
+
+   The density switch is desktop-only: on a phone there is room for one
+   sensible density, and three buttons that all look nearly the same is not a
+   choice worth offering. The grid drops to a fixed 2-column rhythm.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .controls {
+    display: none;
+  }
+
+  .grid,
+  .grid[data-density="airy"],
+  .grid[data-density="regular"],
+  .grid[data-density="dense"] {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .item {
+    grid-column: span 1;
+  }
+
+  .itemWide {
+    grid-column: span 2;
+  }
+}

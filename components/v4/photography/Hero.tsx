@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { GalleryPhoto } from "@/components/media/types";
 import styles from "@/app/photography/hero.module.css";
 import Filmstrip from "./Filmstrip";
@@ -34,6 +35,14 @@ export default function Hero({ photos }: { photos: GalleryPhoto[] }) {
       </header>
 
       <Filmstrip photos={photos} />
+
+      {/* Phone-only CTA under the strip — hidden on desktop in CSS, where the
+          nav already covers the same ground. */}
+      <div className={styles.explore}>
+        <Link href="/gallery" className={styles.exploreBtn}>
+          explore
+        </Link>
+      </div>
     </div>
   );
 }

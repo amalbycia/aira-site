@@ -14,7 +14,7 @@ import Cursor from "@/components/Cursor";
 
    SiteNav and Cursor themselves are untouched v3 files — the gating lives
    here so reverting v4 never means un-editing shared components. */
-const BARE_ROUTES = ["/", "/photography"];
+const BARE_ROUTES = ["/", "/photography", "/gallery"];
 
 export default function SiteChrome() {
   const pathname = usePathname();

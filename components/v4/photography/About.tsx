@@ -8,7 +8,9 @@ import styles from "@/app/photography/about.module.css";
    bracketed subline, body copy set as STAGGERED indented blocks (no two
    paragraphs share a left edge), and a captioned image stack on the right.
 
-   The two figures take real photographs from the DB (Bunny Storage URLs) via
+   The photographs drift inside their frames on scroll (data-parallax on the
+   Image, not the figure) — the stack holds its position and only the crop
+   moves. The two figures take real photographs from the DB (Bunny Storage URLs) via
    getPage("photography"); they fall back to the grey wireframe blocks when
    the gallery is empty, so the stack never collapses.
 
@@ -55,6 +57,7 @@ export default function About({ photos }: { photos: GalleryPhoto[] }) {
                   fill
                   sizes="(max-width: 767px) 70vw, 30vw"
                   loading="lazy"
+                  data-parallax={18}
                 />
               ) : (
                 <span aria-hidden="true">portrait — image</span>
@@ -74,6 +77,7 @@ export default function About({ photos }: { photos: GalleryPhoto[] }) {
                   fill
                   sizes="(max-width: 767px) 40vw, 17vw"
                   loading="lazy"
+                  data-parallax={-24}
                 />
               ) : (
                 <span aria-hidden="true">detail — image</span>

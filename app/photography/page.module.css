@@ -109,6 +109,10 @@
      section always fits under mobile browser chrome. See app/v4.css §2. */
   min-height: 100vh;
   min-height: 100svh;
+  /* On a phone the hero's content (wordmark + a ~30vh strip) is far shorter
+     than the viewport, so a forced 100svh left a tall dead band under the
+     filmstrip and the divider had to be dragged up ~92vw to hide it. Letting
+     the section claim only what it needs kills the gap at its source. */
   /* Transparent, not beige: the sheet and its grain come from .slate, so the
      texture runs unbroken through every section boundary. */
   background: transparent;
@@ -117,4 +121,18 @@
   isolation: isolate;
   /* Anchor targets (#about, #works) land clear of the seam, not under it. */
   scroll-margin-top: 1.5rem;
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────────
+
+   Sections size to their content instead of the viewport. Only the hero
+   actually suffered the dead-space problem, but the sections below it are
+   all taller than 100svh anyway, so this changes nothing for them — it just
+   removes a floor none of them were using.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .section {
+    min-height: 0;
+  }
 }

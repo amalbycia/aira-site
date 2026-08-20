@@ -76,9 +76,18 @@
 
 /* The photograph itself. `fill` + cover means the frame's aspect-ratio crops
    the image, so a portrait and a landscape source both sit correctly in the
-   same slot and the collage keeps its designed proportions. */
+   same slot and the collage keeps its designed proportions.
+
+   The parallax drifts THIS element, not the frame — the frame stays put in the
+   collage and the photograph moves within it, so the crop shifts as you
+   scroll. That means the image must be taller than its frame: at 100% height a
+   drift of ±30px would pull blank frame in at one edge. The overshoot below is
+   sized off the largest drift in WORKS (30px), doubled for headroom, and the
+   negative top re-centres it so the resting crop is the middle of the photo. */
 .photo {
   object-fit: cover;
+  height: calc(100% + 120px);
+  top: -60px;
 }
 
 .caption {
@@ -144,6 +153,9 @@
 }
 
 .moreBtn {
+  /* Now an <a> to /gallery, not a <button> — the anchor brings an underline
+     and inherits link colour, so both are reset here. */
+  text-decoration: none;
   font-family: var(--font-serif-v4);
   font-size: clamp(0.72rem, 1vw, 0.9rem);
   letter-spacing: 0.26em;

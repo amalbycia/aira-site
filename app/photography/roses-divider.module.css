@@ -40,10 +40,12 @@
   .divider {
     /* Clip the overhang instead of letting it force horizontal scroll. */
     overflow: hidden;
-    /* Retune the pull-up: the desktop -30vw was set against a band that is now
-       taller, so the same value would swallow it. Nudged up a touch further so
-       the hero section reads shorter on a phone — mobile only. */
-    margin-top: clamp(-45rem, -92vw, -20.5rem);
+    /* The old -92vw existed to swallow the dead band under the filmstrip that
+       .section's forced 100svh created. That floor is gone on mobile now
+       (page.module.css), so the same value would eat the hero itself. This is
+       measured against the real content height, and sits the garland a little
+       higher under the strip than a pure seam value would. */
+    margin-top: clamp(-26rem, -46vw, -11rem);
   }
 
   .image {

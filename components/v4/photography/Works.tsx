@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import type { GalleryPhoto } from "@/components/media/types";
 import styles from "@/app/photography/works.module.css";
 
@@ -8,16 +9,19 @@ import styles from "@/app/photography/works.module.css";
    and offsets, like the clustered detail photographs in the FLAMENCO
    reference. Deliberately NOT a uniform grid.
 
-   data-parallax: each figure drifts vertically a few px against the scroll
-   (PhotoMotion.tsx) — the value is the drift depth in px, alternating sign so
-   neighbours move against each other. Subtle by design.
+   data-parallax sits on the IMAGE, not the figure (PhotoMotion.tsx drives
+   whatever carries it). The frame holds its place in the collage while the
+   photograph drifts inside it, so the crop shifts as you scroll — the frame
+   edges stay rock steady. The image is oversized in CSS so the drift never
+   pulls a blank edge into view. Values alternate sign so neighbours move
+   against each other. Subtle by design.
 
    Photographs come from the DB (Bunny Storage URLs) via getPage("photography").
    Each frame keeps its own aspect-ratio and the image is cropped to it, so
    real photos of any shape leave the collage's proportions untouched. Frames
    fall back to the grey wireframe blocks when the gallery is empty.
 
-   The button is still a styled placeholder — no destination yet. */
+   The gallery link goes to /gallery — the full archive, same CDN source. */
 
 /* `sizes` per slot mirrors the grid spans in works.module.css — without it
    Next serves a full-width source into a 3-column frame. */
@@ -73,12 +77,7 @@ export default function Works({ photos }: { photos: GalleryPhoto[] }) {
         {WORKS.map((w, i) => {
           const photo = photos[i];
           return (
-            <figure
-              key={w.num}
-              className={`${styles.piece} ${styles[w.cls]}`}
-              data-reveal
-              data-parallax={w.drift}
-            >
+            <figure key={w.num} className={`${styles.piece} ${styles[w.cls]}`} data-reveal>
               <div className={styles.frame}>
                 {photo ? (
                   <Image
@@ -88,6 +87,7 @@ export default function Works({ photos }: { photos: GalleryPhoto[] }) {
                     fill
                     sizes={w.sizes}
                     loading="lazy"
+                    data-parallax={w.drift}
                   />
                 ) : (
                   <span aria-hidden="true">image — {w.num}</span>
@@ -101,16 +101,14 @@ export default function Works({ photos }: { photos: GalleryPhoto[] }) {
         })}
       </div>
 
-      {/* Destination not wired yet — becomes a link when James places the
-          full gallery. */}
       <p className={styles.moreLine} data-reveal>
-        <button type="button" className={styles.moreBtn} data-draw-line>
+        <Link href="/gallery" className={styles.moreBtn} data-draw-line>
           view the full gallery
           <span className={styles.moreArrow} aria-hidden="true">
             →
           </span>
           <span data-draw-line-box aria-hidden="true" />
-        </button>
+        </Link>
       </p>
     </div>
   );

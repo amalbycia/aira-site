@@ -109,6 +109,50 @@
    clamp is raised to use that room.
    ──────────────────────────────────────────────────────────────────────────── */
 
+/* ── Explore pill (phone only) ────────────────────────────────────────────────
+
+   A pill CTA sitting under the filmstrip. Hidden on desktop, where the nav
+   already carries the same routes and the strip runs into the divider. It is
+   `display: none` by default and only turned on below the breakpoint, so it
+   can never appear on a wide screen.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.explore {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .explore {
+    display: flex;
+    justify-content: center;
+    /* Clears the filmstrip without crowding the roses that follow. */
+    margin-top: 1.6rem;
+  }
+
+  .exploreBtn {
+    font-family: var(--font-serif-v4);
+    font-size: 0.76rem;
+    letter-spacing: 0.26em;
+    text-transform: lowercase;
+    /* The sheet beige. No --sheet-v4 token exists in app/v4.css §3 — the
+       value is written literally elsewhere too (page.module.css .slate). */
+    color: #ebe1cd;
+    background: var(--crimson-v4);
+    /* Pill: a radius far larger than the height always resolves to a
+       half-height cap, at any font size. */
+    border-radius: 999px;
+    border: 1px solid var(--crimson-v4);
+    padding: 0.95em 2.8em;
+    /* 44px minimum touch target — app/v4.css §2. */
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    cursor: pointer;
+  }
+}
+
 @media (max-width: 767px) {
   .hero {
     /* Content sits at the TOP of the section, not centred in it — the section

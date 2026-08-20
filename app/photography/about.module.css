@@ -121,9 +121,15 @@
 
 /* The photograph itself. `fill` + cover means the frame's aspect-ratio crops
    the image, so a portrait and a landscape source both sit correctly in the
-   same slot and the collage keeps its designed proportions. */
+   same slot and the stack keeps its designed proportions.
+
+   Oversized for the same reason as Selected Works: the parallax drifts the
+   IMAGE inside a stationary frame, so the photo must overhang the frame or a
+   drift would pull a blank edge into view. See works.module.css. */
 .photo {
   object-fit: cover;
+  height: calc(100% + 120px);
+  top: -60px;
 }
 
 .figureMain .frame {
