@@ -86,6 +86,7 @@ export default function Works({ photos }: { photos: GalleryPhoto[] }) {
                     alt={photo.alt}
                     fill
                     sizes={w.sizes}
+                    quality={82}
                     loading="lazy"
                     data-parallax={w.drift}
                   />

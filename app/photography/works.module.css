@@ -86,8 +86,14 @@
    negative top re-centres it so the resting crop is the middle of the photo. */
 .photo {
   object-fit: cover;
-  height: calc(100% + 120px);
-  top: -60px;
+  /* The parallax translates this element from +depth to -depth, so the total
+     travel is 2x depth and the image needs `depth` of slack at EACH edge. The
+     largest drift in WORKS is 30px, so 60px per side is the true minimum —
+     the previous 60px total was exactly flush and any rounding opened a gap
+     at the frame edge. 110px per side is that minimum plus headroom, so a
+     larger drift value can be dialled in without re-deriving this. */
+  height: calc(100% + 220px);
+  top: -110px;
 }
 
 .caption {

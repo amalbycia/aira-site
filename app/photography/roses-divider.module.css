@@ -40,12 +40,11 @@
   .divider {
     /* Clip the overhang instead of letting it force horizontal scroll. */
     overflow: hidden;
-    /* The old -92vw existed to swallow the dead band under the filmstrip that
-       .section's forced 100svh created. That floor is gone on mobile now
-       (page.module.css), so the same value would eat the hero itself. This is
-       measured against the real content height, and sits the garland a little
-       higher under the strip than a pure seam value would. */
-    margin-top: clamp(-26rem, -46vw, -11rem);
+    /* Pulled up under the filmstrip, but NOT so far that it swallows the
+       explore pill: the button sits below the strip and the garland has to
+       clear it, so this is tuned to land the band under the button rather
+       than over it. Less pull-up = band sits lower. */
+    margin-top: clamp(-9rem, -14vw, -3.5rem);
   }
 
   .image {

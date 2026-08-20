@@ -125,8 +125,9 @@
   .explore {
     display: flex;
     justify-content: center;
-    /* Clears the filmstrip without crowding the roses that follow. */
-    margin-top: 1.6rem;
+    /* Sits close under the filmstrip — the garland below is pulled up to
+       land beneath the button, not over it (roses-divider.module.css). */
+    margin-top: 0.5rem;
   }
 
   .exploreBtn {
@@ -162,8 +163,9 @@
     justify-content: flex-start;
     padding-top: clamp(1.25rem, 5vw, 2rem);
     padding-bottom: 0;
-    /* Gap holds the strip clear of the wordmark: up, but not crowding it. */
-    gap: clamp(2.25rem, 9vw, 3.5rem);
+    /* Gap holds the strip clear of the wordmark: up, but not crowding it.
+       This is what sets the image boxes' vertical position on a phone. */
+    gap: clamp(1.5rem, 6vw, 2.4rem);
   }
 
   .wordmark.wordmark {

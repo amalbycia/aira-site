@@ -56,6 +56,7 @@ export default function About({ photos }: { photos: GalleryPhoto[] }) {
                   alt={main.alt}
                   fill
                   sizes="(max-width: 767px) 70vw, 30vw"
+                  quality={82}
                   loading="lazy"
                   data-parallax={18}
                 />
@@ -76,6 +77,7 @@ export default function About({ photos }: { photos: GalleryPhoto[] }) {
                   alt={small.alt}
                   fill
                   sizes="(max-width: 767px) 40vw, 17vw"
+                  quality={82}
                   loading="lazy"
                   data-parallax={-24}
                 />

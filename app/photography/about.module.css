@@ -128,8 +128,11 @@
    drift would pull a blank edge into view. See works.module.css. */
 .photo {
   object-fit: cover;
-  height: calc(100% + 120px);
-  top: -60px;
+  /* Same reasoning as works.module.css: travel is 2x depth, so the image
+     needs `depth` of slack at each edge, plus headroom so the frame edge can
+     never be exposed mid-drift. Largest drift here is 24px. */
+  height: calc(100% + 220px);
+  top: -110px;
 }
 
 .figureMain .frame {

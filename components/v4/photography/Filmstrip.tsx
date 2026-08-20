@@ -48,6 +48,7 @@ export default function Filmstrip({ photos }: { photos: GalleryPhoto[] }) {
                   alt=""
                   fill
                   sizes={TILE_SIZES[n]}
+                  quality={82}
                   priority
                 />
               ) : (

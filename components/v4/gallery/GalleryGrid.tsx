@@ -97,31 +97,41 @@ export default function GalleryGrid({ photos }: { photos: GalleryPhoto[] }) {
       </div>
 
       <div className={styles.grid} data-density={density} ref={gridRef}>
-        {photos.map((photo, i) => (
-          <figure
-            key={photo.src}
-            className={`${styles.item} ${
-              /* Every fourth tile runs wide, giving the grid a rhythm instead
-                 of a uniform contact sheet. */
-              i % 4 === 3 ? styles.itemWide : ""
-            }`}
-          >
-            <div className={styles.frame}>
-              <Image
-                className={styles.photo}
-                src={photo.src}
-                alt={photo.alt}
-                fill
-                sizes="(max-width: 767px) 50vw, 25vw"
-                /* The first rows are above the fold on any screen; the rest is
-                   a long archive and loads as it is reached. */
-                loading={i < 4 ? undefined : "lazy"}
-                priority={i < 4}
-              />
-            </div>
-            <figcaption className={styles.num}>( {String(i + 1).padStart(2, "0")} )</figcaption>
-          </figure>
-        ))}
+        {photos.map((photo, i) => {
+          /* Every fourth tile runs wide, giving the grid a rhythm instead of
+             a uniform contact sheet. */
+          const isWide = i % 4 === 3;
+          return (
+            <figure key={photo.src} className={`${styles.item} ${isWide ? styles.itemWide : ""}`}>
+              <div className={styles.frame}>
+                <Image
+                  className={styles.photo}
+                  src={photo.src}
+                  alt={photo.alt}
+                  fill
+                  /* Sizes must match the real span or Next fetches the wrong
+                     source. A normal tile is 2 of 6 columns (~33vw), a wide
+                     one 4 of 6 (~66vw); the flat 25vw made wide tiles fetch a
+                     source too small to be sharp and normal tiles fetch one
+                     bigger than they could ever show. */
+                  sizes={
+                    isWide ? "(max-width: 767px) 100vw, 66vw" : "(max-width: 767px) 50vw, 33vw"
+                  }
+                  /* Must be one of next.config.ts `qualities` — an
+                     undeclared value is rejected by the optimizer and the
+                     image 400s rather than falling back. */
+                  quality={80}
+                  /* Only the true first row is eager. With 40 photographs,
+                     eager-loading more just starves the visible ones of
+                     bandwidth — which is what made the page feel slow. */
+                  loading={i < 4 ? undefined : "lazy"}
+                  priority={i < 4}
+                />
+              </div>
+              <figcaption className={styles.num}>( {String(i + 1).padStart(2, "0")} )</figcaption>
+            </figure>
+          );
+        })}
       </div>
     </>
   );
